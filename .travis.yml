@@ -1,11 +1,18 @@
-language: node_js
-node_js: node
-cache:
-  directories:
-    - node_modules
-branches:
-  only:
-    - master
-script:
-  - npm run build
-  - npm test
+stages:
+  - name: test
+    # run on pull requests only
+    if: branch = master AND type = pull_request
+
+jobs:
+  include:
+    - stage: test
+      name: test
+      language: node_js
+      node_js:
+       - 11
+      cache:
+        directories:
+        - node_modules
+      script:
+        - npm run build
+        - npm test
