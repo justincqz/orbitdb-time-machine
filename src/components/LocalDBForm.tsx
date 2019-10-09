@@ -1,25 +1,24 @@
-import React, {useState} from 'react';
-import { withRouter } from 'react-router-dom';
+import React from 'react';
+import TextField from '@material-ui/core/TextField';
 
-const LocalDBForm: React.FC = withRouter(({history}) => {
-  const [address, setAddress] = useState("");
-
+const LocalDBForm: React.FC = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    history.push(address)
-  }  
+    event.preventDefault();
+    console.log("asdf");
+  }
 
   return (
     <div>
         <form onSubmit={handleSubmit} noValidate autoComplete="off">
-          <input
-            type="text"
-            onChange={(e) => {
-              setAddress(e.target.value);
-            }}>
-          </input>
+          <TextField
+            id="outlined-local-db"
+            label="Local DB Address"
+            margin="normal"
+            variant="outlined"
+          />
         </form>
     </div>
   );
-})
+}
 
 export default LocalDBForm;
