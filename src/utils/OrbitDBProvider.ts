@@ -2,7 +2,7 @@ import {DatabaseProvider} from "./DatabaseProvider";
 import {DAGNode} from "./DAGNode";
 import * as IPFS from 'ipfs';
 import * as OrbitDB from 'orbit-db';
-import * as Store from 'orbit-db-store';
+import {Store} from 'orbit-db-store';
 
 const ipfsOptions = {
     EXPERIMENTAL: {
@@ -11,20 +11,8 @@ const ipfsOptions = {
 };
 
 export class OrbitDBProvider implements DatabaseProvider {
+    async getDatabaseGraph(address: string): Promise<DAGNode> {
 
-    private readonly address: string;
-    private readonly ipfs: IPFS;
-    private readonly dbInstance: OrbitDB;
-    private readonly store: Store;
-
-    private constructor(address: string, ipfs: IPFS, dbInstance: OrbitDB, store: Store) {
-        this.address = address;
-        this.ipfs = ipfs;
-        this.dbInstance = dbInstance;
-        this.store = store;
-    }
-
-    static async build(address: string): Promise<OrbitDBProvider> {
         // Checks if address supplied is valid
         if (!OrbitDB.isValidAddress(address)) {
             throw Error("Invalid OrbitDB address supplied: " + address);
@@ -41,19 +29,15 @@ export class OrbitDBProvider implements DatabaseProvider {
         const db: Store = await dbInstance.open(address);
         await db.load();
 
-        return new OrbitDBProvider(address, ipfs, dbInstance, db);
-    }
-
-    async getDatabaseGraph(): Promise<DAGNode> {
         // Read head of oplog
-        let oplog: any = this.store._oplog;
+        let oplog: any = db._oplog;
         let heads: Array<any> = oplog.heads;
 
         if (heads.length == 0) {
-            return DAGNode.emptyDAG();
+            return this.emptyDAG();
         }
 
-        return DAGNode.createDAG(heads[0], this.store, 10);
+        return this.createDAG(heads[0], db, 10);
     }
 
     getEdges(node: DAGNode): Array<[string, string]> {
@@ -79,11 +63,21 @@ export class OrbitDBProvider implements DatabaseProvider {
         return edges;
     }
 
-    async getNodeInfo(node: DAGNode): Promise<any> {
-        return this.store.get(node.hash);
+    private createDAG(head: any, db: Store, depth: number = 10): DAGNode {
+        return depth > 0
+            ? new DAGNode(
+                head.hash,
+                (head.next
+                    ? head.next.map(node => this.createDAG(db.get(node), db, --depth))
+                    : [])
+            )
+            : new DAGNode(
+                head.hash,
+                []
+            );
     }
 
-    async addLog(log: string) {
-        await this.store.add(log);
+    private emptyDAG(): DAGNode {
+        return new DAGNode("EMPTY", []);
     }
 }
