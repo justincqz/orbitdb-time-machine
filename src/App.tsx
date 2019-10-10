@@ -1,12 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { StateProvider } from './state/global';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route
+} from 'react-router-dom';
+import Landing from './pages/landing';
 
 const App: React.FC = () => {
   return (
     <StateProvider>
-      <div>Placeholder</div>
+      <Router>
+        <Switch>
+          <Route exact path='/'>
+            <Landing />
+          </Route>
+        </Switch>
+      </Router>
     </StateProvider>
   );
 }
