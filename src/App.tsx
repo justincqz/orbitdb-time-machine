@@ -6,7 +6,7 @@ import {
   Switch,
   Route
 } from 'react-router-dom';
-import Landing from './pages/landing';
+import Landing from 'src/pages/Landing';
 
 const App: React.FC = () => {
   return (
