@@ -1,5 +1,4 @@
 import React from 'react';
-import 'src/App.css';
 import { StateProvider } from './state/global';
 import {
   BrowserRouter as Router,

@@ -1,0 +1,32 @@
+.container {
+  padding: 30px;
+  width: 80%;
+  max-width: 600px;
+}
+
+.textField {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: rgb(236, 244, 252);  
+  font-size: 20pt;
+  width: 100%;
+}
+
+.error {
+  padding: 20px;
+  background-color: rgb(255, 96, 96);
+  border-radius: 5px;
+  margin-bottom: 50px;
+}
+
+.formContainer {
+  display: flex;
+}
+
+.submitButton {
+  border-radius: 5px;
+  background-color: rgb(74, 192, 74);
+  margin-left: 30px;
+  font-size: 15pt;
+  color: white;
+}
