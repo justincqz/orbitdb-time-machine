@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import 'src/App.css';
 import { StateProvider } from './state/global';
 import {
   BrowserRouter as Router,
@@ -7,6 +7,7 @@ import {
   Route
 } from 'react-router-dom';
 import Landing from 'src/pages/Landing';
+import DatabaseView from 'src/pages/Database';
 
 const App: React.FC = () => {
   return (
@@ -15,6 +16,9 @@ const App: React.FC = () => {
         <Switch>
           <Route exact path='/'>
             <Landing />
+          </Route>
+          <Route exact path='/orbitdb/:hash/:name'>
+            <DatabaseView />
           </Route>
         </Switch>
       </Router>
