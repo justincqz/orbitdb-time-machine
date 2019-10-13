@@ -1,20 +1,13 @@
 import React, { useEffect } from 'react';
 import * as d3Dag from 'd3-dag';
 import * as d3 from 'd3';
+import { D3Data } from '../utils/D3Data';
 
-const GraphDisplay: React.FC = () => {
-
-  // TODO: Replace with props
-  const mockData = [
-    {'id': '0','parentIds': ['1']},
-    {'id': '1','parentIds': ['2']},
-    {'id': '2','parentIds': []}
-  ]
-  
+const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
   // Draw graph to screen
   function renderSvg() {
     // D3 Setup
-    const data = d3Dag.dagStratify()(mockData);
+    const data = d3Dag.dagStratify()(inputData);
     const layout = d3Dag.sugiyama().size([300, 1000]);
 
     // Apply layout to computed data

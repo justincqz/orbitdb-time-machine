@@ -1,7 +1,7 @@
-import { DAGNode } from "./DAGNode";
+import DAGNode from "./DAGNode";
 
 export interface DatabaseProvider {
-  getDatabaseGraph(address: string): Promise<DAGNode>;
+  getDatabaseGraph(): Promise<DAGNode>;
 
   getEdges(node: DAGNode): any;
 }
