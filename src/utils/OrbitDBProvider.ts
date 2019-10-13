@@ -11,11 +11,17 @@ const ipfsOptions = {
 };
 
 export class OrbitDBProvider implements DatabaseProvider {
-    async getDatabaseGraph(address: string): Promise<DAGNode> {
+    private readonly address : string;
+
+    constructor(address: string) {
+        this.address = address;
+    }
+
+    async getDatabaseGraph(): Promise<DAGNode> {
 
         // Checks if address supplied is valid
-        if (!OrbitDB.isValidAddress(address)) {
-            throw Error("Invalid OrbitDB address supplied: " + address);
+        if (!OrbitDB.isValidAddress(this.address)) {
+            throw Error("Invalid OrbitDB address supplied: " + this.address);
         }
 
         // Creates an IPFS instance and waits till its ready
@@ -26,7 +32,7 @@ export class OrbitDBProvider implements DatabaseProvider {
         const dbInstance: OrbitDB = await OrbitDB.createInstance(ipfs);
 
         // Connects to address of DB and waits for it to load
-        const db: Store = await dbInstance.open(address);
+        const db: Store = await dbInstance.open(this.address);
         await db.load();
 
         // Read head of oplog
@@ -34,10 +40,10 @@ export class OrbitDBProvider implements DatabaseProvider {
         let heads: Array<any> = oplog.heads;
 
         if (heads.length == 0) {
-            return this.emptyDAG();
+            return DAGNode.emptyDAG();
         }
 
-        return this.createDAG(heads[0], db, 10);
+        return DAGNode.createDAG(heads[0], db, 10);
     }
 
     getEdges(node: DAGNode): Array<[string, string]> {
@@ -61,23 +67,5 @@ export class OrbitDBProvider implements DatabaseProvider {
         }
 
         return edges;
-    }
-
-    private createDAG(head: any, db: Store, depth: number = 10): DAGNode {
-        return depth > 0
-            ? new DAGNode(
-                head.hash,
-                (head.next
-                    ? head.next.map(node => this.createDAG(db.get(node), db, --depth))
-                    : [])
-            )
-            : new DAGNode(
-                head.hash,
-                []
-            );
-    }
-
-    private emptyDAG(): DAGNode {
-        return new DAGNode("EMPTY", []);
     }
 }
