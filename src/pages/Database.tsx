@@ -6,7 +6,7 @@ import { D3Data } from '../utils/D3Data';
  
 const DatabaseView: React.FC = () => {
   // URL parameters
-  let {hash, name}: {hash: string, name: string} = useParams();
+  let { hash, name }: {hash: string, name: string} = useParams();
   const injector = useDependencyInjector();
   const dbProvider = injector.createDbProvider(`/orbitdb/${hash}/${name}`);
   console.log(`orbitdb/${hash}/${name}`)

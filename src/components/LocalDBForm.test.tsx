@@ -20,7 +20,7 @@ it('does not navigate on invalid address', () => {
   // Update variables to grant us access to the location
   // and history objects in this test.
   const history = createMemoryHistory();
-  const {container} = render(
+  const { container } = render(
     <Router history={history}>
       <LocalDBForm />
     </Router>,
