@@ -1,4 +1,4 @@
-import {Store} from 'orbit-db-store';
+import * as Store from 'orbit-db-store';
 
 export class DAGNode {
     nodeList: [DAGNode];

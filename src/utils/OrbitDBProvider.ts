@@ -36,9 +36,9 @@ export class OrbitDBProvider implements DatabaseProvider {
 
         // Creates an OrbitDB instance on top of IPFS
         const dbInstance: OrbitDB = await OrbitDB.createInstance(ipfs);
-        
+
         // Connects to address of DB and waits for it to load
-        const db: Store = await dbInstance.open('/orbitdb/zdpuAqmWpgraHQr1ChmYYJDEi8NirBEC1XbLUcj7nc5x4tBMd/hello');
+        const db: Store = await dbInstance.open(address);
         await db.load();
 
         return new OrbitDBProvider(address, ipfs, dbInstance, db);
