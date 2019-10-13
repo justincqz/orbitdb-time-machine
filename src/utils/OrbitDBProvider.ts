@@ -11,17 +11,23 @@ const ipfsOptions = {
 };
 
 export class OrbitDBProvider implements DatabaseProvider {
-    private readonly address : string;
 
-    constructor(address: string) {
+    private readonly address: string;
+    private readonly ipfs: IPFS;
+    private readonly dbInstance: OrbitDB;
+    private readonly store: Store;
+
+    private constructor(address: string, ipfs: IPFS, dbInstance: OrbitDB, store: Store) {
         this.address = address;
+        this.ipfs = ipfs;
+        this.dbInstance = dbInstance;
+        this.store = store;
     }
 
-    async getDatabaseGraph(): Promise<DAGNode> {
-
+    static async build(address: string): Promise<OrbitDBProvider> {
         // Checks if address supplied is valid
-        if (!OrbitDB.isValidAddress(this.address)) {
-            throw Error("Invalid OrbitDB address supplied: " + this.address);
+        if (!OrbitDB.isValidAddress(address)) {
+            throw Error("Invalid OrbitDB address supplied: " + address);
         }
 
         // Creates an IPFS instance and waits till its ready
@@ -32,18 +38,22 @@ export class OrbitDBProvider implements DatabaseProvider {
         const dbInstance: OrbitDB = await OrbitDB.createInstance(ipfs);
 
         // Connects to address of DB and waits for it to load
-        const db: Store = await dbInstance.open(this.address);
+        const db: Store = await dbInstance.open(address);
         await db.load();
 
+        return new OrbitDBProvider(address, ipfs, dbInstance, db);
+    }
+
+    async getDatabaseGraph(): Promise<DAGNode> {
         // Read head of oplog
-        let oplog: any = db._oplog;
+        let oplog: any = this.store._oplog;
         let heads: Array<any> = oplog.heads;
 
         if (heads.length == 0) {
             return DAGNode.emptyDAG();
         }
 
-        return DAGNode.createDAG(heads[0], db, 10);
+        return DAGNode.createDAG(heads[0], this.store, 10);
     }
 
     getEdges(node: DAGNode): Array<[string, string]> {
@@ -70,23 +80,6 @@ export class OrbitDBProvider implements DatabaseProvider {
     }
 
     async getNodeInfo(node: DAGNode): Promise<any> {
-
-        // Checks if address supplied is valid
-        if (!OrbitDB.isValidAddress(this.address)) {
-            throw Error("Invalid OrbitDB address supplied: " + this.address);
-        }
-
-        // Creates an IPFS instance and waits till its ready
-        const ipfs: IPFS = new IPFS(ipfsOptions);
-        await ipfs.ready;
-
-        // Creates an OrbitDB instance on top of IPFS
-        const dbInstance: OrbitDB = await OrbitDB.createInstance(ipfs);
-
-        // Connects to address of DB and waits for it to load
-        const db: Store = await dbInstance.open(this.address);
-        await db.load();
-
-        return db.get(node.hash);
+        return this.store.get(node.hash);
     }
 }
