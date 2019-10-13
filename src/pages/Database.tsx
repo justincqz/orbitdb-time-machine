@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import GraphDisplay from '../components/GraphDisplay';
 
 const DatabaseView: React.FC = () => {
   // URL parameters
@@ -7,6 +8,7 @@ const DatabaseView: React.FC = () => {
 
   return <div>
     Viewing: {`orbitdb/${hash}/${name}`}
+    <GraphDisplay />
   </div>
 }
 
