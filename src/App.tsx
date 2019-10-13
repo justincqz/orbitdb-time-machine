@@ -7,6 +7,7 @@ import {
   Route
 } from 'react-router-dom';
 import Landing from 'src/pages/Landing';
+import GraphDisplay from './components/GraphDisplay';
 
 const App: React.FC = () => {
   return (
@@ -14,7 +15,7 @@ const App: React.FC = () => {
       <Router>
         <Switch>
           <Route exact path='/'>
-            <Landing />
+            <GraphDisplay />
           </Route>
         </Switch>
       </Router>
