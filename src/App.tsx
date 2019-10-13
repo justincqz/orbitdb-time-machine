@@ -1,5 +1,5 @@
 import React from 'react';
-import { StateProvider } from './state/global';
+import { InjectorProvider, DefaultInjector } from './state/dependencyInjector';
 import {
   BrowserRouter as Router,
   Switch,
@@ -10,7 +10,7 @@ import DatabaseView from './pages/Database';
 
 const App: React.FC = () => {
   return (
-    <StateProvider>
+    <InjectorProvider injector={new DefaultInjector()}>
       <Router>
         <Switch>
           <Route exact path='/'>
@@ -21,7 +21,7 @@ const App: React.FC = () => {
           </Route>
         </Switch>
       </Router>
-    </StateProvider>
+    </InjectorProvider>
   );
 }
 
