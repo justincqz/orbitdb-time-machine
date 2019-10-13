@@ -1,5 +1,5 @@
 import { useState } from 'react';
-const { isValidAddress } = require('orbit-db');
+import { isValidAddress } from 'orbit-db';
 
 const useDBFormHandler: (history: any) => { 
   error: string | null, 

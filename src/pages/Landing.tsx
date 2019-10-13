@@ -1,7 +1,7 @@
 import React from 'react';
-import LocalDBForm from 'src/components/LocalDBForm';
+import LocalDBForm from '../components/LocalDBForm';
 import logo from './logo.png';
-import LandingStyles from 'src/pages/Landing.module.css';
+import LandingStyles from './Landing.module.css';
 
 const Landing: React.FC = () => (
   <div className={LandingStyles.container}>

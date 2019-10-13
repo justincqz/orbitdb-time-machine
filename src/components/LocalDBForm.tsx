@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import useDBFormHandler from 'src/components/useDBFormHandler';
-import FormStyles from 'src/components/LocalDBForm.module.css';
+import useDBFormHandler from '../components/useDBFormHandler';
+import FormStyles from './LocalDBForm.module.css';
 
 const LocalDBForm: React.FC = withRouter(({ history }) => {
   const { error, address, setAddress, submit } = useDBFormHandler(history); 
