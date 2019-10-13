@@ -1,4 +1,4 @@
-import { DatabaseProvider } from "./DatabaseProvider";
+import {DatabaseProvider} from "./DatabaseProvider";
 import DAGNode from "./DAGNode";
 import * as IPFS from "ipfs";
 import * as OrbitDB from "orbit-db";
@@ -11,16 +11,23 @@ const ipfsOptions = {
 };
 
 export class OrbitDBProvider implements DatabaseProvider {
-  private readonly address: string;
 
-  constructor(address: string) {
+  private readonly address: string;
+  private readonly ipfs: IPFS;
+  private readonly dbInstance: OrbitDB;
+  private readonly store: Store;
+
+  private constructor(address: string, ipfs: IPFS, dbInstance: OrbitDB, store: Store) {
     this.address = address;
+    this.ipfs = ipfs;
+    this.dbInstance = dbInstance;
+    this.store = store;
   }
 
-  async getDatabaseGraph(): Promise<DAGNode> {
+  static async build(address: string): Promise<OrbitDBProvider> {
     // Checks if address supplied is valid
-    if (!OrbitDB.isValidAddress(this.address)) {
-      throw Error("Invalid OrbitDB address supplied: " + this.address);
+    if (!OrbitDB.isValidAddress(address)) {
+      throw Error("Invalid OrbitDB address supplied: " + address);
     }
 
     // Creates an IPFS instance and waits till its ready
@@ -37,25 +44,30 @@ export class OrbitDBProvider implements DatabaseProvider {
       }, 5000)
     );
 
-    const dbPromise: Promise<Store> = dbInstance.open(this.address, {
+    const dbPromise: Promise<Store> = dbInstance.open(address, {
       create: true
     });
 
     const db: Store = await Promise.race([timeout, dbPromise]).catch(() => {
-      throw new Error(`Timeout awaiting database ${this.address}`);
+      throw new Error(`Timeout awaiting database ${address}`);
     });
 
     await db.load();
 
+    return new OrbitDBProvider(address, ipfs, dbInstance, db);
+  }
+
+  async getDatabaseGraph(): Promise<DAGNode> {
     // Read head of oplog
-    let oplog: any = db._oplog;
+    let oplog: any = this.store._oplog;
     let heads: Array<any> = oplog.heads;
 
+    console.log(oplog);
     if (heads.length === 0) {
       return DAGNode.emptyDAG();
     }
 
-    return DAGNode.createDAG(heads[0], db, 10);
+    return DAGNode.createDAG(heads[0]);
   }
 
   getEdges(node: DAGNode): Array<[string, string]> {
@@ -80,4 +92,9 @@ export class OrbitDBProvider implements DatabaseProvider {
 
     return edges;
   }
+
+  async getNodeInfo(node: DAGNode): Promise<any> {
+    return this.store.get(node.hash);
+  }
+
 }

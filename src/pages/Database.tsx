@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
 import GraphDisplay from '../components/GraphDisplay';
-import { useDependencyInjector } from '../state/dependencyInjector';
-import { D3Data } from '../utils/D3Data';
+import {useDependencyInjector} from '../state/dependencyInjector';
+import {D3Data} from '../utils/D3Data';
+import {DatabaseProvider} from "../utils/DatabaseProvider";
 
 const DatabaseView: React.FC = () => {
   // URL parameters
-  let { hash, name }: {hash: string, name: string} = useParams();
+  let {hash, name}: { hash: string, name: string } = useParams();
   const injector = useDependencyInjector();
-  const dbProvider = injector.createDbProvider(`/orbitdb/${hash}/${name}`);
+  let dbProvider: DatabaseProvider;
   console.log(`orbitdb/${hash}/${name}`)
   // Limit number of nodes to fetch
   const LIMIT = 10;
@@ -18,7 +19,12 @@ const DatabaseView: React.FC = () => {
   const [error, setError]: [string, React.Dispatch<React.SetStateAction<string>>] = useState('');
 
   useEffect(() => {
-    loadData();
+    if (!dbProvider) {
+      injector.createDbProvider(`/orbitdb/${hash}/${name}`).then((provider) => {
+        dbProvider = provider;
+        loadData();
+      });
+    }
   });
 
   async function loadData(): Promise<void> {
@@ -29,6 +35,7 @@ const DatabaseView: React.FC = () => {
     setLoading(true);
     try {
       let childNode = await dbProvider.getDatabaseGraph();
+      console.log(childNode);
       setD3data(childNode.toD3Data(LIMIT));
     } catch (e) {
       setError(e.toString());
@@ -47,7 +54,7 @@ const DatabaseView: React.FC = () => {
 
   return <div>
     Viewing: {`orbitdb/${hash}/${name}`}
-    <GraphDisplay inputData={d3data} />
+    <GraphDisplay inputData={d3data}/>
   </div>
 }
 
