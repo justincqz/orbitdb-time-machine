@@ -1,12 +1,13 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { createMemoryHistory } from "history";
 import useDBFormHandler from './useDBFormHandler';
+import { act } from '@testing-library/react-hooks';
 
 test('canSetValue', () => {
   const history = createMemoryHistory();
-  const { address, setAddress } = renderHook(() => useDBFormHandler(history)).result.current;
+  const { result } = renderHook(() => useDBFormHandler(history));
 
-  setAddress('hello');
+  act(() => { result.current.setAddress('hello') });
 
-  expect(address).toBe('hello'); 
-})
+  expect(result.current.address).toBe('hello');
+});

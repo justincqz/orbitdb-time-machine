@@ -14,7 +14,7 @@ const LocalDBForm: React.FC = withRouter(({ history }) => {
   return (
     <div className={FormStyles.container}>
       { error != null && (
-        <div className={FormStyles.error}>
+        <div className={FormStyles.error} data-testid="errorBox">
           { error }
         </div>
       )}

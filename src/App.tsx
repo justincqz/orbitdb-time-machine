@@ -5,8 +5,8 @@ import {
   Switch,
   Route
 } from 'react-router-dom';
-import Landing from 'src/pages/Landing';
-import DatabaseView from 'src/pages/Database';
+import Landing from './pages/Landing';
+import DatabaseView from './pages/Database';
 
 const App: React.FC = () => {
   return (
