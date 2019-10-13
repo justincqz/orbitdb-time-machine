@@ -1,71 +1,71 @@
-import {DatabaseProvider} from "./DatabaseProvider";
-import {DAGNode} from "./DAGNode";
+import { DatabaseProvider } from "./DatabaseProvider";
+import { DAGNode } from "./DAGNode";
 import * as IPFS from 'ipfs';
 import * as OrbitDB from 'orbit-db';
-import {Store} from 'orbit-db-store';
+import { Store } from 'orbit-db-store';
 
 const ipfsOptions = {
-    EXPERIMENTAL: {
-        pubsub: true
-    }
+  EXPERIMENTAL: {
+    pubsub: true
+  }
 };
 
 export class OrbitDBProvider implements DatabaseProvider {
-    private readonly address : string;
+  private readonly address: string;
 
-    constructor(address: string) {
-        this.address = address;
+  constructor(address: string) {
+    this.address = address;
+  }
+
+  async getDatabaseGraph(): Promise<DAGNode> {
+
+    // Checks if address supplied is valid
+    if (!OrbitDB.isValidAddress(this.address)) {
+      throw Error("Invalid OrbitDB address supplied: " + this.address);
     }
 
-    async getDatabaseGraph(): Promise<DAGNode> {
+    // Creates an IPFS instance and waits till its ready
+    const ipfs: IPFS = new IPFS(ipfsOptions);
+    await ipfs.ready;
 
-        // Checks if address supplied is valid
-        if (!OrbitDB.isValidAddress(this.address)) {
-            throw Error("Invalid OrbitDB address supplied: " + this.address);
-        }
+    // Creates an OrbitDB instance on top of IPFS
+    const dbInstance: OrbitDB = await OrbitDB.createInstance(ipfs);
 
-        // Creates an IPFS instance and waits till its ready
-        const ipfs: IPFS = new IPFS(ipfsOptions);
-        await ipfs.ready;
+    // Connects to address of DB and waits for it to load
+    const db: Store = await dbInstance.open(this.address);
+    await db.load();
 
-        // Creates an OrbitDB instance on top of IPFS
-        const dbInstance: OrbitDB = await OrbitDB.createInstance(ipfs);
+    // Read head of oplog
+    let oplog: any = db._oplog;
+    let heads: Array<any> = oplog.heads;
 
-        // Connects to address of DB and waits for it to load
-        const db: Store = await dbInstance.open(this.address);
-        await db.load();
-
-        // Read head of oplog
-        let oplog: any = db._oplog;
-        let heads: Array<any> = oplog.heads;
-
-        if (heads.length == 0) {
-            return DAGNode.emptyDAG();
-        }
-
-        return DAGNode.createDAG(heads[0], db, 10);
+    if (heads.length == 0) {
+      return DAGNode.emptyDAG();
     }
 
-    getEdges(node: DAGNode): Array<[string, string]> {
-        const queue: Array<DAGNode> = [];
-        const visited: any = {};
-        const edges: Array<[string, string]> = [];
+    return DAGNode.createDAG(heads[0], db, 10);
+  }
 
-        queue.push(node);
+  getEdges(node: DAGNode): Array<[string, string]> {
+    const queue: Array<DAGNode> = [];
+    const visited: any = {};
+    const edges: Array<[string, string]> = [];
 
-        while (queue.length !== 0) {
-            const curr: DAGNode = queue.pop();
+    queue.push(node);
 
-            curr.nodeList.forEach(node => {
-                if (!visited[node.hash]) {
-                    visited[node.hash] = 1;
-                    queue.push(node);
-                }
+    while (queue.length !== 0) {
+      const curr: DAGNode = queue.pop();
 
-                edges.push([curr.hash, node.hash]);
-            });
+      curr.nodeList.forEach(node => {
+        if (!visited[node.hash]) {
+          visited[node.hash] = 1;
+          queue.push(node);
         }
 
-        return edges;
+        edges.push([curr.hash, node.hash]);
+      });
     }
+
+    return edges;
+  }
 }
