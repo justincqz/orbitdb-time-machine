@@ -68,4 +68,25 @@ export class OrbitDBProvider implements DatabaseProvider {
 
         return edges;
     }
+
+    async getNodeInfo(node: DAGNode): Promise<any> {
+
+        // Checks if address supplied is valid
+        if (!OrbitDB.isValidAddress(this.address)) {
+            throw Error("Invalid OrbitDB address supplied: " + this.address);
+        }
+
+        // Creates an IPFS instance and waits till its ready
+        const ipfs: IPFS = new IPFS(ipfsOptions);
+        await ipfs.ready;
+
+        // Creates an OrbitDB instance on top of IPFS
+        const dbInstance: OrbitDB = await OrbitDB.createInstance(ipfs);
+
+        // Connects to address of DB and waits for it to load
+        const db: Store = await dbInstance.open(this.address);
+        await db.load();
+
+        return db.get(node.hash);
+    }
 }
