@@ -19,9 +19,9 @@ const DatabaseView: React.FC = () => {
   const [error, setError]: [string, React.Dispatch<React.SetStateAction<string>>] = useState('');
 
   useEffect(() => {
-    if (!dbProvider) {
+    if (!this.dbProvider) {
       injector.createDbProvider(`/orbitdb/${hash}/${name}`).then((provider) => {
-        dbProvider = provider;
+        this.dbProvider = provider;
         loadData();
       });
     }
@@ -35,7 +35,6 @@ const DatabaseView: React.FC = () => {
     setLoading(true);
     try {
       let childNode = await dbProvider.getDatabaseGraph();
-      console.log(childNode);
       setD3data(childNode.toD3Data(LIMIT));
     } catch (e) {
       setError(e.toString());
