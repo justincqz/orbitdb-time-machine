@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import GraphDisplay from '../components/GraphDisplay';
 import { useDependencyInjector } from '../state/dependencyInjector';
 import { D3Data } from '../utils/D3Data';
- 
+
 const DatabaseView: React.FC = () => {
   // URL parameters
   let { hash, name }: {hash: string, name: string} = useParams();
@@ -16,18 +16,22 @@ const DatabaseView: React.FC = () => {
   const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState(true);
   const [d3data, setD3data]: [D3Data, React.Dispatch<React.SetStateAction<D3Data>>] = useState(null);
   const [error, setError]: [string, React.Dispatch<React.SetStateAction<string>>] = useState('');
-  
+
   useEffect(() => {
     loadData();
   });
 
   async function loadData(): Promise<void> {
+    // Check whether we've already fetched the data. In the future, maybe diff?
+    if (d3data !== null || error !== '') {
+      return
+    }
     setLoading(true);
     try {
       let childNode = await dbProvider.getDatabaseGraph();
       setD3data(childNode.toD3Data(LIMIT));
     } catch (e) {
-      setError(e);
+      setError(e.toString());
     } finally {
       setLoading(false);
     }

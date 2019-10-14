@@ -1,8 +1,8 @@
 import { DatabaseProvider } from "./DatabaseProvider";
 import DAGNode from "./DAGNode";
-import * as IPFS from 'ipfs';
-import * as OrbitDB from 'orbit-db';
-import { Store } from 'orbit-db-store';
+import * as IPFS from "ipfs";
+import * as OrbitDB from "orbit-db";
+import { Store } from "orbit-db-store";
 
 const ipfsOptions = {
   EXPERIMENTAL: {
@@ -18,7 +18,6 @@ export class OrbitDBProvider implements DatabaseProvider {
   }
 
   async getDatabaseGraph(): Promise<DAGNode> {
-
     // Checks if address supplied is valid
     if (!OrbitDB.isValidAddress(this.address)) {
       throw Error("Invalid OrbitDB address supplied: " + this.address);
@@ -32,14 +31,27 @@ export class OrbitDBProvider implements DatabaseProvider {
     const dbInstance: OrbitDB = await OrbitDB.createInstance(ipfs);
 
     // Connects to address of DB and waits for it to load
-    const db: Store = await dbInstance.open(this.address);
+    let timeout = new Promise((_, reject) =>
+      setTimeout(() => {
+        reject();
+      }, 5000)
+    );
+
+    const dbPromise: Promise<Store> = dbInstance.open(this.address, {
+      create: true
+    });
+
+    const db: Store = await Promise.race([timeout, dbPromise]).catch(() => {
+      throw new Error(`Timeout awaiting database ${this.address}`);
+    });
+
     await db.load();
 
     // Read head of oplog
     let oplog: any = db._oplog;
     let heads: Array<any> = oplog.heads;
 
-    if (heads.length == 0) {
+    if (heads.length === 0) {
       return DAGNode.emptyDAG();
     }
 
