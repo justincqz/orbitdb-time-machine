@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import Landing from './pages/Landing';
 import DatabaseView from './pages/Database';
+import ErrorPage from './pages/ErrorPage';
 
 const App: React.FC = () => {
   return (
@@ -18,6 +19,9 @@ const App: React.FC = () => {
           </Route>
           <Route exact path='/orbitdb/:hash/:name'>
             <DatabaseView />
+          </Route>
+          <Route>
+            <ErrorPage />
           </Route>
         </Switch>
       </Router>
