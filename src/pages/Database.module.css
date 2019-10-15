@@ -1,0 +1,11 @@
+.addButton {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: rgb(36, 193, 255);
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+}

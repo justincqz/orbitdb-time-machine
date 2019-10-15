@@ -6,6 +6,8 @@ import {D3Data} from '../model/D3Data';
 import {NodeProvider} from "../providers/NodeProvider";
 import { DatabaseProvider } from '../providers/DatabaseProvider';
 import { Store } from "orbit-db-store";
+import databaseStyles from './Database.module.css';
+import { MdLibraryAdd } from 'react-icons/md';
 
 const DatabaseView: React.FC = () => {
   // URL parameters
@@ -42,12 +44,18 @@ const DatabaseView: React.FC = () => {
     setLoading(true);
     try {
       let childNode = await nodeProvider.getDatabaseGraph();
+      console.log(childNode.toD3Data(LIMIT));
       setD3data(childNode.toD3Data(LIMIT));
     } catch (e) {
       setError(e.toString());
     } finally {
       setLoading(false);
     }
+  }
+
+  async function addNode() {
+    await store.add('testvalue');
+    console.log('added');
   }
 
   if (loading) {
@@ -58,7 +66,10 @@ const DatabaseView: React.FC = () => {
     return <div>{error}</div>
   }
 
-  return <div>
+  return <div className={databaseStyles.container}>
+    <div className={databaseStyles.addButton} onClick={addNode}>
+      <MdLibraryAdd size={'3em'} />
+    </div>
     Viewing: {`orbitdb/${hash}/${name}`}
     <GraphDisplay inputData={d3data}/>
   </div>
