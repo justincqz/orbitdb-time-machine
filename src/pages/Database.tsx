@@ -19,9 +19,10 @@ const DatabaseView: React.FC = () => {
   // Limit number of nodes to fetch
   const LIMIT = 10;
 
-  const [loading, setLoading]: [boolean, React.Dispatch<React.SetStateAction<boolean>>] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [d3data, setD3data]: [D3Data, React.Dispatch<React.SetStateAction<D3Data>>] = useState(null);
-  const [error, setError]: [string, React.Dispatch<React.SetStateAction<string>>] = useState('');
+  const [error, setError] = useState('');
+  const [listening, setListening] = useState(false);
 
   useEffect(() => {
     if (!dbProvider.current) {
@@ -31,14 +32,25 @@ const DatabaseView: React.FC = () => {
           store.current = s;
           nodeProvider.current = injector.createNodeProvider(s);
           loadData();
+          if (!listening) {
+            setListening(true);
+            listenForChanges();
+          }
         });
       });
     }
   });
 
-  async function loadData(): Promise<void> {
+  function listenForChanges() {
+    console.log('listening')
+    nodeProvider.current.listenForDatabaseGraph(() => {
+      loadData(true);
+    });
+  }
+
+  async function loadData(forceLoad: boolean = false): Promise<void> {
     // Check whether we've already fetched the data. In the future, maybe diff?
-    if (d3data !== null || error !== '') {
+    if ((d3data !== null && !forceLoad) || error !== '') {
       return
     }
     setLoading(true);
@@ -54,7 +66,12 @@ const DatabaseView: React.FC = () => {
   }
 
   async function addNode() {
-    await store.current.add('testvalue');
+    try {
+      await store.current.add('testvalue');
+    } catch (e) {
+      setError(e.toString());
+    }
+    loadData(true);
     console.log('added');
   }
 

@@ -1,7 +1,6 @@
 import { NodeProvider } from "../providers/NodeProvider";
 import DAGNode from "../model/DAGNode";
 import { Store } from "orbit-db-store";
-import { EventEmitter } from "events";
 
 export class OrbitDBNodeProvider implements NodeProvider {
 
@@ -24,13 +23,11 @@ export class OrbitDBNodeProvider implements NodeProvider {
     return DAGNode.createDAG(heads[0]);
   }
 
-  listenForDatabaseGraph(): EventEmitter {
-    const emitter = new EventEmitter();
+  listenForDatabaseGraph(cb: () => void) {
     this.store.events.on('replicated', () => {
       console.log('replicated');
-      emitter.emit('refresh');
+      cb();
     })
-    return emitter;
   }
 
   getEdges(node: DAGNode): Array<[string, string]> {

@@ -4,7 +4,7 @@ import { EventEmitter } from 'events'
 export interface NodeProvider {
   getDatabaseGraph(): Promise<DAGNode>;
 
-  listenForDatabaseGraph(): EventEmitter;
+  listenForDatabaseGraph(cb: () => void): void;
 
   getEdges(node: DAGNode): any;
 
