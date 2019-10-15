@@ -8,6 +8,7 @@ import {
 import Landing from './pages/Landing';
 import DatabaseView from './pages/Database';
 import ErrorPage from './pages/ErrorPage';
+import Create from './pages/Create';
 
 const App: React.FC = () => {
   return (
@@ -19,6 +20,9 @@ const App: React.FC = () => {
           </Route>
           <Route exact path='/orbitdb/:hash/:name'>
             <DatabaseView />
+          </Route>
+          <Route exact path='/create'>
+            <Create />
           </Route>
           <Route>
             <ErrorPage />

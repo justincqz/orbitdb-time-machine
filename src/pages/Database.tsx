@@ -2,15 +2,18 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import GraphDisplay from '../components/GraphDisplay';
 import {useDependencyInjector} from '../state/dependencyInjector';
-import {D3Data} from '../utils/D3Data';
-import {DatabaseProvider} from "../utils/DatabaseProvider";
+import {D3Data} from '../model/D3Data';
+import {NodeProvider} from "../providers/NodeProvider";
+import { DatabaseProvider } from '../providers/DatabaseProvider';
+import { Store } from "orbit-db-store";
 
 const DatabaseView: React.FC = () => {
   // URL parameters
   let {hash, name}: { hash: string, name: string } = useParams();
   const injector = useDependencyInjector();
+  let nodeProvider: NodeProvider;
+  let store: Store;
   let dbProvider: DatabaseProvider;
-  console.log(`orbitdb/${hash}/${name}`)
   // Limit number of nodes to fetch
   const LIMIT = 10;
 
@@ -19,10 +22,14 @@ const DatabaseView: React.FC = () => {
   const [error, setError]: [string, React.Dispatch<React.SetStateAction<string>>] = useState('');
 
   useEffect(() => {
-    if (!this.dbProvider) {
-      injector.createDbProvider(`/orbitdb/${hash}/${name}`).then((provider) => {
-        this.dbProvider = provider;
-        loadData();
+    if (!dbProvider) {
+      injector.createDBProvider().then((provider) => {
+        dbProvider = provider;
+        dbProvider.openDatabase(`/orbitdb/${hash}/${name}`).then((s) => {
+          store = s;
+          nodeProvider = injector.createNodeProvider(store);
+          loadData();
+        });
       });
     }
   });
@@ -34,7 +41,7 @@ const DatabaseView: React.FC = () => {
     }
     setLoading(true);
     try {
-      let childNode = await dbProvider.getDatabaseGraph();
+      let childNode = await nodeProvider.getDatabaseGraph();
       setD3data(childNode.toD3Data(LIMIT));
     } catch (e) {
       setError(e.toString());

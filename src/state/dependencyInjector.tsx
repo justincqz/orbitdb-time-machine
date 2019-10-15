@@ -1,16 +1,23 @@
-import {DatabaseProvider} from '../utils/DatabaseProvider'
+import {NodeProvider} from '../providers/NodeProvider'
 import React, {createContext, useContext} from 'react';
-import {OrbitDBProvider} from '../utils/OrbitDBProvider';
+import {OrbitDBNodeProvider} from '../adapters/OrbitDBNodeProvider';
+import {DatabaseProvider} from '../providers/DatabaseProvider';
+import OrbitDBProvider from '../adapters/OrbitDBProvider';
+import {Store} from 'orbit-db-store';
 
 // Injector to mock dependencies
 export interface Injector {
-  createDbProvider(address: string): Promise<DatabaseProvider>;
+  createNodeProvider(store: any): NodeProvider;
+  createDBProvider(): Promise<DatabaseProvider>;
 }
 
 // This injector is used in the main application
 export class DefaultInjector implements Injector {
-  createDbProvider(address: string): Promise<DatabaseProvider> {
-    return OrbitDBProvider.build(address);
+  createDBProvider(): Promise<DatabaseProvider> {
+    return OrbitDBProvider.build();
+  }
+  createNodeProvider(dbInstance: any): NodeProvider {
+    return new OrbitDBNodeProvider(dbInstance);
   }
 }
 

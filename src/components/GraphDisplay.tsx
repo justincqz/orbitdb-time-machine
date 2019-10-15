@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import * as d3Dag from 'd3-dag';
 import * as d3 from 'd3';
-import { D3Data } from '../utils/D3Data';
+import { D3Data } from '../model/D3Data';
 
 const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
   // Draw graph to screen
@@ -25,7 +25,7 @@ const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
     .curve(d3.curveMonotoneX)
     .x(d => d.y)
     .y(d => d.x);
-    
+
     const svgDom = d3.select('svg');
     const defs = svgDom.append('defs');
 

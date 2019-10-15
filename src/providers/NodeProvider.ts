@@ -1,6 +1,6 @@
-import DAGNode from "./DAGNode";
+import DAGNode from "../model/DAGNode";
 
-export interface DatabaseProvider {
+export interface NodeProvider {
   getDatabaseGraph(): Promise<DAGNode>;
 
   listenForDatabaseGraph(): AsyncGenerator<DAGNode>;
