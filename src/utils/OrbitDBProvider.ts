@@ -70,6 +70,12 @@ export class OrbitDBProvider implements DatabaseProvider {
     return DAGNode.createDAG(heads[0]);
   }
 
+  async* listenForDatabaseGraph(): AsyncGenerator<DAGNode> {
+    yield this.dbInstance.events.on('replicated', () => {
+      return this.getDatabaseGraph();
+    })
+  }
+
   getEdges(node: DAGNode): Array<[string, string]> {
     const queue: Array<DAGNode> = [];
     const visited: any = {};
