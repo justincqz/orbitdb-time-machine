@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef, MutableRefObject} from 'react';
 import {useParams} from 'react-router-dom';
 import GraphDisplay from '../components/GraphDisplay';
 import {useDependencyInjector} from '../state/dependencyInjector';
@@ -13,9 +13,9 @@ const DatabaseView: React.FC = () => {
   // URL parameters
   let {hash, name}: { hash: string, name: string } = useParams();
   const injector = useDependencyInjector();
-  let nodeProvider: NodeProvider;
-  let store: Store;
-  let dbProvider: DatabaseProvider;
+  let nodeProvider: MutableRefObject<NodeProvider> = useRef(null);
+  let store: MutableRefObject<Store> = useRef(null);
+  let dbProvider: MutableRefObject<DatabaseProvider> = useRef(null);
   // Limit number of nodes to fetch
   const LIMIT = 10;
 
@@ -24,12 +24,12 @@ const DatabaseView: React.FC = () => {
   const [error, setError]: [string, React.Dispatch<React.SetStateAction<string>>] = useState('');
 
   useEffect(() => {
-    if (!dbProvider) {
+    if (!dbProvider.current) {
       injector.createDBProvider().then((provider) => {
-        dbProvider = provider;
-        dbProvider.openDatabase(`/orbitdb/${hash}/${name}`).then((s) => {
-          store = s;
-          nodeProvider = injector.createNodeProvider(store);
+        dbProvider.current = provider;
+        dbProvider.current.openDatabase(`/orbitdb/${hash}/${name}`).then((s: Store) => {
+          store.current = s;
+          nodeProvider.current = injector.createNodeProvider(s);
           loadData();
         });
       });
@@ -43,7 +43,7 @@ const DatabaseView: React.FC = () => {
     }
     setLoading(true);
     try {
-      let childNode = await nodeProvider.getDatabaseGraph();
+      let childNode = await nodeProvider.current.getDatabaseGraph();
       console.log(childNode.toD3Data(LIMIT));
       setD3data(childNode.toD3Data(LIMIT));
     } catch (e) {
@@ -54,7 +54,7 @@ const DatabaseView: React.FC = () => {
   }
 
   async function addNode() {
-    await store.add('testvalue');
+    await store.current.add('testvalue');
     console.log('added');
   }
 

@@ -6,6 +6,21 @@ import { Store } from "orbit-db-store";
 const ipfsOptions = {
   EXPERIMENTAL: {
     pubsub: true
+  },
+  config: {
+    Addresses: {
+      Swarm: [
+        // Use IPFS dev signal server
+        // Websocket:
+        // '/dns4/ws-star-signal-1.servep2p.com/tcp/443/wss/p2p-websocket-star',
+        // '/dns4/ws-star-signal-2.servep2p.com/tcp/443/wss/p2p-websocket-star',
+        '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star',
+        // WebRTC:
+        // '/dns4/star-signal.cloud.ipfs.team/wss/p2p-webrtc-star',
+        // Use local signal server
+        // '/ip4/0.0.0.0/tcp/9090/wss/p2p-webrtc-star',
+      ]
+    },
   }
 };
 
@@ -46,7 +61,8 @@ export default class OrbitDBProvider implements DatabaseProvider {
     );
 
     const dbPromise: Promise<Store> = this.dbInstance.open(address, {
-      create: true
+      create: true,
+      sync: true
     });
 
     const db: Store = await Promise.race([timeout, dbPromise]).catch(() => {
