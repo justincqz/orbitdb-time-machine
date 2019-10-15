@@ -27,9 +27,9 @@ export default class OrbitDBProvider implements DatabaseProvider {
     return new OrbitDBProvider(dbInstance);
   }
 
-  async createDatabase(name: string): Promise<string> {
+  async createDatabase(name: string): Promise<any> {
     const db: any = this.dbInstance.create(name, "eventlog");
-    return db.address;
+    return db;
   }
 
   // Connects to address of DB and waits for it to load
