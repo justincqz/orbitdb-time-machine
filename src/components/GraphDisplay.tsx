@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import { D3Data } from '../model/D3Data';
 
 const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
+  console.log(`input data ${inputData}`);
   // Draw graph to screen
   function renderSvg() {
     // D3 Setup
@@ -26,7 +27,7 @@ const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
     .x(d => d.y)
     .y(d => d.x);
 
-    const svgDom = d3.select('svg');
+    const svgDom = d3.select('#graph');
     const defs = svgDom.append('defs');
 
     // Plot edges
