@@ -17,7 +17,7 @@
 
 .textField {
   padding: 1em 0.5em 1em 0.5em;
-  font-size: 20pt;
+  font-size: 4vh;
   font-family: 'Unica One', cursive;
   overflow-x: auto;
   color: aliceblue;
@@ -30,7 +30,7 @@
   background-color: rgb(255, 96, 96);
   border-radius: 5px;
   margin-bottom: 1em;
-  font-size: 20pt;
+  font-size: 6vh;
   font-family: 'Unica One', cursive;
 }
 
@@ -98,4 +98,7 @@
 
 .connectToGraphButton {
   color: cadetblue;
+  height: 4vh;
+  width: 4vh;
 }
+

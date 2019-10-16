@@ -23,7 +23,7 @@
 
 .textField {
     padding: 1em 0.5em 1em 0.5em;
-    font-size: 20pt;
+    font-size: 4vh;
     font-family: 'Unica One', cursive;
     overflow-x: auto;
     color: aliceblue;
@@ -32,6 +32,8 @@
 
 .connectToGraphButton {
     color: cadetblue;
+    height: 4vh;
+    width: 4vh
 }
 
 .loadingText {

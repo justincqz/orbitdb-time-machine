@@ -54,7 +54,7 @@ const LocalDBForm: React.FC = withRouter(({ history }) => {
                       }}>
                     </input>
                     <button type='submit' className={FormStyles.submitButton} >
-                      <FaCodeBranch className={FormStyles.connectToGraphButton} size={'3em'}/>
+                      <FaCodeBranch className={FormStyles.connectToGraphButton}/>
                     </button>
                   </form>
                 : <div/>
