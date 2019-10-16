@@ -1,11 +1,47 @@
-.addButton {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  color: rgb(36, 193, 255);
+.icon {
+  color: #0a3464ff;
+  margin: 5px;
+  cursor: pointer;
 }
 
+.icon:hover {
+  color: #b8d8feff;
+}
+
+.iconTaskbar{
+  display: flex;
+  flex-direction: row;
+  background-color: #1d5495ff;
+  border-radius: 10%;
+}
+
+.iconTaskbarBorder{
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 10%;
+  border-color: #1d549533;
+  padding: 3px;
+}
+
+.addressContainer {
+  margin: 2vh;
+  color: #b8d8feff;
+}
+
+.titleContainer {
+  font-family: 'Unica One', cursive;
+  font-size: 18vh;
+  margin-top: 5%;
+  color: #b8d8feff;
+}
+
+/* 0a3464 */
 .container {
+  display: flex;
+  flex-direction: column;
   width: 100vw;
   height: 100vh;
+  color: #b8d8feff;
+  background-color: #0A3464FF;
+  align-items: center;
 }

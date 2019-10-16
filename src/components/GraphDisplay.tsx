@@ -63,9 +63,7 @@ const GraphDisplay: React.FC<{
   });
 
   return (
-    <div className='graph'>
-      <svg id='graph' width='1000' height='400' viewBox='-20 -20 1040 340'></svg>
-    </div>
+    <svg className='graph' id='graph' width='1000' height='250' viewBox='-20 -20 1040 340'></svg>
   );
 }
 

@@ -7,9 +7,10 @@ import {NodeProvider} from "../providers/NodeProvider";
 import { DatabaseProvider } from '../providers/DatabaseProvider';
 import { Store } from "orbit-db-store";
 import databaseStyles from './Database.module.css';
-import { MdLibraryAdd } from 'react-icons/md';
+import { MdLibraryAdd, MdHome } from 'react-icons/md';
+import { withRouter } from 'react-router-dom';
 
-const DatabaseView: React.FC = () => {
+const DatabaseView: React.FC = withRouter(({ history }) => {
   // URL parameters
   let {hash, name}: { hash: string, name: string } = useParams();
   const injector = useDependencyInjector();
@@ -82,6 +83,10 @@ const DatabaseView: React.FC = () => {
     console.log('added');
   }
 
+  const goHome = () => {
+    history.push("/");
+  };
+
   if (loading) {
     return <div>Loading...</div>
   }
@@ -90,13 +95,26 @@ const DatabaseView: React.FC = () => {
     return <div>{error}</div>
   }
 
-  return <div className={databaseStyles.container}>
-    <div className={databaseStyles.addButton} onClick={addNode}>
-      <MdLibraryAdd size={'3em'} />
-    </div>
+  return <div>
+    <div className={databaseStyles.container}>
+    <div className={databaseStyles.addressContainer}>
     Viewing: {`orbitdb/${hash}/${name}`}
-    <GraphDisplay inputData={d3data}/>
+    </div>
+    <div className={databaseStyles.titleContainer}>Timeline</div>
+    <GraphDisplay inputData={d3data} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
+    <div className={databaseStyles.iconTaskbarBorder}>
+      <div className={databaseStyles.iconTaskbar}>
+        <div className={databaseStyles.icon} onClick={goHome}>
+          <MdHome size={'5em'} />
+        </div>
+        <div className={databaseStyles.icon} onClick={addNode}>
+          <MdLibraryAdd size={'5em'} />
+        </div>
+      </div>
+    </div>
+    </div>
+    
   </div>
-}
+});
 
 export default DatabaseView;
