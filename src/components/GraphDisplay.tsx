@@ -2,25 +2,24 @@ import React, { useEffect } from 'react';
 import * as d3Dag from 'd3-dag';
 import * as d3 from 'd3';
 import { D3Data } from '../model/D3Data';
+import leftAlign from '../utils/NodePlotter';
 
 const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
+  const nodeColour = '#555577EE';
+  const lineColour = '#7766BBEE';
+
   // Draw graph to screen
   function renderSvg() {
     // D3 Setup
     const data = d3Dag.dagStratify()(inputData);
-    const layout = d3Dag.sugiyama().size([300, 1000]);
+    const layout = d3Dag.sugiyama()
+    .size([300, 1000])
+    .coord(leftAlign);
 
     // Apply layout to computed data
     layout(data);
 
     // Draw edges to graph
-    const steps = data.size();
-    const interp = d3.interpolateRainbow;
-    const colourMap = {};
-    data.each((node, i) => {
-      colourMap[node.id] = interp(i / steps);
-    });
-
     const line = d3.line()
     .curve(d3.curveMonotoneX)
     .x(d => d.y)
@@ -38,19 +37,7 @@ const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
     .attr('d', ({ data }) => line(data.points))
     .attr('fill', 'none')
     .attr('stroke-width', 3)
-    .attr('stroke', ({source, target}) => {
-      const gradId = `${source.id}-${target.id}`;
-      const grad = defs.append('linearGradient')
-        .attr('id', gradId)
-        .attr('gradientUnits', 'userSpaceOnUse')
-        .attr('x1', source.y)
-        .attr('x2', target.y)
-        .attr('y1', source.x)
-        .attr('y2', target.x);
-      grad.append('stop').attr('offset', '0%').attr('stop-color', colourMap[source.id]);
-      grad.append('stop').attr('offset', '100%').attr('stop-color', colourMap[target.id]);
-      return `url(#${gradId})`;
-    });
+    .attr('stroke', lineColour);
 
     // Select nodes
     const nodes = svgDom.append('g')
@@ -64,7 +51,7 @@ const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
     nodes.append('circle')
       .attr('r', 20)
       .attr('id', d => JSON.stringify(d.id))
-      .attr('fill', n => colourMap[n.id]);
+      .attr('fill', nodeColour);
 
     // Add text to nodes
     nodes.append('text')
