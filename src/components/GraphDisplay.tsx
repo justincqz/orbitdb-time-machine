@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as d3Dag from 'd3-dag';
 import * as d3 from 'd3';
 import { D3Data } from '../model/D3Data';
 import leftAlign from '../utils/NodePlotter';
 import { Color } from 'csstype';
 import graphStyles from './GraphDisplay.module.css';
+import DAGNodeTooltip from './DAGNodeTooltip';
 
 const GraphDisplay: React.FC<{ 
   inputData: D3Data, 
@@ -13,6 +14,27 @@ const GraphDisplay: React.FC<{
 }> = ({ inputData, nodeColour, lineColour }) => {
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
+
+  const [toolTipState, setTooltipState] = useState({
+    toolTipHidden: true,
+    targetRect: null
+  });
+
+  function handleMouseEnter() {
+    setTooltipState({
+      ...toolTipState,
+      toolTipHidden: false,
+      targetRect: this.getBoundingClientRect()
+    });
+  };
+  
+  function handleMouseLeave() {
+    setTooltipState({
+      ...toolTipState,
+      toolTipHidden: true,
+      targetRect: null
+    });
+  };
 
   function cleanUpSvg(dom) {
     while (dom.firstChild)
@@ -62,18 +84,25 @@ const GraphDisplay: React.FC<{
     nodes.append('circle')
       .attr('r', 20)
       .attr('id', d => JSON.stringify(d.id))
-      .attr('fill', nodeColour);
+      .attr('fill', nodeColour)
+      .on('mouseenter', handleMouseEnter)
+      .on('mouseleave', handleMouseLeave);
 
     return svgDom;
   }
 
   useEffect(() => {
     const svgDom = renderSvg(inputData);
-    return cleanUpSvg(svgDom);
-  });
+    return () => {
+      cleanUpSvg(svgDom);
+    };
+    // https://github.com/facebook/create-react-app/issues/6880
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputData]);
 
   return (
     <div className={graphStyles.graphContainer}>
+      <DAGNodeTooltip toolTipText="Tool tip text" rect={toolTipState.targetRect}/>
       {(inputData[0].id !== "EMPTY" ? 
         (<svg id='graph' width='80%' height='100%' viewBox='-20 -20 1040 340'></svg>) :
         (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)
