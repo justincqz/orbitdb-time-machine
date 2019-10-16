@@ -1,6 +1,6 @@
 import React from 'react';
 import LocalDBForm from './LocalDBForm';
-import { errorBoxTestId, formInputTestId, formTestId } from './LocalDBForm';
+import { errorBoxTestId, formInputTestId, formTestId, openFormTestId } from './LocalDBForm';
 import { createMemoryHistory } from "history";
 import { Router } from "react-router";
 import {render, fireEvent, getByTestId} from '@testing-library/react';
@@ -28,6 +28,8 @@ it('does not navigate on invalid address', () => {
   );
 
   // Simulate input into the text field and press enter.
+  const openButton = getByTestId(container, openFormTestId);
+  fireEvent.click(openButton);
   const testField = getByTestId(container, formInputTestId);
   const form = getByTestId(container, formTestId);  
   fireEvent.change(testField, {target: { value: "asdf" }});
@@ -44,6 +46,8 @@ it('displays an error message on invalid address', async () => {
   </Router>
   );
   
+  const openButton = getByTestId(container, openFormTestId);
+  fireEvent.click(openButton);
   const testField = getByTestId(container, formInputTestId);
   const form = getByTestId(container, formTestId);
   fireEvent.submit(form);
@@ -63,6 +67,8 @@ it('navigates to correct url on valid address', () => {
     </Router>,
   );
 
+  const openButton = getByTestId(container, openFormTestId);
+  fireEvent.click(openButton);
   // Simulate input into the text field and press enter.
   const testField = getByTestId(container, formInputTestId);
   const form = getByTestId(container, formTestId);

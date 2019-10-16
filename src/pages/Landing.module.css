@@ -5,6 +5,7 @@
   justify-content: center;
   height: 100vh;
   background-color: #0A3464;
+  overflow:hidden;
 }
 
 .logo {
@@ -14,6 +15,7 @@
 }
 
 .logoBanner {
+  flex-shrink: 1;
   font-family: 'Unica One', cursive;
   font-size: 14vh;
   text-align:center;

@@ -17,6 +17,7 @@ const baseStyles = {
 export const errorBoxTestId = "errorBox";
 export const formInputTestId = "formInputField";
 export const formTestId = "form";
+export const openFormTestId = "openForm"
 
 const LocalDBForm: React.FC = withRouter(({ history }) => {
   const [isOpen, setOpen] = useState(false);
@@ -37,17 +38,19 @@ const LocalDBForm: React.FC = withRouter(({ history }) => {
     <div className={FormStyles.overContainer}>
       <div className={FormStyles.container}>
         { error != null && (
-          <div className={FormStyles.error} data-testid="errorBox">
+          <div className={FormStyles.error} data-testid={errorBoxTestId}>
             { error }
           </div>
         )}
         <div className={FormStyles.connectContainer}>
-          <div className={FormStyles.connectButton} style={divStyle} onClick={toggleVisibility}>
+          <div className={FormStyles.connectButton} style={divStyle} onClick={toggleVisibility} data-testid={openFormTestId}>
             { isOpen
                 ?
-                  <form onSubmit={handleSubmit} noValidate autoComplete="off" className={FormStyles.formContainer}>
-                    <input className={FormStyles.textField}
+                  <form data-testid={formTestId} onSubmit={handleSubmit} noValidate autoComplete="off" className={FormStyles.formContainer}>
+                    <input 
+                      className={FormStyles.textField}
                       type="text"
+                      data-testid={formInputTestId}
                       value={address}
                       onChange={(e) => {
                         setAddress(e.target.value);
@@ -60,10 +63,7 @@ const LocalDBForm: React.FC = withRouter(({ history }) => {
                 : <div/>
             }
           </div>
-          { !isOpen
-              ? <span className={FormStyles.connectTitle}>connect</span>
-              : <div/>
-          }
+          { !isOpen && <span className={FormStyles.connectTitle}>connect</span> }
         </div>
         <div className={FormStyles.createContainer}>
           <div className={FormStyles.createButton} >

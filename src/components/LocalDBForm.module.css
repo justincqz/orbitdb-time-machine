@@ -9,6 +9,7 @@
 }
 
 .overContainer {
+  flex-shrink: 1;
   display: flex;
   flex-direction: column;
   align-content: center;
@@ -26,11 +27,10 @@
 
 .error {
   text-align:center;
-  padding: 0.2em;
-  background-color: rgb(255, 96, 96);
-  border-radius: 5px;
-  margin-bottom: 1em;
-  font-size: 6vh;
+  background-color: transparent;
+  color:palevioletred;
+  font-size: 3vh;
+  margin-bottom: 0.5vh;
   font-family: 'Unica One', cursive;
 }
 
@@ -70,7 +70,7 @@
   flex-direction: row;
   width: 50vw;
   align-items: center;
-  margin-top:5vh;
+  margin-top:3vh;
   margin-bottom:5vh;
 }
 
