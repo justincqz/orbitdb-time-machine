@@ -1,9 +1,10 @@
 import React from 'react';
 import CreateDbForm from '../components/CreateDbForm'
+import CreateStyle from './Create.module.css';
 
 const Create: React.FC = () => {
-  return <div>
-    <h2>Create a database</h2>
+  return <div className={CreateStyle.container}>
+    <h1>Create a database</h1>
     <CreateDbForm />
   </div>
 }

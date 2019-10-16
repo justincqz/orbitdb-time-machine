@@ -3,7 +3,6 @@ import React, {createContext, useContext} from 'react';
 import {OrbitDBNodeProvider} from '../adapters/OrbitDBNodeProvider';
 import {DatabaseProvider} from '../providers/DatabaseProvider';
 import OrbitDBProvider from '../adapters/OrbitDBProvider';
-import {Store} from 'orbit-db-store';
 
 // Injector to mock dependencies
 export interface Injector {

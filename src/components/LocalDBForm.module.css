@@ -7,7 +7,7 @@
 .textField {
   padding: 10px;
   border-radius: 5px;
-  background-color: rgb(236, 244, 252);  
+  background-color: rgb(236, 244, 252);
   font-size: 20pt;
   width: 100%;
 }
@@ -21,6 +21,7 @@
 
 .formContainer {
   display: flex;
+  flex-direction: row;
 }
 
 .submitButton {

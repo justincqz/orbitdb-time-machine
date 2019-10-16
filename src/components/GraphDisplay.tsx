@@ -4,7 +4,6 @@ import * as d3 from 'd3';
 import { D3Data } from '../model/D3Data';
 
 const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
-  console.log(`input data ${inputData}`);
   // Draw graph to screen
   function renderSvg() {
     // D3 Setup

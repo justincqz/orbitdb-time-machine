@@ -15,7 +15,6 @@ export class OrbitDBNodeProvider implements NodeProvider {
     let oplog: any = this.store._oplog;
     let heads: Array<any> = oplog.heads;
 
-    console.log(oplog);
     if (heads.length === 0) {
       return DAGNode.emptyDAG();
     }
@@ -25,7 +24,6 @@ export class OrbitDBNodeProvider implements NodeProvider {
 
   listenForDatabaseGraph(cb: () => void) {
     this.store.events.on('replicated', () => {
-      console.log('replicated');
       cb();
     })
   }

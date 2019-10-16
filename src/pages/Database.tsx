@@ -66,8 +66,14 @@ const DatabaseView: React.FC = () => {
   }
 
   async function addNode() {
+    let value = prompt('Enter a value to insert:');
+
+    if (value === null || value === '') {
+      return;
+    }
+
     try {
-      await store.current.add('testvalue');
+      await store.current.add(value);
     } catch (e) {
       setError(e.toString());
     }

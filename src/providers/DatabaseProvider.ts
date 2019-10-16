@@ -7,4 +7,5 @@ export interface DatabaseProvider {
 
   openDatabase(address: string): Promise<Store>;
 
+  close(): Promise<void>;
 }
