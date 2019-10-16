@@ -1,12 +1,17 @@
 import React from 'react';
 import CreateDbForm from '../components/CreateDbForm'
-import CreateStyle from './Create.module.css';
+import CreateStyles from './Create.module.css';
+
 
 const Create: React.FC = () => {
-  return <div className={CreateStyle.container}>
-    <h1>Create a database</h1>
-    <CreateDbForm />
-  </div>
+  return (
+    <div className={CreateStyles.container}>
+      <div className={CreateStyles.titleContainer}>
+        <span className={CreateStyles.createTitle}>Create a database</span>
+      </div>
+      <CreateDbForm />
+    </div>
+  )
 }
 
 export default Create;

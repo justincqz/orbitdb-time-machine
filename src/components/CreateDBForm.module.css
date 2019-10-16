@@ -1,0 +1,41 @@
+.createContainer {
+    margin-top: 4vh;
+    display: flex;
+    background-color: #23538A;
+    border-radius: 3vw;
+    height: 6vw;
+    width: 50vw;
+}
+
+.formContainer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.submitButton {
+    flex-grow: 1;
+    height: 70%;
+    background-color: transparent;
+    border: none;
+}
+
+.textField {
+    padding: 1em 0.5em 1em 0.5em;
+    font-size: 20pt;
+    font-family: 'Unica One', cursive;
+    overflow-x: auto;
+    color: aliceblue;
+    flex-grow:4;
+}
+
+.connectToGraphButton {
+    color: cadetblue;
+}
+
+.loadingText {
+    font-family: 'Unica One', cursive;
+    font-size: 5vh;
+    color:#89BEFC;
+}

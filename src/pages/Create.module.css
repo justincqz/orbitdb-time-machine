@@ -4,4 +4,15 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color:#0A3464;
 }
+
+.createTitle {
+  color:#89BEFC;
+  font-size:12vh;
+  font-family: 'Unica One', cursive;
+}
+
+
+
+

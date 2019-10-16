@@ -1,14 +1,20 @@
 import React from 'react';
 import LocalDBForm from '../components/LocalDBForm';
-import { Link } from 'react-router-dom';
-import logo from './logo.png';
+import logo3 from './logo3.png';
 import LandingStyles from './Landing.module.css';
 
 const Landing: React.FC = () => (
   <div className={LandingStyles.container}>
-    <img src={logo} alt="logo" className={LandingStyles.logo} />
+    <div className={LandingStyles.logoBanner}>
+      <img src={logo3} alt="logo" className={LandingStyles.logo} />
+      <div className={LandingStyles.logoTitle}>
+        <p className={LandingStyles.logoCharacterMain}>tar</p>
+        <p className={LandingStyles.logoCharacterDB}>d</p>
+        <p className={LandingStyles.logoCharacterSmall}>i</p>
+        <p className={LandingStyles.logoCharacterDB}>b</p>
+      </div>
+    </div>
     <LocalDBForm />
-    <Link to='/create'>Create database</Link>
   </div>
 );
 

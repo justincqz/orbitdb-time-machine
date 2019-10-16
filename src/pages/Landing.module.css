@@ -4,11 +4,46 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: rgb(183, 223, 255);
+  background-color: #0A3464;
 }
 
 .logo {
-  max-height: 300px;
+  max-height: 60vh;
   height: 60vh;
-  margin-bottom: 100px;
+  margin-top: 0.5em;
 }
+
+.logoBanner {
+  font-family: 'Unica One', cursive;
+  font-size: 14vh;
+  text-align:center;
+  position:relative;
+}
+
+.logoCharacterMain {
+  margin: 0;
+  color: #89BEFC;
+}
+
+.logoCharacterDB {
+  margin: 0;
+  color:#B8D8FD;
+}
+
+.logoCharacterSmall {
+  margin: 1vw 0 0 0;
+  font-size: 10vh;
+  color:#89BEFC;
+}
+
+.logoTitle {
+  display:flex;
+  flex-direction: row;
+  position:absolute;
+  margin:0;
+  bottom: 0.5em;
+  left:13vh;
+  top:47vh;
+  color:#23538A;
+}
+

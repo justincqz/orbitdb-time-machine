@@ -1,9 +1,10 @@
 import React, { useState, MutableRefObject, useRef } from "react";
 import { useDependencyInjector } from "../state/dependencyInjector";
-import { withRouter } from "react-router-dom";
 import { DatabaseProvider } from "../providers/DatabaseProvider";
 import { Store } from "orbit-db-store";
-import FormStyle from "./LocalDBForm.module.css";
+import { withRouter } from 'react-router-dom';
+import CreateFormStyles from './CreateDBForm.module.css';
+import { IoMdHand } from "react-icons/io";
 
 const CreateDbForm: React.FC = withRouter(({ history }) => {
   const [name, setName] = useState("");
@@ -45,27 +46,22 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
   }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className={CreateFormStyles.loadingText}>Loading...</div>;
   }
 
   return (
-    <div className={FormStyle.container}>
-      {error !== "" && (
-        <div className={FormStyle.error}>An error occured: {error}</div>
-      )}
-      <form onSubmit={submitForm} className={FormStyle.formContainer}>
-        <input
-          className={FormStyle.textField}
+    <div className={CreateFormStyles.createContainer}>
+      { error !== '' && <div>An error occured: {error}</div>}
+      <form onSubmit={submitForm} className={CreateFormStyles.formContainer}>
+        <input className={CreateFormStyles.textField}
           type="text"
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder={"name"}
         />
-        <input
-          className={FormStyle.submitButton}
-          type="submit"
-          value="create"
-        />
+        <button type="submit" value="create" className={CreateFormStyles.submitButton} >
+          <IoMdHand className={CreateFormStyles.connectToGraphButton} size={'3em'}/>
+        </button>
       </form>
     </div>
   );
