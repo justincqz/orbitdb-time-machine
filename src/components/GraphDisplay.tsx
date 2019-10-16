@@ -14,10 +14,16 @@ const GraphDisplay: React.FC<{
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
 
+  function cleanUpSvg(dom) {
+    while (dom.firstChild)
+      dom.removeChild(dom.firstChild);
+    return () => {};
+  }
+
   // Draw graph to screen
-  function renderSvg() {
+  function renderSvg(input) {
     // D3 Setup
-    const data = d3Dag.dagStratify()(inputData);
+    const data = d3Dag.dagStratify()(input);
     const layout = d3Dag.sugiyama()
     .size([300, 1000])
     .coord(leftAlign);
@@ -57,15 +63,21 @@ const GraphDisplay: React.FC<{
       .attr('r', 20)
       .attr('id', d => JSON.stringify(d.id))
       .attr('fill', nodeColour);
+
+    return svgDom;
   }
 
   useEffect(() => {
-    renderSvg();
+    const svgDom = renderSvg(inputData);
+    return cleanUpSvg(svgDom);
   });
 
   return (
-    <div className={graphStyles.graph}>
-      <svg id='graph' width='100%' height='100%' viewBox='-20 -20 1040 340'></svg>
+    <div className={graphStyles.graphContainer}>
+      {(inputData[0].id !== "EMPTY" ? 
+        (<svg id='graph' width='80%' height='100%' viewBox='-20 -20 1040 340'></svg>) :
+        (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)
+      )}
     </div>
   );
 }

@@ -53,7 +53,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   async function loadData(forceLoad: boolean = false): Promise<void> {
     // Check whether we've already fetched the data. In the future, maybe diff?
     if ((d3data !== null && !forceLoad) || error !== '') {
-      return
+      return;
     }
     setLoading(true);
     try {
@@ -80,7 +80,6 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
       setError(e.toString());
     }
     loadData(true);
-    console.log('added');
   }
 
   const goHome = () => {
