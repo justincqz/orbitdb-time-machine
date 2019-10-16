@@ -42,6 +42,7 @@
 }
 
 .connectButton {
+  cursor: pointer;
   display: flex;
   background-color: #23538A;
   border-radius: 3vw;
@@ -51,6 +52,7 @@
 }
 
 .connectTitle {
+  cursor: default;
   padding-left: 3vw;
   font-family: 'Unica One', cursive;
   font-size: 6vh;
@@ -90,6 +92,7 @@
 }
 
 .submitButton {
+  cursor: pointer;
   flex-grow: 1;
   height: 70%;
   background-color: transparent;

@@ -7,7 +7,7 @@ const useDBFormHandler: (history: any) => {
   setAddress: React.Dispatch<string>, 
   submit: () => void } = (history) => {
   // Current address
-  const [address, setAddress] = useState("orbitdb/");
+  const [address, setAddress] = useState("/orbitdb/");
   // Error message
   const [errorMessage, setErrorMessage] = useState(null);
   

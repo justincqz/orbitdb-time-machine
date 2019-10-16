@@ -93,7 +93,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   }
 
   if (loading) {
-    return <div className={databaseStyles.container}>
+    return <div className={databaseStyles.loadContainer}>
       <h1>Loading...</h1>
     </div>
   }
@@ -108,10 +108,10 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
       <div className={databaseStyles.iconTaskbarBorder}>
         <div className={databaseStyles.iconTaskbar}>
           <div className={databaseStyles.icon} onClick={goHome}>
-            <MdHome size={'5em'} />
+            <MdHome size={'6vh'} />
           </div>
           <div className={databaseStyles.icon} onClick={addNode}>
-            <MdLibraryAdd size={'5em'} />
+            <MdLibraryAdd size={'6vh'} />
           </div>
         </div>
       </div>
