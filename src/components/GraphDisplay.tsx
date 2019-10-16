@@ -31,8 +31,7 @@ const GraphDisplay: React.FC<{
     .y(d => d.x);
 
     const svgDom = d3.select('#graph');
-    const defs = svgDom.append('defs');
-
+    
     // Plot edges
     svgDom.append('g')
     .selectAll('path')
