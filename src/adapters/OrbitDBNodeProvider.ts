@@ -55,4 +55,7 @@ export class OrbitDBNodeProvider implements NodeProvider {
     return this.store.get(node.hash);
   }
 
+  async getNodeInfoFromHash(nodeHash: String): Promise<any> {
+    return this.store.get(nodeHash);
+  }
 }

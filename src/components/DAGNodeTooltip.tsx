@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import FormStyles from './DAGNodeTooltip.module.css';
 
-const DAGNodeTooltip: React.FC<{toolTipText: String, rect: ClientRect}> = ({toolTipText, rect}) => {
+const DAGNodeTooltip: React.FC<{nodeInfo: any, rect: ClientRect}> = ({nodeInfo, rect}) => {
   
   const toolTipRef = useRef<HTMLDivElement>(null);
   
@@ -19,11 +19,16 @@ const DAGNodeTooltip: React.FC<{toolTipText: String, rect: ClientRect}> = ({tool
   }
 
   return (
-    <div 
+    <div
       ref={toolTipRef}
       className={FormStyles.container}
       style={calculatePositionStyle()}>
-        {toolTipText}
+      <div>
+        Operation: {nodeInfo.payload.op}
+      </div>
+      <div>
+        Value: {nodeInfo.payload.value}
+      </div>
     </div>
   );
 };

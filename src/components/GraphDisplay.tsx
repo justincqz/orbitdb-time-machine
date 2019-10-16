@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, MutableRefObject, useState } from 'react';
 import * as d3Dag from 'd3-dag';
 import * as d3 from 'd3';
 import { D3Data } from '../model/D3Data';
@@ -6,31 +6,44 @@ import leftAlign from '../utils/NodePlotter';
 import { Color } from 'csstype';
 import graphStyles from './GraphDisplay.module.css';
 import DAGNodeTooltip from './DAGNodeTooltip';
+import { NodeProvider } from "../providers/NodeProvider";
 
 const GraphDisplay: React.FC<{ 
+  nodeProvider: MutableRefObject<NodeProvider>,
   inputData: D3Data, 
   nodeColour?: Color, 
   lineColour?: Color 
-}> = ({ inputData, nodeColour, lineColour }) => {
+}> = ({ nodeProvider, inputData, nodeColour, lineColour }) => {
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
 
   const [toolTipState, setTooltipState] = useState({
+    nodeInfo: null,
     toolTipHidden: true,
     targetRect: null
   });
 
-  function handleMouseEnter() {
-    setTooltipState({
-      ...toolTipState,
-      toolTipHidden: false,
-      targetRect: this.getBoundingClientRect()
-    });
+  function handleMouseEnter(d, domElement) {
+    try {
+      nodeProvider.current.getNodeInfoFromHash(d.id).then((nodeInfo) => {
+        // let text = JSON.stringify(nodeInfo.payload);
+        setTooltipState({
+          ...toolTipState,
+          nodeInfo: nodeInfo,
+          toolTipHidden: false,
+          targetRect: domElement.getBoundingClientRect()
+        });
+      });
+    } catch (e) {
+      // TODO: Error handling.
+      console.log("Something went terribly wrong...");
+    }    
   };
   
   function handleMouseLeave() {
     setTooltipState({
       ...toolTipState,
+      nodeInfo: null,
       toolTipHidden: true,
       targetRect: null
     });
@@ -83,9 +96,9 @@ const GraphDisplay: React.FC<{
     // Plot node circles
     nodes.append('circle')
       .attr('r', 20)
-      .attr('id', d => JSON.stringify(d.id))
+      .attr('id', d => d.id)
       .attr('fill', nodeColour)
-      .on('mouseenter', handleMouseEnter)
+      .on('mouseenter', (d, i, e) => { handleMouseEnter(d, e[i]) })
       .on('mouseleave', handleMouseLeave);
 
     return svgDom;
@@ -102,7 +115,7 @@ const GraphDisplay: React.FC<{
 
   return (
     <div className={graphStyles.graphContainer}>
-      <DAGNodeTooltip toolTipText="Tool tip text" rect={toolTipState.targetRect}/>
+      <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
       {(inputData[0].id !== "EMPTY" ? 
         (<svg id='graph' width='80%' height='100%' viewBox='-20 -20 1040 340'></svg>) :
         (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)

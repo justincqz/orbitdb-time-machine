@@ -104,7 +104,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
         Viewing: {`/orbitdb/${hash}/${name}`}
       </div>
       <div className={databaseStyles.titleContainer}>Timeline</div>
-      <GraphDisplay inputData={d3data} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
+      <GraphDisplay nodeProvider={nodeProvider} inputData={d3data} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
       <div className={databaseStyles.iconTaskbarBorder}>
         <div className={databaseStyles.iconTaskbar}>
           <div className={databaseStyles.icon} onClick={goHome}>
