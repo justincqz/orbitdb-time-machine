@@ -45,3 +45,9 @@
   background-color: #0A3464FF;
   align-items: center;
 }
+
+.error {
+  background-color: rgb(255, 122, 122);
+  border-radius: 5px;
+  padding: 30px;
+}

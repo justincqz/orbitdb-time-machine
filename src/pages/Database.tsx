@@ -1,9 +1,9 @@
-import React, {useEffect, useState, useRef, MutableRefObject} from 'react';
-import {useParams} from 'react-router-dom';
+import React, { useEffect, useState, useRef, MutableRefObject } from 'react';
+import { useParams } from 'react-router-dom';
 import GraphDisplay from '../components/GraphDisplay';
-import {useDependencyInjector} from '../state/dependencyInjector';
-import {D3Data} from '../model/D3Data';
-import {NodeProvider} from "../providers/NodeProvider";
+import { useDependencyInjector } from '../state/dependencyInjector';
+import { D3Data } from '../model/D3Data';
+import { NodeProvider } from "../providers/NodeProvider";
 import { DatabaseProvider } from '../providers/DatabaseProvider';
 import { Store } from "orbit-db-store";
 import databaseStyles from './Database.module.css';
@@ -12,12 +12,12 @@ import { withRouter } from 'react-router-dom';
 
 const DatabaseView: React.FC = withRouter(({ history }) => {
   // URL parameters
-  let {hash, name}: { hash: string, name: string } = useParams();
+  let { hash, name }: { hash: string, name: string } = useParams();
   const injector = useDependencyInjector();
   let nodeProvider: MutableRefObject<NodeProvider> = useRef(null);
   let store: MutableRefObject<Store> = useRef(null);
   let dbProvider: MutableRefObject<DatabaseProvider> = useRef(null);
-  
+
   // Limit number of nodes to fetch
   const LIMIT = 10;
 
@@ -38,7 +38,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
             setListening(true);
             listenForChanges();
           }
-        });
+        }).catch((e) => setError(e.toString()));
       });
     }
   });
@@ -85,35 +85,39 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
 
   const goHome = () => {
     history.push("/");
-  };
-
-  if (loading) {
-    return <div>Loading...</div>
   }
 
   if (error) {
-    return <div>{error}</div>
+    return <div className={databaseStyles.container}>
+      <div className={databaseStyles.error}>{error}</div>
+    </div>
+  }
+
+  if (loading) {
+    return <div className={databaseStyles.container}>
+      <h1>Loading...</h1>
+    </div>
   }
 
   return <div>
     <div className={databaseStyles.container}>
-    <div className={databaseStyles.addressContainer}>
-    Viewing: {`orbitdb/${hash}/${name}`}
-    </div>
-    <div className={databaseStyles.titleContainer}>Timeline</div>
-    <GraphDisplay inputData={d3data} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
-    <div className={databaseStyles.iconTaskbarBorder}>
-      <div className={databaseStyles.iconTaskbar}>
-        <div className={databaseStyles.icon} onClick={goHome}>
-          <MdHome size={'5em'} />
-        </div>
-        <div className={databaseStyles.icon} onClick={addNode}>
-          <MdLibraryAdd size={'5em'} />
+      <div className={databaseStyles.addressContainer}>
+        <h1>Viewing: {`orbitdb/${hash}/${name}`}</h1>
+      </div>
+      <div className={databaseStyles.titleContainer}>Timeline</div>
+      <GraphDisplay inputData={d3data} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
+      <div className={databaseStyles.iconTaskbarBorder}>
+        <div className={databaseStyles.iconTaskbar}>
+          <div className={databaseStyles.icon} onClick={goHome}>
+            <MdHome size={'5em'} />
+          </div>
+          <div className={databaseStyles.icon} onClick={addNode}>
+            <MdLibraryAdd size={'5em'} />
+          </div>
         </div>
       </div>
     </div>
-    </div>
-    
+
   </div>
 });
 

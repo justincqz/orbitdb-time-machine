@@ -4,6 +4,7 @@ import * as d3 from 'd3';
 import { D3Data } from '../model/D3Data';
 import leftAlign from '../utils/NodePlotter';
 import { Color } from 'csstype';
+import graphStyles from './GraphDisplay.module.css';
 
 const GraphDisplay: React.FC<{ 
   inputData: D3Data, 
@@ -63,7 +64,9 @@ const GraphDisplay: React.FC<{
   });
 
   return (
-    <svg className='graph' id='graph' width='1000' height='250' viewBox='-20 -20 1040 340'></svg>
+    <div className={graphStyles.graph}>
+      <svg id='graph' width='100%' height='100%' viewBox='-20 -20 1040 340'></svg>
+    </div>
   );
 }
 
