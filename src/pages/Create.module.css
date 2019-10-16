@@ -13,6 +13,19 @@
   font-family: 'Unica One', cursive;
 }
 
+.icon {
+  position: fixed;
+  top: 1vh;
+  left: 1vh;
+  color: #23538Aff;
+  height: 4vh;
+  width: 4vh
+}
+
+.icon:hover {
+  color: #b8d8feff;
+  cursor: pointer;
+}
 
 
 

@@ -1,6 +1,6 @@
 .icon {
   color: #0a3464ff;
-  margin: 5px;
+  margin: 10px;
   cursor: pointer;
 }
 
@@ -25,7 +25,14 @@
 
 .addressContainer {
   margin: 2vh;
+  color: #b8d8fe99;
+  font-family: monospace;
+  font-size: 1vw;
+}
+
+.addressContainer:hover {
   color: #b8d8feff;
+  cursor: pointer;
 }
 
 .titleContainer {
@@ -33,6 +40,7 @@
   font-size: 18vh;
   margin-top: 5%;
   color: #b8d8feff;
+  cursor: default;
 }
 
 .container {
@@ -56,6 +64,10 @@
   justify-content: center;
   font-family: monospace;
   font-size: 1vw;
+}
+
+.loadContainer:hover {
+  cursor: wait;
 }
 
 .error {

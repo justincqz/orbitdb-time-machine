@@ -101,7 +101,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   return <div>
     <div className={databaseStyles.container}>
       <div className={databaseStyles.addressContainer}>
-        <h1>Viewing: {`orbitdb/${hash}/${name}`}</h1>
+        Viewing: {`/orbitdb/${hash}/${name}`}
       </div>
       <div className={databaseStyles.titleContainer}>Timeline</div>
       <GraphDisplay inputData={d3data} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
@@ -116,7 +116,6 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
         </div>
       </div>
     </div>
-
   </div>
 });
 
