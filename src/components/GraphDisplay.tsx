@@ -3,10 +3,15 @@ import * as d3Dag from 'd3-dag';
 import * as d3 from 'd3';
 import { D3Data } from '../model/D3Data';
 import leftAlign from '../utils/NodePlotter';
+import { Color } from 'csstype';
 
-const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
-  const nodeColour = '#555577EE';
-  const lineColour = '#7766BBEE';
+const GraphDisplay: React.FC<{ 
+  inputData: D3Data, 
+  nodeColour?: Color, 
+  lineColour?: Color 
+}> = ({ inputData, nodeColour, lineColour }) => {
+  nodeColour = nodeColour ? nodeColour : '#555577FF';
+  lineColour = lineColour ? lineColour : '#7766BBFF';
 
   // Draw graph to screen
   function renderSvg() {
@@ -52,15 +57,6 @@ const GraphDisplay: React.FC<{inputData: D3Data}> = ({ inputData }) => {
       .attr('r', 20)
       .attr('id', d => JSON.stringify(d.id))
       .attr('fill', nodeColour);
-
-    // Add text to nodes
-    nodes.append('text')
-      .text(data => data.id)
-      .attr('font-weight', 'bold')
-      .attr('font-family', 'sans-serif')
-      .attr('text-anchor', 'middle')
-      .attr('alignment-baseline', 'middle')
-      .attr('fill', 'white');
   }
 
   useEffect(() => {

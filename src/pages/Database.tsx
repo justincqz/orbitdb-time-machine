@@ -16,6 +16,7 @@ const DatabaseView: React.FC = () => {
   let nodeProvider: MutableRefObject<NodeProvider> = useRef(null);
   let store: MutableRefObject<Store> = useRef(null);
   let dbProvider: MutableRefObject<DatabaseProvider> = useRef(null);
+  
   // Limit number of nodes to fetch
   const LIMIT = 10;
 
