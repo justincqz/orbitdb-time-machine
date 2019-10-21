@@ -94,7 +94,8 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
 
   if (loading) {
     return <div className={databaseStyles.loadContainer}>
-      <h1>Loading...</h1>
+      <span className={databaseStyles.loadTitle}>Loading database</span>
+      <div>Loading...</div>
     </div>
   }
 

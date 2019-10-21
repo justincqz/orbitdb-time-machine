@@ -58,12 +58,16 @@
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  color: #b8d8feff;
   background-color: #0A3464FF;
   align-items: center;
   justify-content: center;
-  font-family: monospace;
-  font-size: 1vw;
+  font-family: 'Unica One', cursive;
+  font-size: 5vh;
+  color:#89BEFC;
+}
+
+.loadTitle {
+  font-size:12vh;
 }
 
 .loadContainer:hover {
