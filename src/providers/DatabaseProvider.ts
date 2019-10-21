@@ -1,9 +1,10 @@
-import {Store} from 'orbit-db-store';
+import { Store } from 'orbit-db-store';
+import DatabaseFactory from '../model/DatabaseFactory';
 
 export interface DatabaseProvider {
 
-  // Creates database. Returns store
-  createDatabase(name: string): Promise<Store>;
+  // Creates database factory
+  createDBFactory(name?: string): DatabaseFactory;
 
   openDatabase(address: string): Promise<Store>;
 

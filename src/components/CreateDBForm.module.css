@@ -1,10 +1,71 @@
-.createContainer {
+.createTextContainer {
     margin-top: 4vh;
     display: flex;
     background-color: #23538A;
     border-radius: 3vw;
     height: 6vw;
     width: 50vw;
+}
+
+.createCheckboxContainer {
+    margin-left: 4vh;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+    display: block;
+    position: relative;
+    padding-left: 5.5vh;
+    cursor: pointer;
+    font-size: 5vh;
+    font-family: 'Unica One', monospace;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: fit-content;
+    color: #eee;
+}
+
+/* Hide the browser's default checkbox */
+.createCheckboxContainer input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkbox {
+    position: absolute;
+    top: 1.5vh;
+    left: 0;
+    height: 3vh;
+    width: 3vh;
+    background-color: #eee;
+    text-align: center;
+    border-radius: 3px;
+}
+
+.checkmark {
+    position: absolute;
+    top: -0.5vh;
+    left: 0.5vh;
+    font-size: 3vh;
+}
+
+/* On mouse-over, add a grey background color */
+.createCheckboxContainer:hover input ~ .checkbox {
+    background-color: #ccc;
+}
+  
+/* When the checkbox is checked, add a blue background */
+.createCheckboxContainer input:checked ~ .checkbox {
+    background-color: #23538A;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.createCheckboxContainer:after {
+    content: "";
+    position: absolute;
+    display: none;
 }
 
 .formContainer {

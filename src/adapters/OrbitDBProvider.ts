@@ -1,7 +1,9 @@
-import { DatabaseProvider } from "../providers/DatabaseProvider";
 import * as OrbitDB from "orbit-db";
 import * as IPFS from "ipfs";
 import { Store } from "orbit-db-store";
+import { DatabaseProvider } from "../providers/DatabaseProvider";
+import DatabaseFactory from "../model/DatabaseFactory";
+import OrbitDBFactory from './OrbitDBFactory';
 
 const ipfsOptions = {
   EXPERIMENTAL: {
@@ -44,9 +46,8 @@ export default class OrbitDBProvider implements DatabaseProvider {
     return new OrbitDBProvider(dbInstance, ipfs);
   }
 
-  async createDatabase(name: string): Promise<any> {
-    const db: any = this.dbInstance.create(name, "eventlog");
-    return db;
+  createDBFactory(name?: string): DatabaseFactory {
+    return new OrbitDBFactory(this.dbInstance, name);
   }
 
   // Connects to address of DB and waits for it to load
