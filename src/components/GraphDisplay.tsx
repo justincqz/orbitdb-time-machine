@@ -25,8 +25,8 @@ const GraphDisplay: React.FC<{
   const [viewportOffset, setViewportOffset] = useState(0);
 
   // TODO calculate this dynamically
-  const heads = 3;
-  const sequentialNodes = 10
+  const heads = 1;
+  const sequentialNodes = 1
 
   const viewWidth = 300 * sequentialNodes;
   const viewHeight = heads * 100;

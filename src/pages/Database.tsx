@@ -99,71 +99,13 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
     </div>
   }
 
-  let mockData: D3Data = [
-    // head 1
-    {
-      id: "0",
-      parentIds: ["1"]
-    },
-    {
-      id: "1",
-      parentIds: ["4"]
-    },
-    // head 2
-    {
-      id: "2",
-      parentIds: ["4"]
-    },
-    {
-      id: "3",
-      parentIds: ["4"]
-    },
-    // tail
-    {
-      id: "4",
-      parentIds: ["5"]
-    },
-    {
-      id: "5",
-      parentIds: ["6"]
-    },
-    {
-      id: "6",
-      parentIds: ["7"]
-    },
-    {
-      id: "7",
-      parentIds: ["8"]
-    },
-    {
-      id: "8",
-      parentIds: ["9"]
-    },
-    {
-      id: "9",
-      parentIds: ["10"]
-    },
-    {
-      id: "10",
-      parentIds: ["11"]
-    },
-    {
-      id: "11",
-      parentIds: []
-    }
-  ];
-
-  console.log(d3data);
-
-  let mockNodeProvider = new MockNodeProvider();
-
   return <div>
     <div className={databaseStyles.container}>
       <div className={databaseStyles.addressContainer}>
         Viewing: {`/orbitdb/${hash}/${name}`}
       </div>
       <div className={databaseStyles.titleContainer}>Timeline</div>
-      <GraphDisplay nodeProvider={mockNodeProvider} inputData={mockData} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
+      <GraphDisplay nodeProvider={nodeProvider.current} inputData={d3data} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
       <div className={databaseStyles.iconTaskbarBorder}>
         <div className={databaseStyles.iconTaskbar}>
           <div className={databaseStyles.icon} onClick={goHome}>
@@ -177,30 +119,5 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
     </div>
   </div>
 });
-
-class MockNodeProvider implements NodeProvider {
-  getDatabaseGraph(): Promise<import("../model/DAGNode").default> {
-    throw new Error("Method not implemented.");
-  }  listenForDatabaseGraph(cb: () => void): void {
-    throw new Error("Method not implemented.");
-  }
-  getEdges(node: import("../model/DAGNode").default) {
-    throw new Error("Method not implemented.");
-  }
-  getNodeInfo(node: import("../model/DAGNode").default): Promise<any> {
-    return Promise.resolve(node.hash);
-  }
-  getNodeInfoFromHash(nodeHash: String): Promise<any> {
-    return Promise.resolve({
-      payload: {
-        op: nodeHash,
-        value: nodeHash
-      },
-      id: nodeHash
-    });
-  }
-
-    
-}
 
 export default DatabaseView;
