@@ -37,8 +37,7 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
       // Instantiate providers and database if they are undefined
       if (!dbProvider.current) dbProvider.current = await injector.createDBProvider();
       if (!db.current) db.current = await dbProvider.current
-        .createDBFactory()
-        .setName(name)
+        .createDBFactory(name)
         .addOptions({isPublic})
         .create();
 

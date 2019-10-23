@@ -4,7 +4,7 @@ import DatabaseFactory from '../model/DatabaseFactory';
 export interface DatabaseProvider {
 
   // Creates database factory
-  createDBFactory(name?: string): DatabaseFactory;
+  createDBFactory(name: string): DatabaseFactory;
 
   openDatabase(address: string): Promise<Store>;
 

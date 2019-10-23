@@ -46,7 +46,7 @@ export default class OrbitDBProvider implements DatabaseProvider {
     return new OrbitDBProvider(dbInstance, ipfs);
   }
 
-  createDBFactory(name?: string): DatabaseFactory {
+  createDBFactory(name: string): DatabaseFactory {
     return new OrbitDBFactory(this.dbInstance, name);
   }
 

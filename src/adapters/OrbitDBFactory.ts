@@ -8,7 +8,7 @@ export default class OrbitDBFactory implements DatabaseFactory {
   private options: any;
   private dbInstance: OrbitDB;
 
-  public constructor(dbInstance: OrbitDB, name?: string) {
+  public constructor(dbInstance: OrbitDB, name: string) {
     this.name = name;
     this.dbInstance = dbInstance;
   }
