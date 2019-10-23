@@ -22,6 +22,14 @@ const GraphDisplay: React.FC<{
     toolTipHidden: true,
     targetRect: null
   });
+  const [viewportOffset, setViewportOffset] = useState(0);
+
+  // TODO calculate this dynamically
+  const heads = 3;
+  const sequentialNodes = 10
+
+  const viewWidth = 300 * sequentialNodes;
+  const viewHeight = heads * 100;
 
   function handleMouseEnter(d, domElement) {
     try {
@@ -60,7 +68,7 @@ const GraphDisplay: React.FC<{
     // D3 Setup
     const data = d3Dag.dagStratify()(input);
     const layout = d3Dag.sugiyama()
-    .size([300, 1000])
+    .size([0.8 * viewHeight, viewWidth])
     .coord(leftAlign());
     // .coord(d3Dag.coordGreedy());
 
@@ -71,7 +79,7 @@ const GraphDisplay: React.FC<{
     const line = d3.line()
     .curve(d3.curveMonotoneX)
     .x(d => d.y)
-    .y(d => d.x);
+    .y(d => d.x + viewHeight / 2);
 
     const svgDom = d3.select('#graph');
     
@@ -92,7 +100,7 @@ const GraphDisplay: React.FC<{
       .data(data.descendants())
       .enter()
       .append('g')
-      .attr('transform', ({x, y}) => `translate(${y}, ${x})`);
+      .attr('transform', ({x, y}) => `translate(${y}, ${x + viewHeight / 2})`);
 
     // Plot node circles
     nodes.append('circle')
@@ -103,6 +111,22 @@ const GraphDisplay: React.FC<{
       .on('mouseleave', handleMouseLeave);
 
     return svgDom;
+  }
+
+  function scrollSvg(e) {
+    const svgWidth = document.getElementsByClassName(graphStyles.graphContainer)[0].clientWidth;
+    let offset = viewportOffset + e.deltaY
+    // // return if the svg is smaller than the viewport
+    // if (svgWidth + svgWidth / 2 > viewWidth) {
+    //   return;
+    // }
+    if (offset < 0) {
+      offset = 0;
+    } else if (offset > viewWidth) {
+      offset = viewWidth
+    }
+    console.log(viewWidth - svgWidth);
+    setViewportOffset(offset);
   }
 
   useEffect(() => {
@@ -118,7 +142,7 @@ const GraphDisplay: React.FC<{
     <div className={graphStyles.graphContainer}>
       <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
       {(inputData[0].id !== "EMPTY" ? 
-        (<svg id='graph' width='80%' height='100%' viewBox='-20 -20 1040 340'></svg>) :
+        (<svg id='graph' width='100%' height='100%' viewBox={`${viewportOffset} 0 1000 300`} onWheel={scrollSvg}></svg>) :
         (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)
       )}
     </div>
