@@ -1,4 +1,4 @@
-import React, { useEffect, MutableRefObject, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as d3Dag from 'd3-dag';
 import * as d3 from 'd3';
 import { D3Data } from '../model/D3Data';
@@ -9,7 +9,7 @@ import DAGNodeTooltip from './DAGNodeTooltip';
 import { NodeProvider } from "../providers/NodeProvider";
 
 const GraphDisplay: React.FC<{ 
-  nodeProvider: MutableRefObject<NodeProvider>,
+  nodeProvider: NodeProvider,
   inputData: D3Data, 
   nodeColour?: Color, 
   lineColour?: Color 
@@ -25,7 +25,7 @@ const GraphDisplay: React.FC<{
 
   function handleMouseEnter(d, domElement) {
     try {
-      nodeProvider.current.getNodeInfoFromHash(d.id).then((nodeInfo) => {
+      nodeProvider.getNodeInfoFromHash(d.id).then((nodeInfo) => {
         // let text = JSON.stringify(nodeInfo.payload);
         setTooltipState({
           ...toolTipState,
@@ -60,8 +60,8 @@ const GraphDisplay: React.FC<{
     // D3 Setup
     const data = d3Dag.dagStratify()(input);
     const layout = d3Dag.sugiyama()
-    .size([300, 1000])
-    .coord(leftAlign);
+    .size([300, 1000]);
+    // .coord(leftAlign);
 
     // Apply layout to computed data
     layout(data);

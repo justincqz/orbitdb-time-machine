@@ -4,6 +4,7 @@ export default function() {
   function coordLeft(layers, separation) {
     // Assign degrees
     // The 3 at the end ensures that dummy nodes have the lowest priority
+    console.log(layers);
     layers.forEach((layer) =>
       layer.forEach((n) => (n.degree = n.children.length + (n.data ? 0 : -3)))
     );
