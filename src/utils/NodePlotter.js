@@ -1,40 +1,30 @@
 // Compute x coordinates for nodes that left align assigns coordinates and then spaces them out
 export default function() {
-
   function coordLeft(layers, separation) {
-    // Assign degrees
-    // The 3 at the end ensures that dummy nodes have the lowest priority
-    console.log(layers);
-    layers.forEach((layer) =>
-      layer.forEach((n) => (n.degree = n.children.length + (n.data ? 0 : -3)))
-    );
-    layers.forEach((layer) =>
-      layer.forEach((n) => n.children.forEach((c) => ++c.degree))
-    );
+    const widths = {
+      '1': [0],
+      '2': [-0.3, 0.3],
+      '3': [-0.5, 0, 0.5],
+      '4': [-0.7, -0.35, 0.35, 0.7],
+    };
 
-    // Set first nodes
-    layers.forEach(layer => {
-      layer.forEach((node, i) => {
-        if (i === 0) node.x = 0;
-        else {
-          const last = layer[i];
-          node.x = last.x + separation(last, node);
+    // Set Nodes
+    let max = 0;
+    let prevlayer;
+    for (let layer of layers) {
+      // Calculate widest layer
+      max = max < layer.length ? layer.length : max;
+      for (let i = 0; i < layer.length; i++) {
+        if (layer.length < max) {
+          const prevIndex = prevlayer.findIndex(node => node.id === layer[i].data.parentIds[0]);
+          layer[i].x = widths[max][prevIndex];
+        } else {
+          layer[i].x = widths[max][i];
         }
-      });
-    });
-
-    const min = Math.min(
-      ...layers.map((layer) => Math.min(...layer.map((n) => n.x)))
-    );
-
-    const span =
-      Math.max(...layers.map((layer) => Math.max(...layer.map((n) => n.x)))) -
-      min;
-    
-    layers.forEach((layer) => layer.forEach((n) => (n.x = (n.x - min) / span)));
-    layers.forEach((layer) => layer.forEach((n) => delete n.degree));
+      }
+      prevlayer = layer;
+    }
     return layers;
   }
-
   return coordLeft;
 }

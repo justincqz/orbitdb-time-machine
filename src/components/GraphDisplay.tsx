@@ -60,8 +60,9 @@ const GraphDisplay: React.FC<{
     // D3 Setup
     const data = d3Dag.dagStratify()(input);
     const layout = d3Dag.sugiyama()
-    .size([300, 1000]);
-    // .coord(leftAlign);
+    .size([300, 1000])
+    .coord(leftAlign());
+    // .coord(d3Dag.coordGreedy());
 
     // Apply layout to computed data
     layout(data);
