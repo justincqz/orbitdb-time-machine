@@ -119,7 +119,7 @@ export default class DAGNode implements D3DataOutput {
     }, heads[0].next);
 
     // If list is empty, return list of detached heads
-    if (commonAncestorList.length == 0) {
+    if (commonAncestorList.length === 0) {
       return heads.map(h => {
         return new DAGNode(h.hash, []);
       });

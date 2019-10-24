@@ -31,5 +31,5 @@ it('outputs correct D3 Data', () => {
 it('correctly limits output size', () => {
   const limit = 1;
   let d3data = node.toD3Data(limit);
-  expect(d3data.children.length).toEqual(2);
+  expect(d3data.children.length).toEqual(0);
 })
