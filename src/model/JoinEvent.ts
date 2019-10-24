@@ -1,13 +1,13 @@
+import DAGNode from "./DAGNode";
+
 export default class JoinEvent {
 
-  readonly heads: string[];
+  readonly heads: DAGNode[];
+  readonly tailHash: string;
 
-  constructor(heads: string[]) {
+  constructor(heads: DAGNode[], tailHash: string) {
     this.heads = heads;
-  }
-
-  static createEvent(heads: string[]) {
-    return new JoinEvent(heads);
+    this.tailHash = tailHash
   }
 
 }

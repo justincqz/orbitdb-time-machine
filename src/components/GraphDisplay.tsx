@@ -25,8 +25,8 @@ const GraphDisplay: React.FC<{
   const [viewportOffset, setViewportOffset] = useState(0);
 
   // TODO calculate this dynamically
-  const heads = 1;
-  const sequentialNodes = 1
+  const heads = 2;
+  const sequentialNodes = 9
 
   const viewWidth = 300 * sequentialNodes;
   const viewHeight = heads * 100;
@@ -66,11 +66,10 @@ const GraphDisplay: React.FC<{
   // Draw graph to screen
   function renderSvg(input) {
     // D3 Setup
-    const data = d3Dag.dagStratify()(input);
+    const data = d3Dag.dagHierarchy()(input);
     const layout = d3Dag.sugiyama()
     .size([0.8 * viewHeight, viewWidth])
-    .coord(leftAlign());
-    // .coord(d3Dag.coordGreedy());
+    // .coord(leftAlign());
 
     // Apply layout to computed data
     layout(data);
@@ -141,7 +140,7 @@ const GraphDisplay: React.FC<{
   return (
     <div className={graphStyles.graphContainer}>
       <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
-      {(inputData[0].id !== "EMPTY" ? 
+      {(inputData.id !== "EMPTY" ? 
         (<svg id='graph' width='100%' height='100%' viewBox={`${viewportOffset} 0 1000 300`} onWheel={scrollSvg}></svg>) :
         (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)
       )}

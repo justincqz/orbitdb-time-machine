@@ -9,6 +9,8 @@ import { Store } from "orbit-db-store";
 import databaseStyles from './Database.module.css';
 import { MdLibraryAdd, MdHome } from 'react-icons/md';
 import { withRouter } from 'react-router-dom';
+import DAGNode from '../model/DAGNode';
+import { viewJoinEvent } from '../model/D3Data';
 
 const DatabaseView: React.FC = withRouter(({ history }) => {
   // URL parameters
@@ -99,13 +101,66 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
     </div>
   }
 
+  const mockData = {
+    id: "0",
+    children: [
+      {id: "1", children: [
+        {id: "2", children: [
+          {id: "3", children: [
+            {id: "4", children: [
+              {id: "5", children: [
+                {id: "6", children: [
+                  {id: "7,0", children: [
+                    {id: "8,0", children: []}
+                  ]}, {id: "7,1", children: [
+                    {id: "8,1", children: []}
+                  ]}
+                ]}
+              ]}
+            ]}
+          ]}
+        ]}
+      ]}
+    ]
+  }
+
+  const mockHeads = [{
+    id: "3",
+    children: []
+  }, {
+    id: "4",
+    children: []
+  }]
+
+  const joinData = viewJoinEvent(mockHeads, "2", mockData);
+
   return <div>
     <div className={databaseStyles.container}>
       <div className={databaseStyles.addressContainer}>
         Viewing: {`/orbitdb/${hash}/${name}`}
       </div>
       <div className={databaseStyles.titleContainer}>Timeline</div>
-      <GraphDisplay nodeProvider={nodeProvider.current} inputData={d3data} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
+      <GraphDisplay nodeProvider={new (class MockNode implements NodeProvider {
+        getDatabaseGraph(): Promise<import("../model/DAGNode").default> {
+          throw new Error("Method not implemented.");
+        }        listenForDatabaseGraph(cb: () => void): void {
+          throw new Error("Method not implemented.");
+        }
+        getEdges(node: DAGNode) {
+          throw new Error("Method not implemented.");
+        }
+        getNodeInfo(node: DAGNode): Promise<any> {
+          throw new Error("Method not implemented.");
+        }
+        getNodeInfoFromHash(nodeHash: String): Promise<any> {
+          return Promise.resolve({
+            id: Promise.resolve(nodeHash),
+            payload: {
+              op: nodeHash,
+              value: nodeHash
+          }});
+        }
+      })()} inputData={joinData} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
       <div className={databaseStyles.iconTaskbarBorder}>
         <div className={databaseStyles.iconTaskbar}>
           <div className={databaseStyles.icon} onClick={goHome}>

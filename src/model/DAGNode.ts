@@ -15,6 +15,7 @@ export default class DAGNode implements D3DataOutput {
   }
 
   toD3Data(limit: number): D3Data {
+<<<<<<< HEAD
     // Number of nodes visited
     let count: number = 0;
     // Queue of nodes to visit in BFS
@@ -59,6 +60,9 @@ export default class DAGNode implements D3DataOutput {
     }
 
     return resultMap[this.hash];
+=======
+    return {id: "EMPTY", children: []};
+>>>>>>> Add functions to view joins
   }
 
   static emptyDAG(): DAGNode {
