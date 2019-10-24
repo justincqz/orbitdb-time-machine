@@ -15,7 +15,6 @@ export default class DAGNode implements D3DataOutput {
   }
 
   toD3Data(limit: number): D3Data {
-<<<<<<< HEAD
     // Number of nodes visited
     let count: number = 0;
     // Queue of nodes to visit in BFS
@@ -60,9 +59,6 @@ export default class DAGNode implements D3DataOutput {
     }
 
     return resultMap[this.hash];
-=======
-    return {id: "EMPTY", children: []};
->>>>>>> Add functions to view joins
   }
 
   static emptyDAG(): DAGNode {
@@ -123,7 +119,11 @@ export default class DAGNode implements D3DataOutput {
     }, heads[0].next);
 
     // If list is empty, return list of detached heads
+<<<<<<< HEAD
     if (commonAncestorList.length === 0) {
+=======
+    if (commonAncestorList.length == 0) {
+>>>>>>> Modify implementation of DAGNode and toD3Data function
       return heads.map(h => {
         return new DAGNode(h.hash, []);
       });
