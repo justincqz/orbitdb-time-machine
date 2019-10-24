@@ -19,7 +19,7 @@ export class OrbitDBNodeProvider implements NodeProvider {
       return DAGNode.emptyDAG();
     }
 
-    return DAGNode.createDAG(heads[0]);
+    return DAGNode.createDAG(heads)[0];
   }
 
   listenForDatabaseGraph(cb: () => void) {
