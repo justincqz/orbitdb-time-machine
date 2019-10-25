@@ -58,6 +58,18 @@ const getNumberOfLeaves = function(root: D3Data): number {
   return root.children.reduce((acc, cur) => (getNumberOfLeaves(cur) + acc), 0);
 }
 
-export { findNode, pruneDag, viewJoinEvent, getDepth, getNumberOfLeaves };
+const getTreeAtSplit = function(root: D3Data): D3Data {
+  if (root.children.length === 0) {
+    return null;
+  }
+
+  if (root.children.length >= 2) {
+    return root;
+  }
+
+  return getTreeAtSplit(root.children[0]);
+}
+
+export { findNode, pruneDag, viewJoinEvent, getDepth, getNumberOfLeaves, getTreeAtSplit };
 
 export default D3DataOutput;

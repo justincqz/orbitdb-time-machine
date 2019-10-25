@@ -10,22 +10,22 @@ export default class LocalStoreageJoinProvider implements JoinStorageProvider {
   }
 
   nextId(): string {
-    return `${localStorage.length}`;
+    return `${window.localStorage.length}`;
   }
 
   getJoins(): string[] {
     let vals: string[] = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      vals.push(`${localStorage.key(i)}`);
+    for (let i = 0; i < window.localStorage.length; i++) {
+      vals.push(`${window.localStorage.key(i)}`);
     }
     return vals;
   }
 
   getJoinEvent(id: string): JoinEvent {
-    return JSON.parse(localStorage.getItem(id)) as JoinEvent;
+    return JSON.parse(window.localStorage.getItem(id)) as JoinEvent;
   }
 
   addJoinEvent(event: JoinEvent) {
-    localStorage.put(this.nextId(), JSON.stringify(event));
+    window.localStorage.setItem(this.nextId(), JSON.stringify(event));
   }
 }

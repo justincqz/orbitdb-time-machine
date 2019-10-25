@@ -10,6 +10,9 @@ import databaseStyles from './Database.module.css';
 import { MdLibraryAdd, MdHome } from 'react-icons/md';
 import { withRouter } from 'react-router-dom';
 import OperationsLog from '../providers/OperationsLog';
+import JoinEvent from '../model/JoinEvent';
+import DAGNode from '../model/DAGNode';
+import JoinStorageProvider from '../providers/JoinStorageProvider';
 
 const DatabaseView: React.FC = withRouter(({ history }) => {
   // URL parameters
@@ -19,6 +22,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   let store: MutableRefObject<Store> = useRef(null);
   let dbProvider: MutableRefObject<DatabaseProvider> = useRef(null);
   let currOperationsLogSnapshot: MutableRefObject<string> = useRef(undefined);
+  let storageProvider: MutableRefObject<JoinStorageProvider> = useRef(undefined);
 
   // Limit number of nodes to fetch
   const LIMIT = 10;
@@ -29,6 +33,10 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   const [listening, setListening] = useState(false);
 
   useEffect(() => {
+    if (storageProvider.current === undefined) {
+      storageProvider.current = injector.createJoinStorageProvider();
+    }
+
     if (!dbProvider.current) {
       injector.createDBProvider().then((provider) => {
         dbProvider.current = provider;
@@ -55,8 +63,6 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
     });
 
     nodeProvider.current.listenForLocalWrites(() => {
-
-      console.log("Updating for local writes");
       currOperationsLogSnapshot.current 
         = nodeProvider.current.getOperationsLog().toSnapshotJSON();
 
@@ -76,11 +82,13 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
         let newLog = nodeProvider.current.getOperationsLog();
         let newItems = newLog.findDifferences(oldLog);
 
-        console.log(`was join: ${newLog.wasJustJoined()}`);
-        newLog.getHeads();
+        let D3DAG: D3Data = DAGNode.saveHeadsAsD3Data(newLog.getHeads());
 
-        console.log("NEW ITEMS");
-        console.log(newItems);
+        // Ignoring straight forward joins that don't result in splits.
+        if (D3DAG != null) {
+          let newJoinEvent = new JoinEvent(D3DAG);
+          storageProvider.current.addJoinEvent(newJoinEvent);
+        }
 
         // Set new snapshot within callback, if not callback
         // might run after assignment.

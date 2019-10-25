@@ -1,13 +1,11 @@
-import DAGNode from "./DAGNode";
+import { D3Data } from './D3Data';
 
 export default class JoinEvent {
 
-  readonly heads: DAGNode[];
-  readonly tailHash: string;
+  readonly root: D3Data;
 
-  constructor(heads: DAGNode[], tailHash: string) {
-    this.heads = heads;
-    this.tailHash = tailHash
+  constructor(root: D3Data) {
+    this.root = root;
   }
 
 }

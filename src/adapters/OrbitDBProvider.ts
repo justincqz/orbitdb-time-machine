@@ -89,11 +89,6 @@ export default class OrbitDBProvider implements DatabaseProvider {
 
   // TODO: Repalce with adapter entry class.
   isResponsibleForEntry(entry: any): boolean {
-    console.log("dbInstance identity");
-    console.log(this.dbInstance.identity);
-    console.log("Entry identity");
-    console.log(entry.identity);
-    console.log("isResponsibleForEntry returning: " + entry.identity === this.dbInstance.identity);
     return entry.identity === this.dbInstance.identity;
   }
 }

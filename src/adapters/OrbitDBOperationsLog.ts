@@ -24,7 +24,6 @@ export class OrbitDBOperationsLog implements OperationsLog {
 
     for (let headEntry of this.oplog.heads) {
       if (!this.dbInstance.isResponsibleForEntry(headEntry)) {
-        console.log("join has occurred!");
         return true;
       }
     }
@@ -35,10 +34,6 @@ export class OrbitDBOperationsLog implements OperationsLog {
   getHeads(): Array<string> {
 
     let heads = this.oplog.heads;
-    console.log("oplog to query heads");
-    console.log(this.oplog);
-    console.log("Heads");
-    console.log(heads);
 
     return heads;
   }
