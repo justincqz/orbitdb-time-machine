@@ -20,17 +20,6 @@ export class OrbitDBOperationsLog implements OperationsLog {
     return this.oplog.toSnapshot();
   }
 
-  wasJustJoined(): boolean {
-
-    for (let headEntry of this.oplog.heads) {
-      if (!this.dbInstance.isResponsibleForEntry(headEntry)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   getHeads(): Array<string> {
 
     let heads = this.oplog.heads;

@@ -21,7 +21,6 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   let nodeProvider: MutableRefObject<NodeProvider> = useRef(null);
   let store: MutableRefObject<Store> = useRef(null);
   let dbProvider: MutableRefObject<DatabaseProvider> = useRef(null);
-  let currOperationsLogSnapshot: MutableRefObject<string> = useRef(undefined);
   let storageProvider: MutableRefObject<JoinStorageProvider> = useRef(undefined);
 
   // Limit number of nodes to fetch
@@ -57,43 +56,21 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
     console.log('listening')
     nodeProvider.current.listenForDatabaseGraph(() => {
 
-      addEventIfJoin();
+      recordJoinEvent(nodeProvider.current.getOperationsLog());
 
       loadData(true);
     });
-
-    nodeProvider.current.listenForLocalWrites(() => {
-      currOperationsLogSnapshot.current 
-        = nodeProvider.current.getOperationsLog().toSnapshotJSON();
-
-    })
   }
 
-  function addEventIfJoin() {
-    if (currOperationsLogSnapshot.current === undefined) {
-      currOperationsLogSnapshot.current 
-        = nodeProvider.current.getOperationsLog().toSnapshotJSON();
-      return;
+  function recordJoinEvent(newLog: OperationsLog) {
+    // Finds the earliest split node and returns a tree with it as root.
+    let D3DAG: D3Data = DAGNode.saveHeadsAsD3Data(newLog.getHeads());
+
+    // Ignoring straight forward joins that don't result in splits.
+    if (D3DAG != null) {
+      let newJoinEvent = new JoinEvent(D3DAG);
+      storageProvider.current.addJoinEvent(newJoinEvent);
     }
-
-    dbProvider.current.operationsLogFromSnapshot(
-      currOperationsLogSnapshot.current,
-      (oldLog: OperationsLog) => {
-        let newLog = nodeProvider.current.getOperationsLog();
-        let newItems = newLog.findDifferences(oldLog);
-
-        let D3DAG: D3Data = DAGNode.saveHeadsAsD3Data(newLog.getHeads());
-
-        // Ignoring straight forward joins that don't result in splits.
-        if (D3DAG != null) {
-          let newJoinEvent = new JoinEvent(D3DAG);
-          storageProvider.current.addJoinEvent(newJoinEvent);
-        }
-
-        // Set new snapshot within callback, if not callback
-        // might run after assignment.
-        currOperationsLogSnapshot.current = newLog.toSnapshotJSON();
-    });
   }
 
   async function loadData(forceLoad: boolean = false): Promise<void> {
