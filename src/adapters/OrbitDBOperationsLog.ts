@@ -1,12 +1,15 @@
 import OperationsLog from '../providers/OperationsLog';
 import Log from 'ipfs-log';
+import { DatabaseProvider } from '../providers/DatabaseProvider';
 
 export class OrbitDBOperationsLog implements OperationsLog {
 
   private readonly oplog: Log;
+  private readonly dbInstance: DatabaseProvider;
 
-  constructor(oplog: Log) {
+  constructor(oplog: Log, dbInstance: DatabaseProvider) {
     this.oplog = oplog;
+    this.dbInstance = dbInstance;
   }
 
   findDifferences(otherLog: OperationsLog): Object {
@@ -18,7 +21,15 @@ export class OrbitDBOperationsLog implements OperationsLog {
   }
 
   wasJustJoined(): boolean {
-    return this.oplog.heads.length > 1;
+
+    for (let headEntry of this.oplog.heads) {
+      if (!this.dbInstance.isResponsibleForEntry(headEntry)) {
+        console.log("join has occurred!");
+        return true;
+      }
+    }
+
+    return false;
   }
 
   getHeads(): Array<string> {

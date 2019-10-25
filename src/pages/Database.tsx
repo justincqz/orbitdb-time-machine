@@ -34,7 +34,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
         dbProvider.current = provider;
         dbProvider.current.openDatabase(`/orbitdb/${hash}/${name}`).then((s: Store) => {
           store.current = s;
-          nodeProvider.current = injector.createNodeProvider(s);
+          nodeProvider.current = injector.createNodeProvider(s, dbProvider.current);
           loadData();
           if (!listening) {
             setListening(true);
@@ -64,7 +64,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   }
 
   function addEventIfJoin() {
-    if (currOperationsLogSnapshot.current == undefined) {
+    if (currOperationsLogSnapshot.current === undefined) {
       currOperationsLogSnapshot.current 
         = nodeProvider.current.getOperationsLog().toSnapshotJSON();
       return;
@@ -136,39 +136,6 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
       <div>Loading...</div>
     </div>
   }
-
-  // const mockData = {
-  //   id: "0",
-  //   children: [
-  //     {id: "1", children: [
-  //       {id: "2", children: [
-  //         {id: "3", children: [
-  //           {id: "4", children: [
-  //             {id: "5", children: [
-  //               {id: "6", children: [
-  //                 {id: "7,0", children: [
-  //                   {id: "8,0", children: []}
-  //                 ]}, {id: "7,1", children: [
-  //                   {id: "8,1", children: []}
-  //                 ]}
-  //               ]}
-  //             ]}
-  //           ]}
-  //         ]}
-  //       ]}
-  //     ]}
-  //   ]
-  // }
-
-  // const mockHeads = [{
-  //   id: "3",
-  //   children: []
-  // }, {
-  //   id: "4",
-  //   children: []
-  // }]
-
-  // const joinData = viewJoinEvent(mockHeads, "2", mockData);
 
   return <div>
     <div className={databaseStyles.container}>

@@ -8,7 +8,7 @@ import LocalStoreageJoinProvider from '../adapters/LocalStorageJoinProvider';
 
 // Injector to mock dependencies
 export interface Injector {
-  createNodeProvider(store: any): NodeProvider;
+  createNodeProvider(store: any, dbInstance: DatabaseProvider): NodeProvider;
   createDBProvider(): Promise<DatabaseProvider>;
   createJoinStorageProvider(): JoinStorageProvider;
 }
@@ -21,8 +21,8 @@ export class DefaultInjector implements Injector {
   createDBProvider(): Promise<DatabaseProvider> {
     return OrbitDBProvider.build();
   }
-  createNodeProvider(dbInstance: any): NodeProvider {
-    return new OrbitDBNodeProvider(dbInstance);
+  createNodeProvider(store: any, dbInstance: DatabaseProvider): NodeProvider {
+    return new OrbitDBNodeProvider(store, dbInstance);
   }
 }
 

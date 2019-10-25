@@ -12,4 +12,7 @@ export interface DatabaseProvider {
   close(): Promise<void>;
 
   operationsLogFromSnapshot(snapshot: string, callback: (log: OperationsLog) => void);
+
+  // TODO: Implement entry adapter.
+  isResponsibleForEntry(entry: any): boolean;
 }

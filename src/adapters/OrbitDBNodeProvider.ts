@@ -3,13 +3,16 @@ import DAGNode from "../model/DAGNode";
 import { Store } from "orbit-db-store";
 import OperationsLog from '../providers/OperationsLog';
 import { OrbitDBOperationsLog } from "./OrbitDBOperationsLog";
+import { DatabaseProvider } from "../providers/DatabaseProvider";
 
 export class OrbitDBNodeProvider implements NodeProvider {
 
   private readonly store: Store;
+  private readonly dbInstance: DatabaseProvider;
 
-  constructor(store: Store) {
+  constructor(store: Store, dbInstance: DatabaseProvider) {
     this.store = store;
+    this.dbInstance = dbInstance;
   }
 
   async getDatabaseGraph(): Promise<DAGNode> {
@@ -25,7 +28,7 @@ export class OrbitDBNodeProvider implements NodeProvider {
   }
 
   getOperationsLog(): OperationsLog {
-    return new OrbitDBOperationsLog(this.store._oplog);
+    return new OrbitDBOperationsLog(this.store._oplog, this.dbInstance);
   }
 
   listenForDatabaseGraph(cb: () => void) {

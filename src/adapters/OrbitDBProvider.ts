@@ -86,4 +86,14 @@ export default class OrbitDBProvider implements DatabaseProvider {
     Log.fromJSON(this.ipfs, this.dbInstance.identity, snapshot)
       .then(callback);
   }
+
+  // TODO: Repalce with adapter entry class.
+  isResponsibleForEntry(entry: any): boolean {
+    console.log("dbInstance identity");
+    console.log(this.dbInstance.identity);
+    console.log("Entry identity");
+    console.log(entry.identity);
+    console.log("isResponsibleForEntry returning: " + entry.identity === this.dbInstance.identity);
+    return entry.identity === this.dbInstance.identity;
+  }
 }
