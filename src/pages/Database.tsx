@@ -9,6 +9,7 @@ import { Store } from "orbit-db-store";
 import databaseStyles from './Database.module.css';
 import { MdLibraryAdd, MdHome } from 'react-icons/md';
 import { withRouter } from 'react-router-dom';
+import OperationsLog from '../providers/OperationsLog';
 
 const DatabaseView: React.FC = withRouter(({ history }) => {
   // URL parameters
@@ -17,6 +18,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   let nodeProvider: MutableRefObject<NodeProvider> = useRef(null);
   let store: MutableRefObject<Store> = useRef(null);
   let dbProvider: MutableRefObject<DatabaseProvider> = useRef(null);
+  let currOperationsLogSnapshot: MutableRefObject<string> = useRef(undefined);
 
   // Limit number of nodes to fetch
   const LIMIT = 10;
@@ -46,7 +48,43 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   function listenForChanges() {
     console.log('listening')
     nodeProvider.current.listenForDatabaseGraph(() => {
+
+      addEventIfJoin();
+
       loadData(true);
+    });
+
+    nodeProvider.current.listenForLocalWrites(() => {
+
+      console.log("Updating for local writes");
+      currOperationsLogSnapshot.current 
+        = nodeProvider.current.getOperationsLog().toSnapshotJSON();
+
+    })
+  }
+
+  function addEventIfJoin() {
+    if (currOperationsLogSnapshot.current == undefined) {
+      currOperationsLogSnapshot.current 
+        = nodeProvider.current.getOperationsLog().toSnapshotJSON();
+      return;
+    }
+
+    dbProvider.current.operationsLogFromSnapshot(
+      currOperationsLogSnapshot.current,
+      (oldLog: OperationsLog) => {
+        let newLog = nodeProvider.current.getOperationsLog();
+        let newItems = newLog.findDifferences(oldLog);
+
+        console.log(`was join: ${newLog.wasJustJoined()}`);
+        newLog.getHeads();
+
+        console.log("NEW ITEMS");
+        console.log(newItems);
+
+        // Set new snapshot within callback, if not callback
+        // might run after assignment.
+        currOperationsLogSnapshot.current = newLog.toSnapshotJSON();
     });
   }
 

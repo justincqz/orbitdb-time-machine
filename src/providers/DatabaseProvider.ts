@@ -1,5 +1,6 @@
 import { Store } from 'orbit-db-store';
 import DatabaseFactory from '../model/DatabaseFactory';
+import OperationsLog from './OperationsLog';
 
 export interface DatabaseProvider {
 
@@ -9,4 +10,6 @@ export interface DatabaseProvider {
   openDatabase(address: string): Promise<Store>;
 
   close(): Promise<void>;
+
+  operationsLogFromSnapshot(snapshot: string, callback: (log: OperationsLog) => void);
 }

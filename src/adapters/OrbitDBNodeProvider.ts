@@ -1,6 +1,8 @@
 import { NodeProvider } from "../providers/NodeProvider";
 import DAGNode from "../model/DAGNode";
 import { Store } from "orbit-db-store";
+import OperationsLog from '../providers/OperationsLog';
+import { OrbitDBOperationsLog } from "./OrbitDBOperationsLog";
 
 export class OrbitDBNodeProvider implements NodeProvider {
 
@@ -22,8 +24,18 @@ export class OrbitDBNodeProvider implements NodeProvider {
     return DAGNode.createDAG(heads)[0];
   }
 
+  getOperationsLog(): OperationsLog {
+    return new OrbitDBOperationsLog(this.store._oplog);
+  }
+
   listenForDatabaseGraph(cb: () => void) {
     this.store.events.on('replicated', () => {
+      cb();
+    })
+  }
+
+  listenForLocalWrites(cb: () => void) {
+    this.store.events.on('write', () => {
       cb();
     })
   }
