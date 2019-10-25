@@ -68,6 +68,10 @@ export default class DAGNode implements D3DataOutput {
   private static createStraightDAG(allNodes: any, head: any): DAGNode {
     let headNode: DAGNode = new DAGNode(head.hash, []);
 
+    if (head.next && head.next.length === 0) {
+      return headNode;
+    }
+
     if (head.next && head.next.length !== 0) {
       let headParent: DAGNode = allNodes[head.next[0]] !== undefined
         ? allNodes[head.next[0]]
@@ -119,11 +123,7 @@ export default class DAGNode implements D3DataOutput {
     }, heads[0].next);
 
     // If list is empty, return list of detached heads
-<<<<<<< HEAD
     if (commonAncestorList.length === 0) {
-=======
-    if (commonAncestorList.length == 0) {
->>>>>>> Modify implementation of DAGNode and toD3Data function
       return heads.map(h => {
         return new DAGNode(h.hash, []);
       });

@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import * as d3Dag from 'd3-dag';
 import * as d3 from 'd3';
-import { D3Data } from '../model/D3Data';
-import leftAlign from '../utils/NodePlotter';
+import { D3Data, getNumberOfLeaves, getDepth } from '../model/D3Data';
 import { Color } from 'csstype';
 import graphStyles from './GraphDisplay.module.css';
 import DAGNodeTooltip from './DAGNodeTooltip';
 import { NodeProvider } from "../providers/NodeProvider";
 
-const GraphDisplay: React.FC<{ 
+const GraphDisplay: React.FC<{
   nodeProvider: NodeProvider,
-  inputData: D3Data, 
-  nodeColour?: Color, 
-  lineColour?: Color 
+  inputData: D3Data,
+  nodeColour?: Color,
+  lineColour?: Color
 }> = ({ nodeProvider, inputData, nodeColour, lineColour }) => {
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
@@ -25,8 +24,8 @@ const GraphDisplay: React.FC<{
   const [viewportOffset, setViewportOffset] = useState(0);
 
   // TODO calculate this dynamically
-  const heads = 2;
-  const sequentialNodes = 9
+  const heads = getNumberOfLeaves(inputData);
+  const sequentialNodes = getDepth(inputData)
 
   const viewWidth = 300 * sequentialNodes;
   const viewHeight = heads * 100;
@@ -45,9 +44,9 @@ const GraphDisplay: React.FC<{
     } catch (e) {
       // TODO: Error handling.
       console.log("Something went terribly wrong...");
-    }    
+    }
   };
-  
+
   function handleMouseLeave() {
     setTooltipState({
       ...toolTipState,
@@ -81,7 +80,7 @@ const GraphDisplay: React.FC<{
     .y(d => d.x + viewHeight / 2);
 
     const svgDom = d3.select('#graph');
-    
+
     // Plot edges
     svgDom.append('g')
     .selectAll('path')
@@ -140,7 +139,7 @@ const GraphDisplay: React.FC<{
   return (
     <div className={graphStyles.graphContainer}>
       <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
-      {(inputData.id !== "EMPTY" ? 
+      {(inputData.id !== "EMPTY" ?
         (<svg id='graph' width='100%' height='100%' viewBox={`${viewportOffset} 0 1000 300`} onWheel={scrollSvg}></svg>) :
         (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)
       )}

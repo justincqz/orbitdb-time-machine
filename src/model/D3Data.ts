@@ -42,9 +42,22 @@ const viewJoinEvent = function(heads: D3Data[], tail: string, root: D3Data): D3D
   })
 
   return pruned;
-
 }
 
-export { findNode, pruneDag, viewJoinEvent };
+const getDepth = function(root: D3Data): number {
+  if (root.children.length === 0) {
+    return 1;
+  }
+  return (root.children.reduce((acc, cur) => Math.max(acc, getDepth(cur)), 0)) + 1;
+}
+
+const getNumberOfLeaves = function(root: D3Data): number {
+  if (root.children.length === 0) {
+    return 1;
+  }
+  return root.children.reduce((acc, cur) => (getNumberOfLeaves(cur) + acc), 0);
+}
+
+export { findNode, pruneDag, viewJoinEvent, getDepth, getNumberOfLeaves };
 
 export default D3DataOutput;
