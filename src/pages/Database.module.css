@@ -61,7 +61,7 @@
   background-color: #0A3464FF;
   align-items: center;
   justify-content: center;
-  font-family: 'Unica One', cursive;
+  font-family: 'Unica One', sans-serif;
   font-size: 5vh;
   color:#89BEFC;
 }
@@ -78,4 +78,9 @@
   background-color: rgb(255, 122, 122);
   border-radius: 5px;
   padding: 30px;
+}
+
+.splitView {
+  display: flex;
+  flex-direction: row;
 }

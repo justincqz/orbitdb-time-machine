@@ -57,9 +57,9 @@ const GraphDisplay: React.FC<{
   };
 
   function cleanUpSvg(dom) {
-    while (dom.firstChild)
-      dom.removeChild(dom.firstChild);
-    return () => {};
+    while (dom._groups[0][0].children[0]) {
+      dom._groups[0][0].children[0].remove();
+    }
   }
 
   // Draw graph to screen
@@ -112,7 +112,7 @@ const GraphDisplay: React.FC<{
   }
 
   function scrollSvg(e) {
-    const svgWidth = document.getElementsByClassName(graphStyles.graphContainer)[0].clientWidth;
+    // const svgWidth = document.getElementsByClassName(graphStyles.graphContainer)[0].clientWidth;
     let offset = viewportOffset + e.deltaY
     // // return if the svg is smaller than the viewport
     // if (svgWidth + svgWidth / 2 > viewWidth) {
@@ -123,7 +123,6 @@ const GraphDisplay: React.FC<{
     } else if (offset > viewWidth) {
       offset = viewWidth
     }
-    console.log(viewWidth - svgWidth);
     setViewportOffset(offset);
   }
 

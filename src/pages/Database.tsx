@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, MutableRefObject } from 'react';
 import { useParams } from 'react-router-dom';
 import GraphDisplay from '../components/GraphDisplay';
 import { useDependencyInjector } from '../state/dependencyInjector';
-import { D3Data } from '../model/D3Data';
+import { D3Data, viewJoinEvent } from '../model/D3Data';
 import { NodeProvider } from "../providers/NodeProvider";
 import { DatabaseProvider } from '../providers/DatabaseProvider';
 import { Store } from "orbit-db-store";
@@ -13,6 +13,7 @@ import OperationsLog from '../providers/OperationsLog';
 import JoinEvent from '../model/JoinEvent';
 import DAGNode from '../model/DAGNode';
 import JoinStorageProvider from '../providers/JoinStorageProvider';
+import JoinList from '../components/JoinList';
 
 const DatabaseView: React.FC = withRouter(({ history }) => {
   // URL parameters
@@ -30,6 +31,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   const [d3data, setD3data]: [D3Data, React.Dispatch<React.SetStateAction<D3Data>>] = useState(null);
   const [error, setError] = useState('');
   const [listening, setListening] = useState(false);
+  const [selectedJoin, setSelectedJoin]: [string, React.Dispatch<React.SetStateAction<string>>] = useState(null);
 
   useEffect(() => {
     if (storageProvider.current === undefined) {
@@ -122,13 +124,24 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
     </div>
   }
 
-  return <div>
+  return <div className={databaseStyles.splitView}>
+    <JoinList
+      joinEvents={storageProvider.current.getJoins()}
+      selectJoin={setSelectedJoin}
+    ></JoinList>
     <div className={databaseStyles.container}>
       <div className={databaseStyles.addressContainer}>
         Viewing: {`/orbitdb/${hash}/${name}`}
       </div>
       <div className={databaseStyles.titleContainer}>Timeline</div>
-      <GraphDisplay nodeProvider={nodeProvider.current} inputData={d3data} nodeColour='#7bb1f1ff' lineColour='#1d5495ff' />
+      <GraphDisplay
+        nodeProvider={nodeProvider.current}
+        inputData={selectedJoin === null ? d3data : 
+          viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)
+        }
+        nodeColour='#7bb1f1ff' 
+        lineColour='#1d5495ff' 
+      />
       <div className={databaseStyles.iconTaskbarBorder}>
         <div className={databaseStyles.iconTaskbar}>
           <div className={databaseStyles.icon} onClick={goHome}>

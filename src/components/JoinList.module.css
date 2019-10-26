@@ -1,0 +1,29 @@
+.container {
+  width: 30vw;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  background-color: #1d5495ff;
+}
+
+h2 {
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+  color: #b8d8feff;
+  font-family: 'Unica One', sans-serif;
+}
+
+.selection {
+  padding: 10px;
+  border-radius: 3px;
+  background-color: rgb(34, 98, 177);
+  margin: 10px;
+  color: #b8d8feff;
+  font-family: monospace;
+}
+
+.selection:hover {
+  background-color: #0A3464FF;
+  cursor: pointer;
+}

@@ -33,14 +33,19 @@ const joinDag = function(node: D3Data, child: D3Data): void {
   node.children.push(child);
 }
 
-const viewJoinEvent = function(heads: D3Data[], tail: string, root: D3Data): D3Data {
+const viewJoinEvent = function(root: D3Data, top: D3Data): D3Data {
+  // Deep copy the object using JSON so we can go back to the old object
+  root = JSON.parse(JSON.stringify(root));
 
-  let pruned = pruneDag(tail, root);
+  // Prune the DAG to only the common nodes
+  let pruned = pruneDag(top.id, root);
+
+  // Get the end of the pruned DAG
   let leaf = getFirstLeaf(pruned);
-  heads.forEach(h => {
-    joinDag(leaf, h);
-  })
-
+  // Jon the historic nodes onto the end of the pruned DAG
+  for (let child of top.children) {
+    joinDag(leaf, child)
+  }
   return pruned;
 }
 
