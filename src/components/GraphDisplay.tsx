@@ -5,8 +5,10 @@ import { D3Data, getNumberOfLeaves, getDepth } from '../model/D3Data';
 import { Color } from 'csstype';
 import graphStyles from './GraphDisplay.module.css';
 import DAGNodeTooltip from './DAGNodeTooltip';
+import Popup from "reactjs-popup";
 import { NodeProvider } from "../providers/NodeProvider";
 import leftAlign from '../utils/NodePlotter';
+import DatabaseStateDisplay from "./DatabaseStateDisplay";
 
 const GraphDisplay: React.FC<{
   nodeProvider: NodeProvider,
@@ -17,6 +19,11 @@ const GraphDisplay: React.FC<{
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
 
+  const [databaseState, showDatabaseState] = useState({
+    data: [],
+    openPopup: false
+  });
+
   const [toolTipState, setTooltipState] = useState({
     nodeInfo: null,
     toolTipHidden: true,
@@ -26,7 +33,7 @@ const GraphDisplay: React.FC<{
 
   // TODO calculate this dynamically
   const heads = getNumberOfLeaves(inputData);
-  const sequentialNodes = getDepth(inputData)
+  const sequentialNodes = getDepth(inputData);
 
   const viewWidth = 300 * sequentialNodes;
   const viewHeight = heads * 100;
@@ -55,6 +62,23 @@ const GraphDisplay: React.FC<{
       toolTipHidden: true,
       targetRect: null
     });
+  };
+
+  function handleOnClick(d: any) {
+    console.log(d);
+    try {
+      nodeProvider.getNodeInfoFromHash(d.id).then((nodeInfo) => {
+        console.log(nodeInfo.payload.value);
+        showDatabaseState({
+          ...databaseState,
+          data: [...[{"value" : nodeInfo.payload.value}]],
+          openPopup: true
+        });
+      });
+    } catch (e) {
+      // TODO: Error handling.
+      console.log("Something went terribly wrong...");
+    }
   };
 
   function cleanUpSvg(dom) {
@@ -110,8 +134,8 @@ const GraphDisplay: React.FC<{
       .attr('id', d => d.id)
       .attr('fill', nodeColour)
       .on('mouseenter', (d, i, e) => { handleMouseEnter(d, e[i]) })
-      .on('mouseleave', handleMouseLeave);
-
+      .on('mouseleave', handleMouseLeave)
+      .on('click', (d, i, e) => { handleOnClick(d) });
     return svgDom;
   }
 
@@ -142,6 +166,13 @@ const GraphDisplay: React.FC<{
   return (
     <div className={graphStyles.graphContainer}>
       <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
+      <Popup open={databaseState.openPopup}
+             onClose={() => databaseState.openPopup = false}
+             position="bottom center">
+        <div>
+        <DatabaseStateDisplay data={databaseState.data}/>
+        </div>
+      </Popup>
       {(inputData.id !== "EMPTY" ?
         (<svg id='graph' width='100%' height='100%' viewBox={`${viewportOffset} 0 1000 300`} onWheel={scrollSvg}></svg>) :
         (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)
