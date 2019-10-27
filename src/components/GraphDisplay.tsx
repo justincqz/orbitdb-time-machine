@@ -57,6 +57,9 @@ const GraphDisplay: React.FC<{
   };
 
   function cleanUpSvg(dom) {
+    if(dom._groups[0][0] == null) {
+      return;
+    }
     while (dom._groups[0][0].children[0]) {
       dom._groups[0][0].children[0].remove();
     }
