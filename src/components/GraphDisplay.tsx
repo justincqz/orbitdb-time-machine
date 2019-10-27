@@ -6,6 +6,7 @@ import { Color } from 'csstype';
 import graphStyles from './GraphDisplay.module.css';
 import DAGNodeTooltip from './DAGNodeTooltip';
 import { NodeProvider } from "../providers/NodeProvider";
+import leftAlign from '../utils/NodePlotter';
 
 const GraphDisplay: React.FC<{
   nodeProvider: NodeProvider,
@@ -71,7 +72,7 @@ const GraphDisplay: React.FC<{
     const data = d3Dag.dagHierarchy()(input);
     const layout = d3Dag.sugiyama()
     .size([0.8 * viewHeight, viewWidth])
-    // .coord(leftAlign());
+    .coord(leftAlign());
 
     // Apply layout to computed data
     layout(data);
