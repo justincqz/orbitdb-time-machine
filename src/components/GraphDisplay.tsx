@@ -9,13 +9,15 @@ import Popup from "reactjs-popup";
 import { NodeProvider } from "../providers/NodeProvider";
 import leftAlign from '../utils/NodePlotter';
 import DatabaseStateDisplay from "./DatabaseStateDisplay";
+import { DatabaseProvider } from "../providers/DatabaseProvider";
 
 const GraphDisplay: React.FC<{
+  dbProvider: DatabaseProvider,
   nodeProvider: NodeProvider,
   inputData: D3Data,
   nodeColour?: Color,
   lineColour?: Color
-}> = ({ nodeProvider, inputData, nodeColour, lineColour }) => {
+}> = ({ dbProvider, nodeProvider, inputData, nodeColour, lineColour }) => {
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
 
@@ -37,6 +39,22 @@ const GraphDisplay: React.FC<{
 
   const viewWidth = 300 * sequentialNodes;
   const viewHeight = heads * 100;
+
+  function handleNodeClick(d) {
+    try {
+      let entryHash = d.id;
+      nodeProvider.getNodeInfoFromHash(d.id).then((nodeEntry) => {
+        dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
+          console.log("Reconstructed data");
+          console.log(operationsLog.reconstructData());
+        });
+      });
+    } catch (e) {
+      // TODO: Error handling.
+      console.log("Something went terribly wrong...");
+    }
+
+  }
 
   function handleMouseEnter(d, domElement) {
     try {
@@ -133,6 +151,7 @@ const GraphDisplay: React.FC<{
       .attr('r', 20)
       .attr('id', d => d.id)
       .attr('fill', nodeColour)
+      .on('click', handleNodeClick)
       .on('mouseenter', (d, i, e) => { handleMouseEnter(d, e[i]) })
       .on('mouseleave', handleMouseLeave)
       .on('click', (d, i, e) => { handleOnClick(d) });

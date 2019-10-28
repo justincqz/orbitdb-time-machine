@@ -12,6 +12,7 @@
     "d3-dag": "^0.3.0",
     "ipfs": "^0.38.0",
     "orbit-db": "^0.22.0",
+    "orbit-db-eventstore": "^1.6.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-icons": "^3.7.0",

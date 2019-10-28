@@ -1,5 +1,4 @@
 import DAGNode from "../model/DAGNode";
-import { EventEmitter } from 'events'
 import OperationsLog from "./OperationsLog";
 
 export interface NodeProvider {

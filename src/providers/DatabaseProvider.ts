@@ -12,4 +12,7 @@ export interface DatabaseProvider {
   close(): Promise<void>;
 
   operationsLogFromSnapshot(snapshot: string, callback: (log: OperationsLog) => void);
+
+  // TODO: Replace with entry class.
+  constructOperationsLogFromEntries(entries: Array<any>): Promise<OperationsLog>;
 }

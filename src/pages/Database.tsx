@@ -61,6 +61,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
       recordJoinEvent(nodeProvider.current.getOperationsLog());
 
       loadData(true);
+
     });
   }
 
@@ -135,6 +136,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
       </div>
       <div className={databaseStyles.titleContainer}>Timeline</div>
       <GraphDisplay
+        dbProvider={dbProvider.current}
         nodeProvider={nodeProvider.current}
         inputData={selectedJoin === null ? d3data : 
           viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)

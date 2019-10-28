@@ -6,6 +6,7 @@ import DatabaseFactory from "../model/DatabaseFactory";
 import OrbitDBFactory from './OrbitDBFactory';
 import OperationsLog from '../providers/OperationsLog'
 import Log from 'ipfs-log';
+import { OrbitDBOperationsLog } from "./OrbitDBOperationsLog";
 
 const ipfsOptions = {
   EXPERIMENTAL: {
@@ -85,5 +86,11 @@ export default class OrbitDBProvider implements DatabaseProvider {
   operationsLogFromSnapshot(snapshot: string, callback: (log: OperationsLog) => void) {
     Log.fromJSON(this.ipfs, this.dbInstance.identity, snapshot)
       .then(callback);
+  }
+
+  // TODO: Replace with entry class.
+  async constructOperationsLogFromEntries(entries: Array<any>): Promise<OperationsLog> {
+    let oplog: Log = await Log.fromEntry(this.ipfs, this.dbInstance.identity, entries);
+    return new OrbitDBOperationsLog(oplog, this.dbInstance);
   }
 }
