@@ -14,6 +14,7 @@ const DatabaseStateDisplay: React.FC<{data: any}> = ({data}) => {
              className="-striped -highlight"
              data={data}
              columns={columns}
+             defaultPageSize={5}
          />
     );
 };

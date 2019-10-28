@@ -40,22 +40,6 @@ const GraphDisplay: React.FC<{
   const viewWidth = 300 * sequentialNodes;
   const viewHeight = heads * 100;
 
-  function handleNodeClick(d) {
-    try {
-      let entryHash = d.id;
-      nodeProvider.getNodeInfoFromHash(d.id).then((nodeEntry) => {
-        dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
-          console.log("Reconstructed data");
-          console.log(operationsLog.reconstructData());
-        });
-      });
-    } catch (e) {
-      // TODO: Error handling.
-      console.log("Something went terribly wrong...");
-    }
-
-  }
-
   function handleMouseEnter(d, domElement) {
     try {
       nodeProvider.getNodeInfoFromHash(d.id).then((nodeInfo) => {
@@ -83,14 +67,21 @@ const GraphDisplay: React.FC<{
   };
 
   function handleOnClick(d: any) {
-    console.log(d);
     try {
-      nodeProvider.getNodeInfoFromHash(d.id).then((nodeInfo) => {
-        console.log(nodeInfo.payload.value);
-        showDatabaseState({
-          ...databaseState,
-          data: [...[{"value" : nodeInfo.payload.value}]],
-          openPopup: true
+      nodeProvider.getNodeInfoFromHash(d.id).then((nodeEntry) => {
+        dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
+          let reconstructedData = nodeProvider.reconstructData(operationsLog);
+
+          // Populate data to visualise in table.
+          let filteredData = reconstructedData.map((data) => {
+            return {"value" : data.payload.value};
+          });
+
+          showDatabaseState({
+            ...databaseState,
+            data: filteredData,
+            openPopup: true
+          });
         });
       });
     } catch (e) {
@@ -151,7 +142,6 @@ const GraphDisplay: React.FC<{
       .attr('r', 20)
       .attr('id', d => d.id)
       .attr('fill', nodeColour)
-      .on('click', handleNodeClick)
       .on('mouseenter', (d, i, e) => { handleMouseEnter(d, e[i]) })
       .on('mouseleave', handleMouseLeave)
       .on('click', (d, i, e) => { handleOnClick(d) });
