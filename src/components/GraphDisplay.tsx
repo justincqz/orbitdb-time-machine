@@ -9,13 +9,15 @@ import Popup from "reactjs-popup";
 import { NodeProvider } from "../providers/NodeProvider";
 import leftAlign from '../utils/NodePlotter';
 import DatabaseStateDisplay from "./DatabaseStateDisplay";
+import { DatabaseProvider } from "../providers/DatabaseProvider";
 
 const GraphDisplay: React.FC<{
+  dbProvider: DatabaseProvider,
   nodeProvider: NodeProvider,
   inputData: D3Data,
   nodeColour?: Color,
   lineColour?: Color
-}> = ({ nodeProvider, inputData, nodeColour, lineColour }) => {
+}> = ({ dbProvider, nodeProvider, inputData, nodeColour, lineColour }) => {
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
 
@@ -65,14 +67,21 @@ const GraphDisplay: React.FC<{
   };
 
   function handleOnClick(d: any) {
-    console.log(d);
     try {
-      nodeProvider.getNodeInfoFromHash(d.id).then((nodeInfo) => {
-        console.log(nodeInfo.payload.value);
-        showDatabaseState({
-          ...databaseState,
-          data: [...[{"value" : nodeInfo.payload.value}]],
-          openPopup: true
+      nodeProvider.getNodeInfoFromHash(d.id).then((nodeEntry) => {
+        dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
+          let reconstructedData = nodeProvider.reconstructData(operationsLog);
+
+          // Populate data to visualise in table.
+          let filteredData = reconstructedData.map((data) => {
+            return {"value" : data.payload.value};
+          });
+
+          showDatabaseState({
+            ...databaseState,
+            data: filteredData,
+            openPopup: true
+          });
         });
       });
     } catch (e) {

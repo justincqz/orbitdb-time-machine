@@ -1,9 +1,15 @@
 import { NodeProvider } from "../providers/NodeProvider";
 import DAGNode from "../model/DAGNode";
-import { Store } from "orbit-db-store";
 import OperationsLog from '../providers/OperationsLog';
 import { OrbitDBOperationsLog } from "./OrbitDBOperationsLog";
 import { DatabaseProvider } from "../providers/DatabaseProvider";
+import Store from 'orbit-db-store';
+import Index from 'orbit-db-store/src/Index';
+import EventIndex from 'orbit-db-eventstore/src/EventIndex';
+import KeyValueIndex from 'orbit-db-kvstore/src/KeyValueIndex';
+import FeedIndex from 'orbit-db-feedstore/src/FeedIndex';
+import CounterIndex from 'orbit-db-counterstore/src/CounterIndex';
+import DocumentIndex from 'orbit-db-docstore/src/DocumentIndex';
 
 export class OrbitDBNodeProvider implements NodeProvider {
 
@@ -72,5 +78,46 @@ export class OrbitDBNodeProvider implements NodeProvider {
 
   async getNodeInfoFromHash(nodeHash: String): Promise<any> {
     return this.store.get(nodeHash);
+  }
+
+  // TODO: Return type based on store type...
+  // need a good generic representation for all return types.
+  reconstructData(operationsLog: OperationsLog): any {
+    let index;
+
+    switch (this.store.type) {
+      case 'store':
+        index = new Index();
+        break;
+
+      case 'eventlog':
+        index = new EventIndex();
+        break;
+        
+      case 'docstore':
+        index = new DocumentIndex();
+        break;
+
+      case 'feed':
+        index = new FeedIndex();
+        break;
+        
+      case 'counter':
+        index = new CounterIndex();
+        break;
+
+      case 'keyvalue':
+        index = new KeyValueIndex();
+        break;
+
+      default:
+        console.error("Found unrecognised store type in OrbitDBOperationsLog.");
+        return null;
+    }
+     
+    let ipfsLog = operationsLog.getInnerLog();
+    index.updateIndex(ipfsLog);
+    let result = index.get();
+    return result;
   }
 }

@@ -26,4 +26,8 @@ export class OrbitDBOperationsLog implements OperationsLog {
 
     return heads;
   }
+
+  getInnerLog(): any {
+    return this.oplog;
+  }
 }
