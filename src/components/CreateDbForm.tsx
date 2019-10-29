@@ -12,6 +12,7 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
   const injector = useDependencyInjector();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [dbType, setDbType] = useState("eventlog");
   let dbProvider: MutableRefObject<DatabaseProvider> = useRef(null);
   let db: MutableRefObject<Store> = useRef(null);
 
@@ -39,6 +40,7 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
       if (!db.current) db.current = await dbProvider.current
         .createDBFactory(name)
         .addOptions({isPublic})
+        .setType(dbType)
         .create();
 
       // Calculate address
@@ -65,6 +67,33 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
     return <div className={CreateFormStyles.loadingText}>Loading...</div>;
   }
 
+  const toggleAccessControl = () => 
+    <div className={CreateFormStyles.createCheckboxContainer} onClick={togglePublic}>
+      Public
+      <input className={CreateFormStyles.optionSelect}
+        type="checkbox"
+        checked={isPublic}
+        readOnly
+      />
+      <span className={CreateFormStyles.checkbox}>
+        <div className={CreateFormStyles.checkmark}>{isPublic ? '✓' : ''}</div>
+      </span>
+    </div>;
+
+  const toggleTypeButtons = () => 
+    <div className={CreateFormStyles.typeChooserContainer}>
+      {createToggleButton('eventlog', 'Event Log')}
+      {createToggleButton('keyvalue', 'Key Value')}
+    </div>;
+  
+
+  const createToggleButton = (type: string, displayType: string) => {
+    if (type === dbType) {
+      return <button className={CreateFormStyles.typeChooserSelectedButton}>{displayType}</button>
+    }
+    return <button className={CreateFormStyles.typeChooserButton} onClick={() => setDbType(type)} >{displayType}</button>;
+  }
+
   return (
     <div>
       <div className={CreateFormStyles.createTextContainer}>
@@ -74,24 +103,15 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
             type="text"
             value={name}
             onChange={e => setName(e.target.value)}
-            placeholder={"name"}
+            placeholder={"Database Name"}
           />
           <button type="submit" value="create" className={CreateFormStyles.submitButton} >
             <IoMdHand className={CreateFormStyles.connectToGraphButton} size={'3em'}/>
           </button>
         </form>
       </div>
-      <div className={CreateFormStyles.createCheckboxContainer} onClick={togglePublic}>
-        Public
-        <input className={CreateFormStyles.optionSelect}
-          type="checkbox"
-          checked={isPublic}
-          readOnly
-        />
-        <span className={CreateFormStyles.checkbox}>
-          <div className={CreateFormStyles.checkmark}>{isPublic ? '✓' : ''}</div>
-        </span>
-      </div>
+      {toggleAccessControl()}
+      {toggleTypeButtons()}
     </div>
   );
 });

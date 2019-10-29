@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import * as d3Dag from 'd3-dag';
 import * as d3 from 'd3';
-import { D3Data, getNumberOfLeaves, getDepth } from '../model/D3Data';
+import { D3Data, getNumberOfLeaves, getDepth } from '../../model/D3Data';
 import { Color } from 'csstype';
 import graphStyles from './GraphDisplay.module.css';
-import leftAlign from '../utils/NodePlotter';
+import leftAlign from '../../utils/NodePlotter';
 
 export type GraphDisplayNodeMouseEvents = {
   'click'?: (d3dataID: string, DOMElem: Element) => void,

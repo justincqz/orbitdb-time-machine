@@ -6,12 +6,14 @@ import OrbitDBDatabaseTypes from "./OrbitDBDatabaseTypes";
 
 export default class OrbitDBFactory implements DatabaseFactory {
   private name: string;
+  private type: string;
   private options: any;
   private dbInstance: OrbitDB;
 
   public constructor(dbInstance: OrbitDB, name: string) {
     this.name = name;
     this.dbInstance = dbInstance;
+    this.type = 'eventlog';
   }
 
   public setName(name: string) {
@@ -19,9 +21,20 @@ export default class OrbitDBFactory implements DatabaseFactory {
     return this;
   }
 
+  // Set type of database to create (default: 'eventlog')
+  public setType(type: string) {
+    const types = ['eventlog', 'keyvalue'];
+    if (types.includes(type)) {
+      this.type = type;
+    }
+    return this;
+  }
+
   // Currently supports:
   //   isPublic: <boolean>
   //     Set if everyone has write access (default: false)
+  //   type: <string>
+  //     Set type of database to create   (default: 'eventlog')
   public addOptions(options: any) {
     const accessControl = options.isPublic ? {
       accessController: { 
@@ -34,6 +47,10 @@ export default class OrbitDBFactory implements DatabaseFactory {
         write: [OrbitDB.identity.id]
       }
     };
+
+    if (options.type) {
+      this.setType(options.type);
+    }
 
     this.options = {
       ...accessControl,

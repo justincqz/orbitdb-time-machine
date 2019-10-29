@@ -11,7 +11,7 @@ import OperationsLog from '../providers/OperationsLog';
 import JoinEvent from '../model/JoinEvent';
 import DAGNode from '../model/DAGNode';
 import JoinStorageProvider from '../providers/JoinStorageProvider';
-import JoinList from '../components/JoinList';
+import Sidebar from '../components/ViewDatabase/Sidebar';
 import OrbitDBEventStoreDisplay from '../components/OrbitDBEventStoreDisplay';
 import OrbitDBDatabaseTypes from '../adapters/OrbitDBDatabaseTypes';
 
@@ -136,6 +136,34 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     }
   }
 
+  async function addEventLog(value: string) {
+    if (value) {
+      try {
+        await store.current.add(value);
+      } catch (e) {
+        setError(e.toString());
+      }
+      loadData(true);
+    }
+  }
+
+  async function addKeyValue(key: string, value: string) {
+    if (key && value) {
+      try {
+        await store.current.put(key, value);
+      } catch (e) {
+        setError(e.toString());
+      }
+      loadData(true);
+    }
+  }
+
+
+
+  const goHome = () => {
+    history.push("/");
+  }
+
   if (error) {
     return <div className={databaseStyles.container}>
       <div className={databaseStyles.error}>{error}</div>
@@ -155,10 +183,14 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   }
 
   return <div className={databaseStyles.splitView}>
-    <JoinList
+    <Sidebar
       joinEvents={storageProvider.current.getJoins()}
       selectJoin={setSelectedJoin}
-    ></JoinList>
+      type={store.current._type}
+      addEventlog={addEventLog}
+      addKeyValue={addKeyValue}
+      goHome={goHome}
+    />
     <div className={databaseStyles.container}>
       <div className={databaseStyles.addressContainer}>
         Viewing: {`/orbitdb/${hash}/${name}`}

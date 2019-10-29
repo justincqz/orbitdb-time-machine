@@ -18,11 +18,14 @@ const DAGNodeTooltip: React.FC<{nodeInfo: any, rect: ClientRect}> = ({nodeInfo, 
     return null;
   }
 
+  console.log("Node info:", nodeInfo)
+
   return (
     <div
       ref={toolTipRef}
       className={FormStyles.container}
-      style={calculatePositionStyle()}>
+      style={calculatePositionStyle()}
+    >
       <div>
         Operation: {nodeInfo.payload.op}
       </div>
