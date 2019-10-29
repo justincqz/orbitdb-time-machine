@@ -14,6 +14,8 @@ import JoinEvent from '../model/JoinEvent';
 import DAGNode from '../model/DAGNode';
 import JoinStorageProvider from '../providers/JoinStorageProvider';
 import JoinList from '../components/JoinList';
+import Popup from "reactjs-popup";
+import DatabaseStateDisplay from "../components/DatabaseStateDisplay";
 
 const DatabaseView: React.FC = withRouter(({ history }) => {
   // URL parameters
@@ -32,6 +34,11 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   const [error, setError] = useState('');
   const [listening, setListening] = useState(false);
   const [selectedJoin, setSelectedJoin]: [string, React.Dispatch<React.SetStateAction<string>>] = useState(null);
+
+  const [databaseState, setDatabaseState] = useState({
+    data: [],
+    openPopup: false
+  });
 
   useEffect(() => {
     if (storageProvider.current === undefined) {
@@ -53,6 +60,30 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
       });
     }
   });
+
+  function setSelectedDatabase(hash: string) {
+    try {
+      nodeProvider.current.getNodeInfoFromHash(hash).then((nodeEntry) => {
+        dbProvider.current.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
+          let reconstructedData = nodeProvider.current.reconstructData(operationsLog);
+
+          // Populate data to visualise in table.
+          let filteredData = reconstructedData.map((data) => {
+            return {"value" : data.payload.value};
+          });
+
+          setDatabaseState({
+            ...databaseState,
+            data: filteredData.reverse(),
+            openPopup: true
+          });
+        });
+      });
+    } catch (e) {
+      // TODO: Error handling.
+      console.log("Something went terribly wrong...");
+    }
+  }
 
   function listenForChanges() {
     console.log('listening')
@@ -136,14 +167,21 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
       </div>
       <div className={databaseStyles.titleContainer}>Timeline</div>
       <GraphDisplay
-        dbProvider={dbProvider.current}
         nodeProvider={nodeProvider.current}
-        inputData={selectedJoin === null ? d3data : 
+        inputData={selectedJoin === null ? d3data :
           viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)
         }
         nodeColour='#7bb1f1ff'
-        lineColour='#1d5495ff' 
+        lineColour='#1d5495ff'
+        setCurrentDatabaseState={setSelectedDatabase}
       />
+      <Popup open={databaseState.openPopup}
+             onClose={() => setDatabaseState({...databaseState, openPopup: false})}
+             position="bottom center">
+        <div>
+        <DatabaseStateDisplay data={databaseState.data}/>
+        </div>
+      </Popup>
       <div className={databaseStyles.iconTaskbarBorder}>
         <div className={databaseStyles.iconTaskbar}>
           <div className={databaseStyles.icon} onClick={goHome}>

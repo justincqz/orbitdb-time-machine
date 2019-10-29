@@ -5,26 +5,18 @@ import { D3Data, getNumberOfLeaves, getDepth } from '../model/D3Data';
 import { Color } from 'csstype';
 import graphStyles from './GraphDisplay.module.css';
 import DAGNodeTooltip from './DAGNodeTooltip';
-import Popup from "reactjs-popup";
 import { NodeProvider } from "../providers/NodeProvider";
 import leftAlign from '../utils/NodePlotter';
-import DatabaseStateDisplay from "./DatabaseStateDisplay";
-import { DatabaseProvider } from "../providers/DatabaseProvider";
 
 const GraphDisplay: React.FC<{
-  dbProvider: DatabaseProvider,
   nodeProvider: NodeProvider,
   inputData: D3Data,
   nodeColour?: Color,
-  lineColour?: Color
-}> = ({ dbProvider, nodeProvider, inputData, nodeColour, lineColour }) => {
+  lineColour?: Color,
+  setCurrentDatabaseState(hash: string): void
+}> = ({ nodeProvider, inputData, nodeColour, lineColour, setCurrentDatabaseState }) => {
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
-
-  const [databaseState, showDatabaseState] = useState({
-    data: [],
-    openPopup: false
-  });
 
   const [toolTipState, setTooltipState] = useState({
     nodeInfo: null,
@@ -67,27 +59,7 @@ const GraphDisplay: React.FC<{
   };
 
   function handleOnClick(d: any) {
-    try {
-      nodeProvider.getNodeInfoFromHash(d.id).then((nodeEntry) => {
-        dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
-          let reconstructedData = nodeProvider.reconstructData(operationsLog);
-
-          // Populate data to visualise in table.
-          let filteredData = reconstructedData.map((data) => {
-            return {"value" : data.payload.value};
-          });
-
-          showDatabaseState({
-            ...databaseState,
-            data: filteredData,
-            openPopup: true
-          });
-        });
-      });
-    } catch (e) {
-      // TODO: Error handling.
-      console.log("Something went terribly wrong...");
-    }
+    setCurrentDatabaseState(d.id);
   };
 
   function cleanUpSvg(dom) {
@@ -175,13 +147,6 @@ const GraphDisplay: React.FC<{
   return (
     <div className={graphStyles.graphContainer}>
       <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
-      <Popup open={databaseState.openPopup}
-             onClose={() => databaseState.openPopup = false}
-             position="bottom center">
-        <div>
-        <DatabaseStateDisplay data={databaseState.data}/>
-        </div>
-      </Popup>
       {(inputData.id !== "EMPTY" ?
         (<svg id='graph' width='100%' height='100%' viewBox={`${viewportOffset} 0 1000 300`} onWheel={scrollSvg}></svg>) :
         (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)

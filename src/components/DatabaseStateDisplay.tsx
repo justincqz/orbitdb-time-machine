@@ -15,6 +15,7 @@ const DatabaseStateDisplay: React.FC<{data: any}> = ({data}) => {
              data={data}
              columns={columns}
              defaultPageSize={5}
+             pageSizeOptions={[5,10,20]}
          />
     );
 };
