@@ -139,7 +139,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
         inputData={selectedJoin === null ? d3data : 
           viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)
         }
-        nodeColour='#7bb1f1ff' 
+        nodeColour='#7bb1f1ff'
         lineColour='#1d5495ff' 
       />
       <div className={databaseStyles.iconTaskbarBorder}>
