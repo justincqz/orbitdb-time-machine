@@ -8,21 +8,25 @@ import DAGNodeTooltip from './DAGNodeTooltip';
 import { NodeProvider } from "../providers/NodeProvider";
 import leftAlign from '../utils/NodePlotter';
 
+// TODO: Maybe pass in a JSON object that has all mouse events.
 const GraphDisplay: React.FC<{
-  nodeProvider: NodeProvider,
+  onMouseClick(d3dataID: string, DOMElem: Element): void,
+  onMouseEnter(d3dataID: string, DOMElem: Element): void,
+  onMouseLeave(d3dataID: string, DOMElem: Element): void,
   inputData: D3Data,
   nodeColour?: Color,
   lineColour?: Color,
-  setCurrentDatabaseState(hash: string): void
-}> = ({ nodeProvider, inputData, nodeColour, lineColour, setCurrentDatabaseState }) => {
+}> = ({ 
+  onMouseClick = undefined,
+  onMouseEnter = undefined,
+  onMouseLeave = undefined,
+  inputData,
+  nodeColour,
+  lineColour 
+}) => {
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
 
-  const [toolTipState, setTooltipState] = useState({
-    nodeInfo: null,
-    toolTipHidden: true,
-    targetRect: null
-  });
   const [viewportOffset, setViewportOffset] = useState(0);
 
   // TODO calculate this dynamically
@@ -32,34 +36,23 @@ const GraphDisplay: React.FC<{
   const viewWidth = 300 * sequentialNodes;
   const viewHeight = heads * 100;
 
-  function handleMouseEnter(d, domElement) {
-    try {
-      nodeProvider.getNodeInfoFromHash(d.id).then((nodeInfo) => {
-        // let text = JSON.stringify(nodeInfo.payload);
-        setTooltipState({
-          ...toolTipState,
-          nodeInfo: nodeInfo,
-          toolTipHidden: false,
-          targetRect: domElement.getBoundingClientRect()
-        });
-      });
-    } catch (e) {
-      // TODO: Error handling.
-      console.log("Something went terribly wrong...");
+  // TODO: Find out types for d.
+  function handleMouseEnter(d, domElement: Element) {
+    if (onMouseEnter != undefined) {
+      onMouseEnter(d.id, domElement);
     }
   };
 
-  function handleMouseLeave() {
-    setTooltipState({
-      ...toolTipState,
-      nodeInfo: null,
-      toolTipHidden: true,
-      targetRect: null
-    });
+  function handleMouseLeave(d, domElement: Element) {
+    if (onMouseLeave != undefined) {
+      onMouseLeave(d.id, domElement);
+    }
   };
 
-  function handleOnClick(d: any) {
-    setCurrentDatabaseState(d.id);
+  function handleOnClick(d, domElement: Element) {
+    if (onMouseClick != undefined) {
+      onMouseClick(d.id, domElement);
+    }
   };
 
   function cleanUpSvg(dom) {
@@ -115,8 +108,8 @@ const GraphDisplay: React.FC<{
       .attr('id', d => d.id)
       .attr('fill', nodeColour)
       .on('mouseenter', (d, i, e) => { handleMouseEnter(d, e[i]) })
-      .on('mouseleave', handleMouseLeave)
-      .on('click', (d, i, e) => { handleOnClick(d) });
+      .on('mouseleave', (d, i, e) => { handleMouseLeave(d, e[i]) })
+      .on('click', (d, i, e) => { handleOnClick(d, e[i]) });
     return svgDom;
   }
 
@@ -146,7 +139,6 @@ const GraphDisplay: React.FC<{
 
   return (
     <div className={graphStyles.graphContainer}>
-      <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
       {(inputData.id !== "EMPTY" ?
         (<svg id='graph' width='100%' height='100%' viewBox={`${viewportOffset} 0 1000 300`} onWheel={scrollSvg}></svg>) :
         (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)

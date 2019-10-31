@@ -16,8 +16,9 @@ import JoinStorageProvider from '../providers/JoinStorageProvider';
 import JoinList from '../components/JoinList';
 import Popup from "reactjs-popup";
 import DatabaseStateDisplay from "../components/DatabaseStateDisplay";
+import OrbitDBEventStoreDisplay from '../components/OrbitDBEventStoreDisplay';
 
-const DatabaseView: React.FC = withRouter(({ history }) => {
+const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   // URL parameters
   let { hash, name }: { hash: string, name: string } = useParams();
   const injector = useDependencyInjector();
@@ -35,15 +36,28 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   const [listening, setListening] = useState(false);
   const [selectedJoin, setSelectedJoin]: [string, React.Dispatch<React.SetStateAction<string>>] = useState(null);
 
-  const [databaseState, setDatabaseState] = useState({
-    data: [],
-    openPopup: false
-  });
+  let storeDisplayRenderMap = {
+    'eventlog': renderEventStoreDisplay,
+  };
+
+  /**
+   * Returns the component to render if visualising an EventStore.
+   */
+  function renderEventStoreDisplay() {
+    return (
+      <OrbitDBEventStoreDisplay 
+        operationLogData={
+          selectedJoin === null ? d3data : viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)
+        }
+        eventStore={store.current}
+        dbProvider={dbProvider.current}
+      />
+    );
+  }
 
   useEffect(() => {
     if (storageProvider.current === undefined) {
       storageProvider.current = injector.createJoinStorageProvider();
-      storageProvider.current.setDatabase(`${hash}/${name}`);
     }
 
     if (!dbProvider.current) {
@@ -62,29 +76,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
     }
   });
 
-  function setSelectedDatabase(hash: string) {
-    try {
-      nodeProvider.current.getNodeInfoFromHash(hash).then((nodeEntry) => {
-        dbProvider.current.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
-          let reconstructedData = nodeProvider.current.reconstructData(operationsLog);
-
-          // Populate data to visualise in table.
-          let filteredData = reconstructedData.map((data) => {
-            return {"value" : data.payload.value};
-          });
-
-          setDatabaseState({
-            ...databaseState,
-            data: filteredData.reverse(),
-            openPopup: true
-          });
-        });
-      });
-    } catch (e) {
-      // TODO: Error handling.
-      console.log("Something went terribly wrong...");
-    }
-  }
+  
 
   function listenForChanges() {
     console.log('listening')
@@ -94,6 +86,12 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
 
       loadData(true);
 
+    });
+
+    // Re-query database if any local writes occurred.
+    nodeProvider.current.listenForLocalWrites(() => {
+      console.log("Local write recorded!");
+      loadData(true);
     });
   }
 
@@ -125,25 +123,6 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
     }
   }
 
-  async function addNode() {
-    let value = prompt('Enter a value to insert:');
-
-    if (value === null || value === '') {
-      return;
-    }
-
-    try {
-      await store.current.add(value);
-    } catch (e) {
-      setError(e.toString());
-    }
-    loadData(true);
-  }
-
-  const goHome = () => {
-    history.push("/");
-  }
-
   if (error) {
     return <div className={databaseStyles.container}>
       <div className={databaseStyles.error}>{error}</div>
@@ -157,6 +136,11 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
     </div>
   }
 
+  if (storeDisplayRenderMap[store.current.type] == null) {
+    console.log(`Asked to render unsupported database type: ${store.current.type}`);
+    return null;
+  }
+
   return <div className={databaseStyles.splitView}>
     <JoinList
       joinEvents={storageProvider.current.getJoins()}
@@ -167,34 +151,9 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
         Viewing: {`/orbitdb/${hash}/${name}`}
       </div>
       <div className={databaseStyles.titleContainer}>Timeline</div>
-      {/* <GraphDisplay
-        nodeProvider={nodeProvider.current}
-        inputData={selectedJoin === null ? d3data :
-          viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)
-        }
-        nodeColour='#7bb1f1ff'
-        lineColour='#1d5495ff'
-        setCurrentDatabaseState={setSelectedDatabase}
-      /> */}
-      <Popup open={databaseState.openPopup}
-             onClose={() => setDatabaseState({...databaseState, openPopup: false})}
-             position="bottom center">
-        <div>
-        <DatabaseStateDisplay data={databaseState.data}/>
-        </div>
-      </Popup>
-      <div className={databaseStyles.iconTaskbarBorder}>
-        <div className={databaseStyles.iconTaskbar}>
-          <div className={databaseStyles.icon} onClick={goHome}>
-            <MdHome size={'6vh'} />
-          </div>
-          <div className={databaseStyles.icon} onClick={addNode}>
-            <MdLibraryAdd size={'6vh'} />
-          </div>
-        </div>
-      </div>
+      {storeDisplayRenderMap[store.current.type]()}
     </div>
   </div>
 });
 
-export default DatabaseView;
+export default OrbitDBDatabaseView;
