@@ -1,14 +1,15 @@
 import React from 'react';
-import databaseStyles from '../pages/Database.module.css';
+import databaseStyles from '../pages/OrbitDBDatabaseView.module.css';
 import { withRouter } from 'react-router-dom';
 import { MdLibraryAdd } from 'react-icons/md';
 
+// TODO: Allow people to manually style. Pass in className as props?
 const AddButton: React.FC<{
   onClick(): void
 }> = withRouter(({ history, onClick=undefined }) => {
 
   function handleOnClick() {
-    if (onClick == undefined) {
+    if (onClick === undefined) {
       return;
     }
 

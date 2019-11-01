@@ -13,10 +13,6 @@ export interface NodeProvider {
 
   getEdges(node: DAGNode): any;
 
-  getNodeInfo(node: DAGNode): Promise<any>;
-
-  getNodeInfoFromHash(nodeHash: String): Promise<any>;
-
   /**
    * Returns the current operations log.
    */

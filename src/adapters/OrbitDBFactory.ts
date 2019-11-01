@@ -2,6 +2,7 @@ import * as OrbitDB from "orbit-db";
 import { Store } from "orbit-db-store";
 
 import DatabaseFactory from "../model/DatabaseFactory";
+import OrbitDBDatabaseTypes from "./OrbitDBDatabaseTypes";
 
 export default class OrbitDBFactory implements DatabaseFactory {
   private name: string;
@@ -41,6 +42,6 @@ export default class OrbitDBFactory implements DatabaseFactory {
   }
 
   public create(): Promise<Store> {
-    return this.dbInstance.create(this.name, "eventlog", this.options);
+    return this.dbInstance.create(this.name, OrbitDBDatabaseTypes.EventStore, this.options);
   }
 }

@@ -4,22 +4,21 @@ import * as d3 from 'd3';
 import { D3Data, getNumberOfLeaves, getDepth } from '../model/D3Data';
 import { Color } from 'csstype';
 import graphStyles from './GraphDisplay.module.css';
-import DAGNodeTooltip from './DAGNodeTooltip';
-import { NodeProvider } from "../providers/NodeProvider";
 import leftAlign from '../utils/NodePlotter';
 
-// TODO: Maybe pass in a JSON object that has all mouse events.
+export type GraphDisplayNodeMouseEvents = {
+  'click'?: (d3dataID: string, DOMElem: Element) => void,
+  'mouseenter'?: (d3dataID: string, DOMElem: Element) => void,
+  'mouseleave'?: (d3dataID: string, DOMElem: Element) => void,
+};
+
 const GraphDisplay: React.FC<{
-  onMouseClick(d3dataID: string, DOMElem: Element): void,
-  onMouseEnter(d3dataID: string, DOMElem: Element): void,
-  onMouseLeave(d3dataID: string, DOMElem: Element): void,
+  mouseEvents: GraphDisplayNodeMouseEvents,
   inputData: D3Data,
   nodeColour?: Color,
   lineColour?: Color,
 }> = ({ 
-  onMouseClick = undefined,
-  onMouseEnter = undefined,
-  onMouseLeave = undefined,
+  mouseEvents = undefined,
   inputData,
   nodeColour,
   lineColour 
@@ -38,20 +37,20 @@ const GraphDisplay: React.FC<{
 
   // TODO: Find out types for d.
   function handleMouseEnter(d, domElement: Element) {
-    if (onMouseEnter != undefined) {
-      onMouseEnter(d.id, domElement);
+    if (mouseEvents !== undefined && mouseEvents.mouseenter !== undefined) {
+      mouseEvents.mouseenter(d.id, domElement);
     }
   };
 
   function handleMouseLeave(d, domElement: Element) {
-    if (onMouseLeave != undefined) {
-      onMouseLeave(d.id, domElement);
+    if (mouseEvents !== undefined && mouseEvents.mouseleave !== undefined) {
+      mouseEvents.mouseleave(d.id, domElement);
     }
   };
 
   function handleOnClick(d, domElement: Element) {
-    if (onMouseClick != undefined) {
-      onMouseClick(d.id, domElement);
+    if (mouseEvents !== undefined && mouseEvents.click !== undefined) {
+      mouseEvents.click(d.id, domElement);
     }
   };
 

@@ -6,7 +6,6 @@ import {
   Route
 } from 'react-router-dom';
 import Landing from './pages/Landing';
-import DatabaseView from './pages/Database';
 import ErrorPage from './pages/ErrorPage';
 import Create from './pages/Create';
 import OrbitDBDatabaseView from './pages/OrbitDBDatabaseView';
@@ -20,7 +19,6 @@ const App: React.FC = () => {
             <Landing />
           </Route>
           <Route exact path='/orbitdb/:hash/:name'>
-            {/* <DatabaseView /> */}
             <OrbitDBDatabaseView />
           </Route>
           <Route exact path='/create'>

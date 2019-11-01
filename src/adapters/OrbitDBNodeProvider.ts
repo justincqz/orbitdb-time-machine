@@ -10,6 +10,7 @@ import KeyValueIndex from 'orbit-db-kvstore/src/KeyValueIndex';
 import FeedIndex from 'orbit-db-feedstore/src/FeedIndex';
 import CounterIndex from 'orbit-db-counterstore/src/CounterIndex';
 import DocumentIndex from 'orbit-db-docstore/src/DocumentIndex';
+import OrbitDBDatabaseTypes from "./OrbitDBDatabaseTypes";
 
 export class OrbitDBNodeProvider implements NodeProvider {
 
@@ -90,23 +91,23 @@ export class OrbitDBNodeProvider implements NodeProvider {
         index = new Index();
         break;
 
-      case 'eventlog':
+      case OrbitDBDatabaseTypes.EventStore:
         index = new EventIndex();
         break;
         
-      case 'docstore':
+      case OrbitDBDatabaseTypes.DocumentStore:
         index = new DocumentIndex();
         break;
 
-      case 'feed':
+      case OrbitDBDatabaseTypes.FeedStore:
         index = new FeedIndex();
         break;
         
-      case 'counter':
+      case OrbitDBDatabaseTypes.CounterStore:
         index = new CounterIndex();
         break;
 
-      case 'keyvalue':
+      case OrbitDBDatabaseTypes.KeyValueStore:
         index = new KeyValueIndex();
         break;
 

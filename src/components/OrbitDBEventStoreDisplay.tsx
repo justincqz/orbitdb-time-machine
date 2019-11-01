@@ -4,7 +4,7 @@ import EventStore from 'orbit-db-eventstore';
 import EventIndex from 'orbit-db-eventstore/src/EventIndex';
 import { DatabaseProvider } from '../providers/DatabaseProvider';
 import OperationsLog from '../providers/OperationsLog';
-import GraphDisplay from '../components/GraphDisplay';
+import GraphDisplay, { GraphDisplayNodeMouseEvents } from '../components/GraphDisplay';
 import HomeButton from './HomeButton';
 import { D3Data } from '../model/D3Data';
 import Popup from "reactjs-popup";
@@ -12,7 +12,8 @@ import DatabaseStateDisplay from "../components/DatabaseStateDisplay";
 import DAGNodeTooltip from './DAGNodeTooltip';
 import storeDisplayStyles from './StoreDisplay.module.css';
 import AddButton from './AddButton';
-import databaseStyles from '../pages/Database.module.css';
+import databaseStyles from '../pages/OrbitDBDatabaseView.module.css';
+import OrbitDBDatabaseTypes from '../adapters/OrbitDBDatabaseTypes';
 
 /**
  * The component responsible for displaying an OrbitDB EventStore.
@@ -40,7 +41,7 @@ const OrbitDBEventStoreDisplay: React.FC<{
     openPopup: false
   });
 
-  if (eventStore.type != 'eventlog') {
+  if (eventStore.type !== OrbitDBDatabaseTypes.EventStore) {
     console.log("OrbitDBEventStoreDisplay received Store type other than EventStore");
     return null;
   }
@@ -148,14 +149,21 @@ const OrbitDBEventStoreDisplay: React.FC<{
     // loadData(true);
   }
 
+  let eventCallbacks: GraphDisplayNodeMouseEvents = {
+    'click': onOperationLogNodeClick,
+    'mouseenter': onOperationLogNodeMouseEnter,
+    'mouseleave': onOperationLogNodeMouseLeave
+  };
+
   return (
     <div className={storeDisplayStyles.container}>
       <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
       <GraphDisplay
         inputData={operationLogData}
-        onMouseClick={onOperationLogNodeClick}
-        onMouseEnter={onOperationLogNodeMouseEnter}
-        onMouseLeave={onOperationLogNodeMouseLeave}
+        mouseEvents={eventCallbacks}
+        // onMouseClick={onOperationLogNodeClick}
+        // onMouseEnter={onOperationLogNodeMouseEnter}
+        // onMouseLeave={onOperationLogNodeMouseLeave}
         nodeColour='#7bb1f1ff'
         lineColour='#1d5495ff'
       />

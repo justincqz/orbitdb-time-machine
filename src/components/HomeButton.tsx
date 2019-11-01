@@ -1,8 +1,9 @@
 import React from 'react';
-import databaseStyles from '../pages/Database.module.css';
+import databaseStyles from '../pages/OrbitDBDatabaseView.module.css';
 import { withRouter } from 'react-router-dom';
 import { MdHome } from 'react-icons/md';
 
+// TODO: Allow people to manually style. Pass in className as props?
 const HomeButton: React.FC = withRouter(({ history }) => {
 
   const goHome = () => {

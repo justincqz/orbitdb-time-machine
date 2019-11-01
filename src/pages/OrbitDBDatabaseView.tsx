@@ -1,23 +1,25 @@
 import React, { useEffect, useState, useRef, MutableRefObject } from 'react';
 import { useParams } from 'react-router-dom';
-import GraphDisplay from '../components/GraphDisplay';
 import { useDependencyInjector } from '../state/dependencyInjector';
 import { D3Data, viewJoinEvent } from '../model/D3Data';
 import { NodeProvider } from "../providers/NodeProvider";
 import { DatabaseProvider } from '../providers/DatabaseProvider';
 import { Store } from "orbit-db-store";
-import databaseStyles from './Database.module.css';
-import { MdLibraryAdd, MdHome } from 'react-icons/md';
+import databaseStyles from './OrbitDBDatabaseView.module.css';
 import { withRouter } from 'react-router-dom';
 import OperationsLog from '../providers/OperationsLog';
 import JoinEvent from '../model/JoinEvent';
 import DAGNode from '../model/DAGNode';
 import JoinStorageProvider from '../providers/JoinStorageProvider';
 import JoinList from '../components/JoinList';
-import Popup from "reactjs-popup";
-import DatabaseStateDisplay from "../components/DatabaseStateDisplay";
 import OrbitDBEventStoreDisplay from '../components/OrbitDBEventStoreDisplay';
+import OrbitDBDatabaseTypes from '../adapters/OrbitDBDatabaseTypes';
 
+/**
+ * Implements the shared elements of database views.
+ * Checks the type of store being visualised and renders the
+ * corresponding component.
+ */
 const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   // URL parameters
   let { hash, name }: { hash: string, name: string } = useParams();
@@ -36,9 +38,19 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   const [listening, setListening] = useState(false);
   const [selectedJoin, setSelectedJoin]: [string, React.Dispatch<React.SetStateAction<string>>] = useState(null);
 
-  let storeDisplayRenderMap = {
-    'eventlog': renderEventStoreDisplay,
-  };
+  let storeDisplayRenderMap = generateRenderMap();
+
+  /**
+   * Generates and returns a mapping between every OrbitDBDatabaseType 
+   * and it's corresponding component's render function.
+   */
+  function generateRenderMap(): Object {
+    let result = {};
+
+    result[OrbitDBDatabaseTypes.EventStore] = renderEventStoreDisplay;
+
+    return result;
+  }
 
   /**
    * Returns the component to render if visualising an EventStore.
@@ -58,6 +70,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   useEffect(() => {
     if (storageProvider.current === undefined) {
       storageProvider.current = injector.createJoinStorageProvider();
+      storageProvider.current.setDatabase(`${hash}/${name}`);
     }
 
     if (!dbProvider.current) {
