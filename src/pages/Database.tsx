@@ -43,6 +43,7 @@ const DatabaseView: React.FC = withRouter(({ history }) => {
   useEffect(() => {
     if (storageProvider.current === undefined) {
       storageProvider.current = injector.createJoinStorageProvider();
+      storageProvider.current.setDatabase(`${hash}/${name}`);
     }
 
     if (!dbProvider.current) {

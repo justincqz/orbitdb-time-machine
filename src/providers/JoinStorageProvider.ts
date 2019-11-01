@@ -10,4 +10,7 @@ export default interface JoinStorageProvider {
   // Add a join event
   addJoinEvent(event: JoinEvent);
 
+  // Set current database
+  setDatabase(id: string);
+
 }
