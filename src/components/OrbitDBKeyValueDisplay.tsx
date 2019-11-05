@@ -13,7 +13,7 @@ import storeDisplayStyles from './StoreDisplay.module.css';
 import OrbitDBDatabaseTypes from '../adapters/OrbitDBDatabaseTypes';
 
 /**
- * The component responsible for displaying an OrbitDB EventStore.
+ * The component responsible for displaying an OrbitDB Key Value.
  * Here, we take care of EventStore specific operations such as add.
  * 
  * @param operationLogData The operations log graph we need to visualise
@@ -21,7 +21,7 @@ import OrbitDBDatabaseTypes from '../adapters/OrbitDBDatabaseTypes';
  * @param dbProvider The underlying database
  * 
  */
-const OrbitDBEventStoreDisplay: React.FC<{
+const OrbitDBKeyValueDisplay: React.FC<{
   operationLogData: D3Data,
   eventStore: EventStore,
   dbProvider: DatabaseProvider
@@ -38,8 +38,8 @@ const OrbitDBEventStoreDisplay: React.FC<{
     openPopup: false
   });
 
-  if (eventStore.type !== OrbitDBDatabaseTypes.EventStore) {
-    console.log("OrbitDBEventStoreDisplay received Store type other than EventStore");
+  if (eventStore.type !== OrbitDBDatabaseTypes.KeyValueStore) {
+    console.log("OrbitDBKeyValueDisplay received Store type other than EventStore");
     return null;
   }
 
@@ -52,6 +52,7 @@ const OrbitDBEventStoreDisplay: React.FC<{
    * @param DOMElem The DOM element that registered this click event
    */
   function onOperationLogNodeClick(entryHash: string, DOMElem: Element): void {
+    return;
     try {
       let nodeEntry = eventStore.get(entryHash);
       dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
@@ -81,6 +82,7 @@ const OrbitDBEventStoreDisplay: React.FC<{
    * @param DOMElem The DOM element that registered this click event
    */
   function onOperationLogNodeMouseLeave(entryHash: string, DOMElem: Element): void {
+    return;
     setTooltipState({
       ...toolTipState,
       nodeInfo: null,
@@ -97,6 +99,7 @@ const OrbitDBEventStoreDisplay: React.FC<{
    * @param DOMElem The DOM element that registered this click event
    */
   function onOperationLogNodeMouseEnter(entryHash: string, DOMElem: Element): void {
+    return;
     try {
       let nodeEntry = eventStore.get(entryHash);
       setTooltipState({
@@ -156,4 +159,4 @@ const OrbitDBEventStoreDisplay: React.FC<{
   );
 };
 
-export default OrbitDBEventStoreDisplay;
+export default OrbitDBKeyValueDisplay;

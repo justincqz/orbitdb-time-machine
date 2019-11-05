@@ -1,4 +1,5 @@
 import { Store } from 'orbit-db-store';
+import OrbitDBDatabaseTypes from '../adapters/OrbitDBDatabaseTypes';
 
 export default interface DatabaseFactory {
   // Creates the initialised database. Returns store
@@ -8,7 +9,7 @@ export default interface DatabaseFactory {
   setName(name: string): DatabaseFactory;
 
   // Sets the type of the database
-  setType(type: string): DatabaseFactory;
+  setType(type: OrbitDBDatabaseTypes): DatabaseFactory;
 
   // Takes in an object of options, and adds it to the factory
   // Current supported options:

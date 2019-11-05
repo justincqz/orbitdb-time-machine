@@ -14,6 +14,7 @@ import JoinStorageProvider from '../providers/JoinStorageProvider';
 import Sidebar from '../components/ViewDatabase/Sidebar';
 import OrbitDBEventStoreDisplay from '../components/OrbitDBEventStoreDisplay';
 import OrbitDBDatabaseTypes from '../adapters/OrbitDBDatabaseTypes';
+import OrbitDBKeyValueDisplay from '../components/OrbitDBKeyValueDisplay';
 
 /**
  * Implements the shared elements of database views.
@@ -48,6 +49,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     let result = {};
 
     result[OrbitDBDatabaseTypes.EventStore] = renderEventStoreDisplay;
+    result[OrbitDBDatabaseTypes.KeyValueStore] = renderKeyValueDisplay;
 
     return result;
   }
@@ -58,6 +60,18 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   function renderEventStoreDisplay() {
     return (
       <OrbitDBEventStoreDisplay 
+        operationLogData={
+          selectedJoin === null ? d3data : viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)
+        }
+        eventStore={store.current}
+        dbProvider={dbProvider.current}
+      />
+    );
+  }
+
+  function renderKeyValueDisplay() {
+    return (
+      <OrbitDBKeyValueDisplay 
         operationLogData={
           selectedJoin === null ? d3data : viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)
         }
@@ -137,6 +151,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   }
 
   async function addEventLog(value: string) {
+    console.log(store);
     if (value) {
       try {
         await store.current.add(value);

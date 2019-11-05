@@ -5,6 +5,7 @@ import { Store } from "orbit-db-store";
 import { withRouter } from 'react-router-dom';
 import CreateFormStyles from './CreateDBForm.module.css';
 import { IoMdHand } from "react-icons/io";
+import OrbitDBDatabaseTypes from "../adapters/OrbitDBDatabaseTypes";
 
 const CreateDbForm: React.FC = withRouter(({ history }) => {
   const [name, setName] = useState("");
@@ -12,7 +13,7 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
   const injector = useDependencyInjector();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [dbType, setDbType] = useState("eventlog");
+  const [dbType, setDbType] = useState(OrbitDBDatabaseTypes.EventStore);
   let dbProvider: MutableRefObject<DatabaseProvider> = useRef(null);
   let db: MutableRefObject<Store> = useRef(null);
 
@@ -82,12 +83,12 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
 
   const toggleTypeButtons = () => 
     <div className={CreateFormStyles.typeChooserContainer}>
-      {createToggleButton('eventlog', 'Event Log')}
-      {createToggleButton('keyvalue', 'Key Value')}
+      {createToggleButton(OrbitDBDatabaseTypes.EventStore, 'Event Log')}
+      {createToggleButton(OrbitDBDatabaseTypes.KeyValueStore, 'Key Value')}
     </div>;
   
 
-  const createToggleButton = (type: string, displayType: string) => {
+  const createToggleButton = (type: OrbitDBDatabaseTypes, displayType: string) => {
     if (type === dbType) {
       return <button className={CreateFormStyles.typeChooserSelectedButton}>{displayType}</button>
     }
