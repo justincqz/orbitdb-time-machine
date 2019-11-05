@@ -53,25 +53,25 @@ const OrbitDBKeyValueDisplay: React.FC<{
    */
   function onOperationLogNodeClick(entryHash: string, DOMElem: Element): void {
     return;
-    try {
-      let nodeEntry = eventStore.get(entryHash);
-      dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
-        let reconstructedData = reconstructData(operationsLog);
+    // try {
+    //   let nodeEntry = eventStore.get(entryHash);
+    //   dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
+    //     let reconstructedData = reconstructData(operationsLog);
 
-        let filteredData = reconstructedData.map((data) => {
-          return {"value" : data.payload.value};
-        });
+    //     let filteredData = reconstructedData.map((data) => {
+    //       return {"value" : data.payload.value};
+    //     });
 
-        setDatabaseState({
-          ...databaseState,
-          data: filteredData.reverse(),
-          openPopup: true
-        });
-      });
-    } catch (e) {
-      // TODO: Error handling.
-      console.log("Something went terribly wrong...");
-    }
+    //     setDatabaseState({
+    //       ...databaseState,
+    //       data: filteredData.reverse(),
+    //       openPopup: true
+    //     });
+    //   });
+    // } catch (e) {
+    //   // TODO: Error handling.
+    //   console.log("Something went terribly wrong...");
+    // }
   }
 
   /**
@@ -83,12 +83,12 @@ const OrbitDBKeyValueDisplay: React.FC<{
    */
   function onOperationLogNodeMouseLeave(entryHash: string, DOMElem: Element): void {
     return;
-    setTooltipState({
-      ...toolTipState,
-      nodeInfo: null,
-      toolTipHidden: true,
-      targetRect: null
-    });
+    // setTooltipState({
+    //   ...toolTipState,
+    //   nodeInfo: null,
+    //   toolTipHidden: true,
+    //   targetRect: null
+    // });
   }
 
   /**
@@ -100,18 +100,18 @@ const OrbitDBKeyValueDisplay: React.FC<{
    */
   function onOperationLogNodeMouseEnter(entryHash: string, DOMElem: Element): void {
     return;
-    try {
-      let nodeEntry = eventStore.get(entryHash);
-      setTooltipState({
-        ...toolTipState,
-        nodeInfo: nodeEntry,
-        toolTipHidden: false,
-        targetRect: DOMElem.getBoundingClientRect()
-      });
-    } catch (e) {
-      // TODO: Error handling.
-      console.log("Something went terribly wrong...");
-    }
+    // try {
+    //   let nodeEntry = eventStore.get(entryHash);
+    //   setTooltipState({
+    //     ...toolTipState,
+    //     nodeInfo: nodeEntry,
+    //     toolTipHidden: false,
+    //     targetRect: DOMElem.getBoundingClientRect()
+    //   });
+    // } catch (e) {
+    //   // TODO: Error handling.
+    //   console.log("Something went terribly wrong...");
+    // }
   }
 
   /**
