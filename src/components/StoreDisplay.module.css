@@ -4,4 +4,9 @@
   align-items: center;
   height: 35%;
   width: 100%;
+  justify-content: space-between;
+}
+
+.table {
+  width:100%;
 }

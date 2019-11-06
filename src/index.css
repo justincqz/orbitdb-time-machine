@@ -22,3 +22,8 @@ input {
 input:focus {
   outline: none;
 }
+
+
+div > .rt-td {
+  text-align: center;
+}

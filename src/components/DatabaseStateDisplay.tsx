@@ -3,12 +3,15 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 
 const DatabaseStateDisplay: React.FC<{data: any}> = ({data}) => {
-  const columns = Object.keys(data[0]).map((key) => {
-    return {
-      Header: key,
-      accessor: key
-    }
-  })
+  let columns = [{Header: "Empty Database", accessor: "empty"}];
+  if (data[0] != null) {
+    columns = Object.keys(data[0]).map((key) => {
+      return {
+        Header: key,
+        accessor: key
+      }
+    });
+  }
   
   return (
     <ReactTable

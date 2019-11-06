@@ -3,7 +3,6 @@ import "react-table/react-table.css";
 import { DatabaseProvider } from '../providers/DatabaseProvider';
 import GraphDisplay, { GraphDisplayNodeMouseEvents } from './viewDatabase/GraphDisplay';
 import { D3Data } from '../model/D3Data';
-import Popup from "reactjs-popup";
 import DatabaseStateDisplay from "../components/DatabaseStateDisplay";
 import DAGNodeTooltip from './viewDatabase/DAGNodeTooltip';
 import storeDisplayStyles from './StoreDisplay.module.css';
@@ -33,8 +32,7 @@ const OrbitDBStoreDisplay: React.FC<{
   });
 
   const [databaseState, setDatabaseState] = useState({
-    data: [],
-    openPopup: false
+    data: []
   });
 
   /**
@@ -53,8 +51,7 @@ const OrbitDBStoreDisplay: React.FC<{
         let filteredData = uiProvider.getDataDisplay(reconstructedDataIndex);
         setDatabaseState({
           ...databaseState,
-          data: filteredData.reverse(),
-          openPopup: true
+          data: filteredData.reverse()
         });
       });
     } catch (e) {
@@ -100,6 +97,7 @@ const OrbitDBStoreDisplay: React.FC<{
     }
   }
 
+
   let eventCallbacks: GraphDisplayNodeMouseEvents = {
     'click': onOperationLogNodeClick,
     'mouseenter': onOperationLogNodeMouseEnter,
@@ -109,20 +107,17 @@ const OrbitDBStoreDisplay: React.FC<{
   return (
     <div className={storeDisplayStyles.container}>
       <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
+      <div>
       <GraphDisplay
         inputData={operationLogData}
         mouseEvents={eventCallbacks}
         nodeColour='#7bb1f1ff'
         lineColour='#1d5495ff'
       />
-      <Popup 
-        open={databaseState.openPopup}
-        onClose={() => setDatabaseState({...databaseState, openPopup: false})}
-        position="bottom center">
-        <div>
+      </div>
+      <div className={storeDisplayStyles.table}>
         <DatabaseStateDisplay data={databaseState.data}/>
-        </div>
-      </Popup>
+      </div>
     </div>
   );
 };
