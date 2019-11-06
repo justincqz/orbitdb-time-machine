@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import "react-table/react-table.css";
 import EventStore from 'orbit-db-eventstore';
-import EventIndex from 'orbit-db-eventstore/src/EventIndex';
+// import EventIndex from 'orbit-db-eventstore/src/EventIndex';
 import { DatabaseProvider } from '../providers/DatabaseProvider';
-import OperationsLog from '../providers/OperationsLog';
+// import OperationsLog from '../providers/OperationsLog';
 import GraphDisplay, { GraphDisplayNodeMouseEvents } from './ViewDatabase/GraphDisplay';
 import { D3Data } from '../model/D3Data';
 import Popup from "reactjs-popup";
@@ -82,13 +82,12 @@ const OrbitDBKeyValueDisplay: React.FC<{
    * @param DOMElem The DOM element that registered this click event
    */
   function onOperationLogNodeMouseLeave(entryHash: string, DOMElem: Element): void {
-    return;
-    // setTooltipState({
-    //   ...toolTipState,
-    //   nodeInfo: null,
-    //   toolTipHidden: true,
-    //   targetRect: null
-    // });
+    setTooltipState({
+      ...toolTipState,
+      nodeInfo: null,
+      toolTipHidden: true,
+      targetRect: null
+    });
   }
 
   /**
@@ -120,14 +119,14 @@ const OrbitDBKeyValueDisplay: React.FC<{
    * 
    * @param operationsLog The operations log used to reconstruct the database state.
    */
-  function reconstructData(operationsLog: OperationsLog): Array<any> {
+  // function reconstructData(operationsLog: OperationsLog): Array<any> {
 
-    let index = new EventIndex();
-    let ipfsLog = operationsLog.getInnerLog();
-    index.updateIndex(ipfsLog);
-    let result = index.get();
-    return result;
-  }
+  //   let index = new EventIndex();
+  //   let ipfsLog = operationsLog.getInnerLog();
+  //   index.updateIndex(ipfsLog);
+  //   let result = index.get();
+  //   return result;
+  // }
 
   let eventCallbacks: GraphDisplayNodeMouseEvents = {
     'click': onOperationLogNodeClick,
