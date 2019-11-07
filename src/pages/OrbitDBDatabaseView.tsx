@@ -11,8 +11,11 @@ import OperationsLog from '../providers/OperationsLog';
 import JoinEvent from '../model/JoinEvent';
 import DAGNode from '../model/DAGNode';
 import JoinStorageProvider from '../providers/JoinStorageProvider';
-import Sidebar from '../components/ViewDatabase/Sidebar';
+import Sidebar from '../components/viewDatabase/Sidebar';
 import OrbitDBStoreDisplay from '../components/OrbitDBStoreDisplay';
+import DatabaseUIProvider from '../providers/DatabaseUIProvider';
+import EventStoreUI from '../components/databaseUi/EventStoreUI';
+import KeyValueUI from '../components/databaseUi/KeyValueUI';
 
 /**
  * Implements the shared elements of database views.
@@ -27,6 +30,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   let store: MutableRefObject<Store> = useRef(null);
   let dbProvider: MutableRefObject<DatabaseProvider> = useRef(null);
   let storageProvider: MutableRefObject<JoinStorageProvider> = useRef(undefined);
+  let uiProvider: DatabaseUIProvider;
 
   // Limit number of nodes to fetch
   const LIMIT = 10;
@@ -59,7 +63,18 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     }
   });
 
-  
+  if (store.current != null) {
+    switch (store.current._type) {
+      case "eventlog":
+        uiProvider = new EventStoreUI();
+        break;
+      case "keyvalue":
+        uiProvider = new KeyValueUI();
+        break;
+      default:
+        throw new Error("Unsupported store type");
+    }
+  }
 
   function listenForChanges() {
     console.log('listening')
@@ -168,6 +183,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
         }
         nodeProvider={nodeProvider.current}
         dbProvider={dbProvider.current}
+        uiProvider={uiProvider}
       />
     </div>
   </div>

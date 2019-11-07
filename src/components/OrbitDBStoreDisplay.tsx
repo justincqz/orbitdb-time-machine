@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import "react-table/react-table.css";
 import { DatabaseProvider } from '../providers/DatabaseProvider';
 import OperationsLog from '../providers/OperationsLog';
-import GraphDisplay, { GraphDisplayNodeMouseEvents } from './ViewDatabase/GraphDisplay';
+import GraphDisplay, { GraphDisplayNodeMouseEvents } from './viewDatabase/GraphDisplay';
 import { D3Data } from '../model/D3Data';
 import Popup from "reactjs-popup";
 import DatabaseStateDisplay from "../components/DatabaseStateDisplay";
-import DAGNodeTooltip from './ViewDatabase/DAGNodeTooltip';
+import DAGNodeTooltip from './viewDatabase/DAGNodeTooltip';
 import storeDisplayStyles from './StoreDisplay.module.css';
 import { NodeProvider } from '../providers/NodeProvider';
+import DatabaseUIProvider from '../providers/DatabaseUIProvider';
 
 /**
  * The component responsible for displaying an OrbitDB EventStore.
@@ -22,8 +23,9 @@ import { NodeProvider } from '../providers/NodeProvider';
 const OrbitDBStoreDisplay: React.FC<{
   operationLogData: D3Data,
   nodeProvider: NodeProvider
-  dbProvider: DatabaseProvider
-}> = ({ operationLogData, nodeProvider, dbProvider }) => {
+  dbProvider: DatabaseProvider,
+  uiProvider: DatabaseUIProvider
+}> = ({ operationLogData, nodeProvider, dbProvider, uiProvider }) => {
 
   const [toolTipState, setTooltipState] = useState({
     nodeInfo: null,
@@ -45,25 +47,21 @@ const OrbitDBStoreDisplay: React.FC<{
    * @param DOMElem The DOM element that registered this click event
    */
   function onOperationLogNodeClick(entryHash: string, DOMElem: Element): void {
-    // try {
-    //   let nodeEntry = eventStore.get(entryHash);
-    //   dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
-    //     let reconstructedData = reconstructData(operationsLog);
-
-    //     let filteredData = reconstructedData.map((data) => {
-    //       return {"value" : data.payload.value};
-    //     });
-
-    //     setDatabaseState({
-    //       ...databaseState,
-    //       data: filteredData.reverse(),
-    //       openPopup: true
-    //     });
-    //   });
-    // } catch (e) {
-    //   // TODO: Error handling.
-    //   console.log("Something went terribly wrong...");
-    // }
+    try {
+      let nodeEntry = nodeProvider.getNodeInfoFromHash(entryHash);
+      dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
+        let reconstructedDataIndex = reconstructData(operationsLog);
+        let filteredData = uiProvider.getDataDisplay(reconstructedDataIndex);
+        setDatabaseState({
+          ...databaseState,
+          data: filteredData.reverse(),
+          openPopup: true
+        });
+      });
+    } catch (e) {
+      // TODO: Error handling.
+      console.log("Something went terribly wrong...");
+    }
   }
 
   /**
