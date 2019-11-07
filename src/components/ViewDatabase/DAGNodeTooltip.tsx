@@ -18,20 +18,21 @@ const DAGNodeTooltip: React.FC<{nodeInfo: any, rect: ClientRect}> = ({nodeInfo, 
     return null;
   }
 
-  console.log("Node info:", nodeInfo)
-
   return (
     <div
       ref={toolTipRef}
       className={FormStyles.container}
       style={calculatePositionStyle()}
     >
-      <div>
-        Operation: {nodeInfo.payload.op}
-      </div>
-      <div>
-        Value: {nodeInfo.payload.value}
-      </div>
+      {
+        Object.keys(nodeInfo.payload)
+        .filter((key) => nodeInfo.payload[key] != null)
+        .map((key) => (
+          <div key={key}>
+            {key}: {nodeInfo.payload[key]}
+          </div>
+        ))
+      }
     </div>
   );
 };

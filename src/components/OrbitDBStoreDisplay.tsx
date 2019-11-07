@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import "react-table/react-table.css";
-import EventStore from 'orbit-db-eventstore';
-import EventIndex from 'orbit-db-eventstore/src/EventIndex';
 import { DatabaseProvider } from '../providers/DatabaseProvider';
 import OperationsLog from '../providers/OperationsLog';
 import GraphDisplay, { GraphDisplayNodeMouseEvents } from './ViewDatabase/GraphDisplay';
@@ -10,7 +8,7 @@ import Popup from "reactjs-popup";
 import DatabaseStateDisplay from "../components/DatabaseStateDisplay";
 import DAGNodeTooltip from './ViewDatabase/DAGNodeTooltip';
 import storeDisplayStyles from './StoreDisplay.module.css';
-import OrbitDBDatabaseTypes from '../adapters/OrbitDBDatabaseTypes';
+import { NodeProvider } from '../providers/NodeProvider';
 
 /**
  * The component responsible for displaying an OrbitDB EventStore.
@@ -21,11 +19,11 @@ import OrbitDBDatabaseTypes from '../adapters/OrbitDBDatabaseTypes';
  * @param dbProvider The underlying database
  * 
  */
-const OrbitDBEventStoreDisplay: React.FC<{
+const OrbitDBStoreDisplay: React.FC<{
   operationLogData: D3Data,
-  eventStore: EventStore,
+  nodeProvider: NodeProvider
   dbProvider: DatabaseProvider
-}> = ({ operationLogData, eventStore, dbProvider }) => {
+}> = ({ operationLogData, nodeProvider, dbProvider }) => {
 
   const [toolTipState, setTooltipState] = useState({
     nodeInfo: null,
@@ -38,11 +36,6 @@ const OrbitDBEventStoreDisplay: React.FC<{
     openPopup: false
   });
 
-  if (eventStore.type !== OrbitDBDatabaseTypes.EventStore) {
-    console.log("OrbitDBEventStoreDisplay received Store type other than EventStore");
-    return null;
-  }
-
   /**
    * Handler for the onclick event for the rendered nodes in GraphDisplay.
    * Reconstructs data based on the given entry's hash and displays it through
@@ -52,25 +45,25 @@ const OrbitDBEventStoreDisplay: React.FC<{
    * @param DOMElem The DOM element that registered this click event
    */
   function onOperationLogNodeClick(entryHash: string, DOMElem: Element): void {
-    try {
-      let nodeEntry = eventStore.get(entryHash);
-      dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
-        let reconstructedData = reconstructData(operationsLog);
+    // try {
+    //   let nodeEntry = eventStore.get(entryHash);
+    //   dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
+    //     let reconstructedData = reconstructData(operationsLog);
 
-        let filteredData = reconstructedData.map((data) => {
-          return {"value" : data.payload.value};
-        });
+    //     let filteredData = reconstructedData.map((data) => {
+    //       return {"value" : data.payload.value};
+    //     });
 
-        setDatabaseState({
-          ...databaseState,
-          data: filteredData.reverse(),
-          openPopup: true
-        });
-      });
-    } catch (e) {
-      // TODO: Error handling.
-      console.log("Something went terribly wrong...");
-    }
+    //     setDatabaseState({
+    //       ...databaseState,
+    //       data: filteredData.reverse(),
+    //       openPopup: true
+    //     });
+    //   });
+    // } catch (e) {
+    //   // TODO: Error handling.
+    //   console.log("Something went terribly wrong...");
+    // }
   }
 
   /**
@@ -98,10 +91,9 @@ const OrbitDBEventStoreDisplay: React.FC<{
    */
   function onOperationLogNodeMouseEnter(entryHash: string, DOMElem: Element): void {
     try {
-      let nodeEntry = eventStore.get(entryHash);
       setTooltipState({
         ...toolTipState,
-        nodeInfo: nodeEntry,
+        nodeInfo: nodeProvider.getNodeInfoFromHash(entryHash),
         toolTipHidden: false,
         targetRect: DOMElem.getBoundingClientRect()
       });
@@ -118,12 +110,7 @@ const OrbitDBEventStoreDisplay: React.FC<{
    * @param operationsLog The operations log used to reconstruct the database state.
    */
   function reconstructData(operationsLog: OperationsLog): Array<any> {
-
-    let index = new EventIndex();
-    let ipfsLog = operationsLog.getInnerLog();
-    index.updateIndex(ipfsLog);
-    let result = index.get();
-    return result;
+    return nodeProvider.reconstructData(operationsLog);
   }
 
   let eventCallbacks: GraphDisplayNodeMouseEvents = {
@@ -138,9 +125,6 @@ const OrbitDBEventStoreDisplay: React.FC<{
       <GraphDisplay
         inputData={operationLogData}
         mouseEvents={eventCallbacks}
-        // onMouseClick={onOperationLogNodeClick}
-        // onMouseEnter={onOperationLogNodeMouseEnter}
-        // onMouseLeave={onOperationLogNodeMouseLeave}
         nodeColour='#7bb1f1ff'
         lineColour='#1d5495ff'
       />
@@ -156,4 +140,4 @@ const OrbitDBEventStoreDisplay: React.FC<{
   );
 };
 
-export default OrbitDBEventStoreDisplay;
+export default OrbitDBStoreDisplay;

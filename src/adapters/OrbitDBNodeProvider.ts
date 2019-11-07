@@ -73,12 +73,12 @@ export class OrbitDBNodeProvider implements NodeProvider {
     return edges;
   }
 
-  async getNodeInfo(node: DAGNode): Promise<any> {
-    return this.store.get(node.hash);
+  getNodeInfo(node: DAGNode): Promise<any> {
+    return this.getNodeInfoFromHash(node.hash);
   }
 
-  async getNodeInfoFromHash(nodeHash: String): Promise<any> {
-    return this.store.get(nodeHash);
+  getNodeInfoFromHash(nodeHash: String): Promise<any> {
+    return this.store._oplog.get(nodeHash);
   }
 
   // TODO: Return type based on store type...

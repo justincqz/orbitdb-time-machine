@@ -12,9 +12,7 @@ import JoinEvent from '../model/JoinEvent';
 import DAGNode from '../model/DAGNode';
 import JoinStorageProvider from '../providers/JoinStorageProvider';
 import Sidebar from '../components/ViewDatabase/Sidebar';
-import OrbitDBEventStoreDisplay from '../components/OrbitDBEventStoreDisplay';
-import OrbitDBDatabaseTypes from '../adapters/OrbitDBDatabaseTypes';
-import OrbitDBKeyValueDisplay from '../components/OrbitDBKeyValueDisplay';
+import OrbitDBStoreDisplay from '../components/OrbitDBStoreDisplay';
 
 /**
  * Implements the shared elements of database views.
@@ -38,48 +36,6 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   const [error, setError] = useState('');
   const [listening, setListening] = useState(false);
   const [selectedJoin, setSelectedJoin]: [string, React.Dispatch<React.SetStateAction<string>>] = useState(null);
-
-  let storeDisplayRenderMap = generateRenderMap();
-
-  /**
-   * Generates and returns a mapping between every OrbitDBDatabaseType 
-   * and it's corresponding component's render function.
-   */
-  function generateRenderMap(): Object {
-    let result = {};
-
-    result[OrbitDBDatabaseTypes.EventStore] = renderEventStoreDisplay;
-    result[OrbitDBDatabaseTypes.KeyValueStore] = renderKeyValueDisplay;
-
-    return result;
-  }
-
-  /**
-   * Returns the component to render if visualising an EventStore.
-   */
-  function renderEventStoreDisplay() {
-    return (
-      <OrbitDBEventStoreDisplay 
-        operationLogData={
-          selectedJoin === null ? d3data : viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)
-        }
-        eventStore={store.current}
-        dbProvider={dbProvider.current}
-      />
-    );
-  }
-
-  function renderKeyValueDisplay() {
-    return (
-      <OrbitDBKeyValueDisplay 
-        operationLogData={
-          selectedJoin === null ? d3data : viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)
-        }
-        eventStore={store.current}
-        dbProvider={dbProvider.current}
-      />
-    );
-  }
 
   useEffect(() => {
     if (storageProvider.current === undefined) {
@@ -192,11 +148,6 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     </div>
   }
 
-  if (storeDisplayRenderMap[store.current.type] == null) {
-    console.log(`Asked to render unsupported database type: ${store.current.type}`);
-    return null;
-  }
-
   return <div className={databaseStyles.splitView}>
     <Sidebar
       joinEvents={storageProvider.current.getJoins()}
@@ -211,7 +162,13 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
         Viewing: {`/orbitdb/${hash}/${name}`}
       </div>
       <div className={databaseStyles.titleContainer}>Timeline</div>
-      {storeDisplayRenderMap[store.current.type]()}
+      <OrbitDBStoreDisplay 
+        operationLogData={
+          selectedJoin === null ? d3data : viewJoinEvent(d3data, storageProvider.current.getJoinEvent(selectedJoin).root)
+        }
+        nodeProvider={nodeProvider.current}
+        dbProvider={dbProvider.current}
+      />
     </div>
   </div>
 });
