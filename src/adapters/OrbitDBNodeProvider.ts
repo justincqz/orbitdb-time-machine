@@ -118,7 +118,6 @@ export class OrbitDBNodeProvider implements NodeProvider {
      
     let ipfsLog = operationsLog.getInnerLog();
     index.updateIndex(ipfsLog);
-    console.log(index);
     return index;
   }
 }

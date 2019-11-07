@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import "react-table/react-table.css";
 import { DatabaseProvider } from '../providers/DatabaseProvider';
-import OperationsLog from '../providers/OperationsLog';
 import GraphDisplay, { GraphDisplayNodeMouseEvents } from './viewDatabase/GraphDisplay';
 import { D3Data } from '../model/D3Data';
 import Popup from "reactjs-popup";
@@ -50,7 +49,7 @@ const OrbitDBStoreDisplay: React.FC<{
     try {
       let nodeEntry = nodeProvider.getNodeInfoFromHash(entryHash);
       dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
-        let reconstructedDataIndex = reconstructData(operationsLog);
+        let reconstructedDataIndex = nodeProvider.reconstructData(operationsLog);
         let filteredData = uiProvider.getDataDisplay(reconstructedDataIndex);
         setDatabaseState({
           ...databaseState,
@@ -99,16 +98,6 @@ const OrbitDBStoreDisplay: React.FC<{
       // TODO: Error handling.
       console.log("Something went terribly wrong...");
     }
-  }
-
-  /**
-   * Returns the entries of an EventIndex that has been updated using the
-   * given operations log.
-   * 
-   * @param operationsLog The operations log used to reconstruct the database state.
-   */
-  function reconstructData(operationsLog: OperationsLog): Array<any> {
-    return nodeProvider.reconstructData(operationsLog);
   }
 
   let eventCallbacks: GraphDisplayNodeMouseEvents = {
