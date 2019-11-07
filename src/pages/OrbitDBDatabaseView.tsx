@@ -121,31 +121,6 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     }
   }
 
-  async function addEventLog(value: string) {
-    console.log(store);
-    if (value) {
-      try {
-        await store.current.add(value);
-      } catch (e) {
-        setError(e.toString());
-      }
-      loadData(true);
-    }
-  }
-
-  async function addKeyValue(key: string, value: string) {
-    if (key && value) {
-      try {
-        await store.current.put(key, value);
-      } catch (e) {
-        setError(e.toString());
-      }
-      loadData(true);
-    }
-  }
-
-
-
   const goHome = () => {
     history.push("/");
   }
@@ -168,8 +143,8 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
       joinEvents={storageProvider.current.getJoins()}
       selectJoin={setSelectedJoin}
       type={store.current._type}
-      addEventlog={addEventLog}
-      addKeyValue={addKeyValue}
+      store={store.current}
+      uiProvider={uiProvider}
       goHome={goHome}
     />
     <div className={databaseStyles.container}>
