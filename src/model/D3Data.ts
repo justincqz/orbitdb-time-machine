@@ -1,8 +1,10 @@
+import { NodeProvider } from "../providers/NodeProvider";
+
 interface D3DataOutput {
   toD3Data(limit: number): D3Data;
 }
 
-export type D3Data = {id: string, children: D3Data[]};
+export type D3Data = { id: string; children: D3Data[]; payload: any };
 
 const findNode = function(hash: string, root: D3Data): D3Data {
   if (root.id === hash) {
@@ -12,26 +14,26 @@ const findNode = function(hash: string, root: D3Data): D3Data {
     return findNode(hash, node);
   }
   return null;
-}
+};
 
 const getFirstLeaf = function(root: D3Data): D3Data {
   if (root.children.length === 0) {
     return root;
   }
   return getFirstLeaf(root.children[0]);
-}
+};
 
 const pruneDag = function(hash: string, root: D3Data): D3Data {
   if (root.id === hash) {
-    return {id: root.id, children: []}
+    return { id: root.id, children: [], payload: root.payload };
   }
-  root.children = root.children.map((c) => pruneDag(hash, c));
+  root.children = root.children.map(c => pruneDag(hash, c));
   return root;
-}
+};
 
 const joinDag = function(node: D3Data, child: D3Data): void {
   node.children.push(child);
-}
+};
 
 const viewJoinEvent = function(root: D3Data, top: D3Data): D3Data {
   // Deep copy the object using JSON so we can go back to the old object
@@ -44,24 +46,26 @@ const viewJoinEvent = function(root: D3Data, top: D3Data): D3Data {
   let leaf = getFirstLeaf(pruned);
   // Jon the historic nodes onto the end of the pruned DAG
   for (let child of top.children) {
-    joinDag(leaf, child)
+    joinDag(leaf, child);
   }
   return pruned;
-}
+};
 
 const getDepth = function(root: D3Data): number {
   if (root.children.length === 0) {
     return 1;
   }
-  return (root.children.reduce((acc, cur) => Math.max(acc, getDepth(cur)), 0)) + 1;
-}
+  return (
+    root.children.reduce((acc, cur) => Math.max(acc, getDepth(cur)), 0) + 1
+  );
+};
 
 const getNumberOfLeaves = function(root: D3Data): number {
   if (root.children.length === 0) {
     return 1;
   }
-  return root.children.reduce((acc, cur) => (getNumberOfLeaves(cur) + acc), 0);
-}
+  return root.children.reduce((acc, cur) => getNumberOfLeaves(cur) + acc, 0);
+};
 
 const getTreeAtSplit = function(root: D3Data): D3Data {
   if (root.children.length === 0) {
@@ -73,8 +77,37 @@ const getTreeAtSplit = function(root: D3Data): D3Data {
   }
 
   return getTreeAtSplit(root.children[0]);
-}
+};
 
-export { findNode, pruneDag, viewJoinEvent, getDepth, getNumberOfLeaves, getTreeAtSplit };
+const addUserIdentities = async (root: D3Data, nodeProvider: NodeProvider) => {
+  if (root.id === "EMPTY") {
+    root.payload["identity"] = 0;
+    return root;
+  }
+  async function addUserId(node: D3Data) {
+    let promise = nodeProvider.getNodeInfoFromHash(node.id);
+    for (let child of node.children) {
+      addUserId(child);
+    }
+    let nodeInfo = await promise;
+    node.payload = {
+      ...node.payload,
+      identity: nodeInfo.identity.id
+    };
+    return node;
+  }
+
+  return addUserId(root);
+};
+
+export {
+  findNode,
+  pruneDag,
+  viewJoinEvent,
+  getDepth,
+  getNumberOfLeaves,
+  getTreeAtSplit,
+  addUserIdentities
+};
 
 export default D3DataOutput;

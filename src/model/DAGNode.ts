@@ -25,8 +25,9 @@ export default class DAGNode implements D3DataOutput {
     // Add this node to queue
     visitQueue.push(this);
 
-    let root: { id: string, children: D3Data[] } = {
+    let root: D3Data = {
       id: this.hash,
+      payload: {},
       children: []
     };
 
@@ -36,7 +37,7 @@ export default class DAGNode implements D3DataOutput {
       // Remove head of queue
       let visitNode = visitQueue.shift();
 
-      let cur: { id: string, children: D3Data[] } = resultMap[visitNode.hash];
+      let cur: D3Data = resultMap[visitNode.hash];
 
       // Add all parents visit list and output
       for (let child of visitNode.nodeList) {
@@ -47,7 +48,8 @@ export default class DAGNode implements D3DataOutput {
         if (childD3Node === undefined) {
           childD3Node = {
             id: child.hash,
-            children: []
+            children: [],
+            payload: {}
           };
 
           resultMap[child.hash] = childD3Node;
@@ -113,8 +115,8 @@ export default class DAGNode implements D3DataOutput {
     }
 
     // Get list of common ancestors
-    let commonAncestorList: any[] = heads.reduce((ancestors, h2) => {
-      let currentIndex: number = 0;
+    let commonAncestorList: string[] = heads.reduce((ancestors, h2) => {
+      let currentIndex = 0;
 
       while (h2.next && !h2.next.includes(ancestors[currentIndex])) {
         currentIndex++;
@@ -126,6 +128,7 @@ export default class DAGNode implements D3DataOutput {
     // If list is empty, return list of detached heads
     if (commonAncestorList.length === 0) {
       return heads.map(h => {
+      console.log(h)
         return new DAGNode(h.hash, []);
       });
     }

@@ -17,14 +17,16 @@ const GraphDisplay: React.FC<{
   inputData: D3Data,
   nodeColour?: Color,
   lineColour?: Color,
-}> = ({ 
+}> = ({
   mouseEvents = undefined,
   inputData,
   nodeColour,
-  lineColour 
+  lineColour
 }) => {
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
+
+  const colours = ['#555577FF', '#32a891', '#c7942e', '#ff8799', '#ad4949', '#6fd6d4'];
 
   const [viewportOffset, setViewportOffset] = useState(0);
 
@@ -105,7 +107,7 @@ const GraphDisplay: React.FC<{
     nodes.append('circle')
       .attr('r', 20)
       .attr('id', d => d.id)
-      .attr('fill', nodeColour)
+      .attr('fill', d => colours[parseInt(d.data.payload.identity) % colours.length])
       .on('mouseenter', (d, i, e) => { handleMouseEnter(d, e[i]) })
       .on('mouseleave', (d, i, e) => { handleMouseLeave(d, e[i]) })
       .on('click', (d, i, e) => { handleOnClick(d, e[i]) });
