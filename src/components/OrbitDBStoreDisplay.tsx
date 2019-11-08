@@ -3,7 +3,6 @@ import "react-table/react-table.css";
 import { DatabaseProvider } from '../providers/DatabaseProvider';
 import GraphDisplay, { GraphDisplayNodeMouseEvents } from './viewDatabase/GraphDisplay';
 import { D3Data } from '../model/D3Data';
-import DatabaseStateDisplay from "../components/DatabaseStateDisplay";
 import DAGNodeTooltip from './viewDatabase/DAGNodeTooltip';
 import storeDisplayStyles from './StoreDisplay.module.css';
 import { NodeProvider } from '../providers/NodeProvider';
@@ -12,11 +11,11 @@ import DatabaseUIProvider from '../providers/DatabaseUIProvider';
 /**
  * The component responsible for displaying an OrbitDB EventStore.
  * Here, we take care of EventStore specific operations such as add.
- * 
+ *
  * @param operationLogData The operations log graph we need to visualise
  * @param eventStore The store we need to visualise
  * @param dbProvider The underlying database
- * 
+ *
  */
 const OrbitDBStoreDisplay: React.FC<{
   operationLogData: D3Data,
@@ -32,14 +31,14 @@ const OrbitDBStoreDisplay: React.FC<{
   });
 
   const [databaseState, setDatabaseState] = useState({
-    data: []
+    index: null
   });
 
   /**
    * Handler for the onclick event for the rendered nodes in GraphDisplay.
    * Reconstructs data based on the given entry's hash and displays it through
    * a Popup.
-   * 
+   *
    * @param entryHash The hash of the entry corresponding to the GraphDisplay node
    * @param DOMElem The DOM element that registered this click event
    */
@@ -48,10 +47,9 @@ const OrbitDBStoreDisplay: React.FC<{
       let nodeEntry = nodeProvider.getNodeInfoFromHash(entryHash);
       dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
         let reconstructedDataIndex = nodeProvider.reconstructData(operationsLog);
-        let filteredData = uiProvider.getDataDisplay(reconstructedDataIndex);
         setDatabaseState({
           ...databaseState,
-          data: filteredData.reverse()
+          index: reconstructedDataIndex
         });
       });
     } catch (e) {
@@ -63,7 +61,7 @@ const OrbitDBStoreDisplay: React.FC<{
   /**
    * Handler for the onmouseleave event for the rendered nodes in GraphDisplay.
    * Hide tooltip from display.
-   * 
+   *
    * @param entryHash The hash of the entry corresponding to the GraphDisplay node
    * @param DOMElem The DOM element that registered this click event
    */
@@ -79,7 +77,7 @@ const OrbitDBStoreDisplay: React.FC<{
   /**
    * Handler for the onmouseenter event for the rendered nodes in GraphDisplay.
    * Move and display tooltip on GraphDisplay node.
-   * 
+   *
    * @param entryHash The hash of the entry corresponding to the GraphDisplay node
    * @param DOMElem The DOM element that registered this click event
    */
@@ -116,7 +114,9 @@ const OrbitDBStoreDisplay: React.FC<{
       />
       </div>
       <div className={storeDisplayStyles.table}>
-        <DatabaseStateDisplay data={databaseState.data}/>
+        { databaseState.index && (
+          <uiProvider.getDataDisplay index={databaseState.index} />
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import DatabaseUIProvider from "../../providers/DatabaseUIProvider";
 import React, { useState } from 'react';
 import ToolbarStyle from '../viewDatabase/Sidebar.module.css';
 import { Store } from "orbit-db-store";
+import DatabaseTableDisplay from "../DisplayComponents/DatabaseTableDisplay";
 
 export default class EventStoreUI implements DatabaseUIProvider {
   getSidebar: React.FC<Store> = ({ store }) => {
@@ -22,13 +23,13 @@ export default class EventStoreUI implements DatabaseUIProvider {
         </div>
       </form>
     </div>
-  }  
-  
-  getDataDisplay(index: any) {
-    return index.get().map((data) => {
-      return {"value" : data.payload.value};
-    });
   }
 
+  getDataDisplay: React.FC<any> = ({ index }) => {
+    let filteredData = index.get().map((data) => {
+      return {"value" : data.payload.value};
+    });
 
+    return <DatabaseTableDisplay data={filteredData.reverse()} />
+  }
 }

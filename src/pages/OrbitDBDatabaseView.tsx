@@ -77,7 +77,9 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     }
   });
 
+  // This sets or re-sets (using loadData) the d3graph based on selectedJoin
   useEffect(() => {
+    // Make sure this only gets run after we have initialised dependencies
     if (!nodeProvider.current) {
       return;
     }

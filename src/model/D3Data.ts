@@ -6,6 +6,7 @@ interface D3DataOutput {
 
 export type D3Data = { id: string; children: D3Data[]; payload: any };
 
+/** Returns the node with a hash */
 const findNode = function(hash: string, root: D3Data): D3Data {
   if (root.id === hash) {
     return root;
@@ -16,6 +17,7 @@ const findNode = function(hash: string, root: D3Data): D3Data {
   return null;
 };
 
+/** Returns first leaf */
 const getFirstLeaf = function(root: D3Data): D3Data {
   if (root.children.length === 0) {
     return root;
@@ -23,6 +25,7 @@ const getFirstLeaf = function(root: D3Data): D3Data {
   return getFirstLeaf(root.children[0]);
 };
 
+/** Prunes root node (returns root until the node with hash) */
 const pruneDag = function(hash: string, root: D3Data): D3Data {
   if (root.id === hash) {
     return { id: root.id, children: [], payload: root.payload };
@@ -31,10 +34,12 @@ const pruneDag = function(hash: string, root: D3Data): D3Data {
   return root;
 };
 
+/** Appends child to node */
 const joinDag = function(node: D3Data, child: D3Data): void {
   node.children.push(child);
 };
 
+/** Returns the tree as it was at a certain join event */
 const viewJoinEvent = function(root: D3Data, top: D3Data): D3Data {
   // Deep copy the object using JSON so we can go back to the old object
   root = JSON.parse(JSON.stringify(root));
@@ -51,6 +56,7 @@ const viewJoinEvent = function(root: D3Data, top: D3Data): D3Data {
   return pruned;
 };
 
+/** Returns the depth of the tree */
 const getDepth = function(root: D3Data): number {
   if (root.children.length === 0) {
     return 1;
@@ -60,6 +66,7 @@ const getDepth = function(root: D3Data): number {
   );
 };
 
+/** Returns the number of leaves */
 const getNumberOfLeaves = function(root: D3Data): number {
   if (root.children.length === 0) {
     return 1;
@@ -67,6 +74,7 @@ const getNumberOfLeaves = function(root: D3Data): number {
   return root.children.reduce((acc, cur) => getNumberOfLeaves(cur) + acc, 0);
 };
 
+/** Get the first node of the tree where it splits into branches */
 const getTreeAtSplit = function(root: D3Data): D3Data {
   if (root.children.length === 0) {
     return null;
@@ -79,6 +87,7 @@ const getTreeAtSplit = function(root: D3Data): D3Data {
   return getTreeAtSplit(root.children[0]);
 };
 
+/** Add user identities as payload to each d3data node */
 const addUserIdentities = async (root: D3Data, nodeProvider: NodeProvider) => {
   if (root.id === "EMPTY") {
     root.payload["identity"] = 0;
@@ -93,7 +102,7 @@ const addUserIdentities = async (root: D3Data, nodeProvider: NodeProvider) => {
     if (nodeInfo === undefined) {
       node.payload = {
         ...node.payload,
-        identity: "none"
+        identity: 0
       }
     } else {
       node.payload = {

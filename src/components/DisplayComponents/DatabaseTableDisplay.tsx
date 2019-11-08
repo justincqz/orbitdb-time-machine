@@ -2,7 +2,7 @@ import React from 'react';
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 
-const DatabaseStateDisplay: React.FC<{data: any}> = ({data}) => {
+const DatabaseTableDisplay: React.FC<{data: any}> = ({data}) => {
   let columns = [{Header: "Empty Database", accessor: "empty"}];
   if (data[0] != null) {
     columns = Object.keys(data[0]).map((key) => {
@@ -12,7 +12,7 @@ const DatabaseStateDisplay: React.FC<{data: any}> = ({data}) => {
       }
     });
   }
-  
+
   return (
     <ReactTable
     className="-striped -highlight"
@@ -23,6 +23,5 @@ const DatabaseStateDisplay: React.FC<{data: any}> = ({data}) => {
     />
     );
   };
-  
-  export default DatabaseStateDisplay;
-  
+
+  export default DatabaseTableDisplay;
