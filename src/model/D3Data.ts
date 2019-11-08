@@ -90,10 +90,17 @@ const addUserIdentities = async (root: D3Data, nodeProvider: NodeProvider) => {
       addUserId(child);
     }
     let nodeInfo = await promise;
-    node.payload = {
-      ...node.payload,
-      identity: nodeInfo.identity.id
-    };
+    if (nodeInfo === undefined) {
+      node.payload = {
+        ...node.payload,
+        identity: "none"
+      }
+    } else {
+      node.payload = {
+        ...node.payload,
+        identity: nodeInfo.identity.id
+      };
+    }
     return node;
   }
 

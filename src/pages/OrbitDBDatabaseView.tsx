@@ -91,11 +91,13 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
             storageProvider.current.getJoinEvent(selectedJoin).root
           ),
           nodeProvider.current
-          ).then((data) => {
-            setD3data(data)
-          });
+        ).then((data) => {
+          setD3data(data)
+        });
       });
     }
+  // For some reason, ESLint thinks loadData should be a dependency
+  // eslint-disable-next-line
   }, [selectedJoin]);
 
   if (store.current != null) {

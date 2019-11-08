@@ -18,8 +18,6 @@ const DAGNodeTooltip: React.FC<{nodeInfo: any, rect: ClientRect}> = ({nodeInfo, 
     return null;
   }
 
-  console.log(nodeInfo)
-
   return (
     <div
       ref={toolTipRef}
