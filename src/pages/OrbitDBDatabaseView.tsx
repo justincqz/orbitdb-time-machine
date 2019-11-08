@@ -77,6 +77,27 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     }
   });
 
+  useEffect(() => {
+    if (!nodeProvider.current) {
+      return;
+    }
+    if (selectedJoin === null) {
+      loadData(true);
+    } else {
+      nodeProvider.current.getDatabaseGraph().then(node => {
+        addUserIdentities(
+          viewJoinEvent(
+            node.toD3Data(LIMIT),
+            storageProvider.current.getJoinEvent(selectedJoin).root
+          ),
+          nodeProvider.current
+          ).then((data) => {
+            setD3data(data)
+          });
+      });
+    }
+  }, [selectedJoin]);
+
   if (store.current != null) {
     switch (store.current._type) {
       case "eventlog":
@@ -175,12 +196,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
         <div className={databaseStyles.titleContainer}>Timeline</div>
         <OrbitDBStoreDisplay
           operationLogData={
-            selectedJoin === null
-              ? d3data
-              : viewJoinEvent(
-                  d3data,
-                  storageProvider.current.getJoinEvent(selectedJoin).root
-                )
+            d3data
           }
           nodeProvider={nodeProvider.current}
           dbProvider={dbProvider.current}
