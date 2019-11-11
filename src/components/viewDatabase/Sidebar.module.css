@@ -148,6 +148,48 @@
   outline: none;
 }
 
+.editButton {
+  width: 5.5vh;
+  height: 3.5vh;
+  justify-self: center;
+  align-self: center;
+  color: #eee;
+  border-style: solid;
+  border-radius: 8px;
+  border-width: 0;
+  background-color: #1d5495ff;
+  font-family: monospace;
+  font-size: 1.5vh;
+  font-weight: 500;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+  text-align:center;
+}
+
+.saveButton {
+  width: 5.5vh;
+  height: 3.5vh;
+  justify-self: center;
+  align-self: center;
+  color: #eee;
+  border-style: solid;
+  border-radius: 8px;
+  border-width: 0;
+  background-color: #0D3540;
+  font-family: monospace;
+  font-size: 1.5vh;
+  font-weight: 500;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+  text-align:center;
+}
+
 .inputFieldSubmit:hover {
   background-color: #0A3464FF;
 }

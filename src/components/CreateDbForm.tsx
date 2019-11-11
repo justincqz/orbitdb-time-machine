@@ -85,6 +85,7 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
     <div className={CreateFormStyles.typeChooserContainer}>
       {createToggleButton(OrbitDBDatabaseTypes.EventStore, 'Event Log')}
       {createToggleButton(OrbitDBDatabaseTypes.KeyValueStore, 'Key Value')}
+      {createToggleButton(OrbitDBDatabaseTypes.DocumentStore, 'Document Store')}
     </div>;
   
 

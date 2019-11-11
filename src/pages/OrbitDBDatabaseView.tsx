@@ -5,17 +5,19 @@ import { D3Data, viewJoinEvent, addUserIdentities } from "../model/D3Data";
 import { NodeProvider } from "../providers/NodeProvider";
 import { DatabaseProvider } from "../providers/DatabaseProvider";
 import { Store } from "orbit-db-store";
-import databaseStyles from "./OrbitDBDatabaseView.module.css";
-import { withRouter } from "react-router-dom";
-import OperationsLog from "../providers/OperationsLog";
-import JoinEvent from "../model/JoinEvent";
-import DAGNode from "../model/DAGNode";
-import JoinStorageProvider from "../providers/JoinStorageProvider";
-import Sidebar from "../components/viewDatabase/Sidebar";
-import OrbitDBStoreDisplay from "../components/OrbitDBStoreDisplay";
-import DatabaseUIProvider from "../providers/DatabaseUIProvider";
-import EventStoreUI from "../components/databaseUi/EventStoreUI";
-import KeyValueUI from "../components/databaseUi/KeyValueUI";
+import databaseStyles from './OrbitDBDatabaseView.module.css';
+import { withRouter } from 'react-router-dom';
+import OperationsLog from '../providers/OperationsLog';
+import JoinEvent from '../model/JoinEvent';
+import DAGNode from '../model/DAGNode';
+import JoinStorageProvider from '../providers/JoinStorageProvider';
+import Sidebar from '../components/viewDatabase/Sidebar';
+import OrbitDBStoreDisplay from '../components/OrbitDBStoreDisplay';
+import DatabaseUIProvider from '../providers/DatabaseUIProvider';
+import EventStoreUI from '../components/databaseUi/EventStoreUI';
+import KeyValueUI from '../components/databaseUi/KeyValueUI';
+import DocStoreUI from "../components/databaseUi/DocStoreUI";
+
 
 /**
  * Implements the shared elements of database views.
@@ -109,6 +111,9 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
         break;
       case "keyvalue":
         uiProvider = new KeyValueUI();
+        break;
+      case "docstore":
+        uiProvider = new DocStoreUI();
         break;
       default:
         throw new Error("Unsupported store type");
