@@ -5,12 +5,31 @@ import { Store } from "orbit-db-store";
 import DatabaseTableDisplay from "../DisplayComponents/DatabaseTableDisplay";
 
 export default class KeyValueUI implements DatabaseUIProvider {
-
   getSidebar: React.FC<Store> = ({ store }) => {
+    const [activeField, setActiveField] = useState("");
     const [input, setInput] = useState({key: "", val: ""});
 
-    return (<div className={ToolbarStyle.inputFieldContainer}>
-        <form onSubmit={(e) => {e.preventDefault(); store.put(input.key, input.val)}}>
+    const oneInputField = (opName, op) => {
+      return () => (<div className={ToolbarStyle.inputFieldContainer}>
+      <form onSubmit={(e) => {e.preventDefault(); op()}}>
+        <div className={ToolbarStyle.inputFieldRow}>
+          <label>Key: </label>
+          <input
+            className={ToolbarStyle.inputField}
+            type="text"
+            onChange={(e) => setInput({key: e.target.value, val: ""})}
+          />
+        </div>
+        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', marginTop: '0.5vh'}}>
+          <input type="submit" value={opName} className={ToolbarStyle.inputFieldSubmit}/>
+        </div>
+      </form>
+    </div>);
+    };
+    
+    const twoInputFields = (opName, op) => {
+      return () => (<div className={ToolbarStyle.inputFieldContainer}>
+        <form onSubmit={(e) => {e.preventDefault(); op()}}>
           <div className={ToolbarStyle.inputFieldRow}>
             <label>Key: </label>
             <input
@@ -28,10 +47,25 @@ export default class KeyValueUI implements DatabaseUIProvider {
             />
           </div>
           <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', marginTop: '0.5vh'}}>
-            <input type="submit" value="PUT" className={ToolbarStyle.inputFieldSubmit}/>
+            <input type="submit" value={opName} className={ToolbarStyle.inputFieldSubmit}/>
           </div>
         </form>
       </div>);
+    };
+
+    const opTypes = {
+      Add: twoInputFields("Put", () => store.put(input.key, input.val)),
+      Set: twoInputFields("Set", () => store.set(input.key, input.val)),
+      Del: oneInputField("Del", () => store.del(input.key))
+    };
+
+    return (<div>
+      <div className={ToolbarStyle.buttonBar}>
+        {Object.keys(opTypes)
+          .map(op => (<button className={ToolbarStyle.addButton} onClick={() => setActiveField(op)}>{op}</button>))}
+      </div>
+      {opTypes[activeField] ? opTypes[activeField]() : null}
+    </div>);
   }
 
   getDataDisplay: React.FC<any> = ({ index }) => {

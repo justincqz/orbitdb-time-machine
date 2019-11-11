@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ToolbarStyle from './Sidebar.module.css';
 import JoinList from './JoinList';
 import DatabaseUIProvider from '../../providers/DatabaseUIProvider';
@@ -12,14 +12,9 @@ const SideBar: React.FC<{
   goHome(): void,
   uiProvider: DatabaseUIProvider
 }> = ({ joinEvents, selectJoin, type, goHome, uiProvider, store }) => {
-  const [showAddFields, toggleAddFields] = useState(false);
-
   return <div className={ToolbarStyle.container}>
     <div className={ToolbarStyle.header} onClick={goHome}>Time Travel</div>
-    <div className={ToolbarStyle.buttonBar}>
-      <button className={ToolbarStyle.addButton} onClick={() => toggleAddFields(!showAddFields)}>Add</button>
-    </div>
-    {showAddFields ? <uiProvider.getSidebar store={store} /> : null}
+    <uiProvider.getSidebar store={store} />
     <div className={ToolbarStyle.info}>{`Database Type: ${type}`}</div>
     <div>
       <JoinList 

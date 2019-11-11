@@ -6,9 +6,11 @@ import DatabaseTableDisplay from "../DisplayComponents/DatabaseTableDisplay";
 
 export default class EventStoreUI implements DatabaseUIProvider {
   getSidebar: React.FC<Store> = ({ store }) => {
+    const [showAddFields, toggleAddFields] = useState(false);
     const [input, setInput] = useState("");
 
-    return <div className={ToolbarStyle.inputFieldContainer}>
+    const inputFields = () => {
+      return (<div className={ToolbarStyle.inputFieldContainer}>
       <form onSubmit={(e) => {e.preventDefault(); store.add(input)}}>
         <div className={ToolbarStyle.inputFieldRow}>
           <label>Value: </label>
@@ -22,7 +24,15 @@ export default class EventStoreUI implements DatabaseUIProvider {
           <input type="submit" value="Add" className={ToolbarStyle.inputFieldSubmit}/>
         </div>
       </form>
-    </div>
+    </div>);
+    };
+
+    return (<div>
+      <div className={ToolbarStyle.buttonBar}>
+        <button className={ToolbarStyle.addButton} onClick={() => toggleAddFields(!showAddFields)}>Add</button>
+      </div>
+      {showAddFields ? inputFields() : null}
+    </div>);
   }
 
   getDataDisplay: React.FC<any> = ({ index }) => {

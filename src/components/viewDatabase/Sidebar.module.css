@@ -33,6 +33,8 @@
 .addButton {
   width: 6vh;
   height: 4vh;
+  margin-left: 1vh;
+  margin-right: 1vh;
   justify-self: center;
   align-self: center;
   color: #eee;
