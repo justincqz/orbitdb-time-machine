@@ -42,4 +42,14 @@ export default class EventStoreUI implements DatabaseUIProvider {
 
     return <DatabaseTableDisplay data={filteredData.reverse()} />
   }
+
+  getTooltipMsg(entry): string {
+    return (
+      `Operation: ${entry.payload.op}
+      Value: ${entry.payload.value}`);
+  }
+  
+  getTooltipTitle(entry): string {
+    return `Added by ${entry.identity.id}`;
+  }
 }

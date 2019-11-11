@@ -77,7 +77,7 @@ export class OrbitDBNodeProvider implements NodeProvider {
     return this.getNodeInfoFromHash(node.hash);
   }
 
-  getNodeInfoFromHash(nodeHash: String): Promise<any> {
+  getNodeInfoFromHash(nodeHash: string): Promise<any> {
     return this.store._oplog.get(nodeHash);
   }
 

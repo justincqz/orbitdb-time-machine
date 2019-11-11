@@ -75,4 +75,15 @@ export default class KeyValueUI implements DatabaseUIProvider {
 
     return <DatabaseTableDisplay data={filteredData.reverse()} />
   }
+
+  getTooltipMsg(entry): string {
+    return (
+      `Operation: ${entry.payload.op}
+      Key: ${entry.payload.key}
+      Value: ${entry.payload.value}`);
+  }
+
+  getTooltipTitle(entry): string {
+    return `Added by ${entry.identity.id}`;
+  }
 }

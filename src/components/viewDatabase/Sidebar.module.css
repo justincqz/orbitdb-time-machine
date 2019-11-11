@@ -31,7 +31,11 @@
 }
 
 .addButton {
-  width: 6vh;
+  min-width: 6vh;
+  max-width: 20vh;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   height: 4vh;
   margin-left: 1vh;
   margin-right: 1vh;

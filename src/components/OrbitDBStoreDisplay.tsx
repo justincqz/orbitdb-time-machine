@@ -104,7 +104,15 @@ const OrbitDBStoreDisplay: React.FC<{
 
   return (
     <div className={storeDisplayStyles.container}>
-      <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
+      {
+        toolTipState.nodeInfo && (
+          <DAGNodeTooltip 
+            title={uiProvider.getTooltipTitle(toolTipState.nodeInfo)}
+            message={uiProvider.getTooltipMsg(toolTipState.nodeInfo)}
+            rect={toolTipState.targetRect}
+          />
+        )
+      }
       <div>
       <GraphDisplay
         inputData={operationLogData}

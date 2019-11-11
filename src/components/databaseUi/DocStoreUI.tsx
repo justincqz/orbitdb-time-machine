@@ -184,4 +184,14 @@ export default class DocStoreUI implements DatabaseUIProvider {
         </Popup>
       </div>);
   }
+
+  getTooltipMsg(entry): string {
+    return (
+      `Operation: ${entry.payload.op}
+      Document: ${JSON.stringify(entry.payload.value)}`);
+  }
+
+  getTooltipTitle(entry): string {
+    return `Added by ${entry.identity.id}`;
+  }
 }

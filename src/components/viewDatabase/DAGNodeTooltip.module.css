@@ -17,3 +17,7 @@
 .nameDiv {
   color: rgb(177, 177, 177);
 }
+
+.msgDiv {
+  white-space: pre-line;
+}
