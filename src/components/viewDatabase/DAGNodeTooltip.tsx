@@ -31,7 +31,6 @@ const DAGNodeTooltip: React.FC<{nodeInfo: any, rect: ClientRect}> = ({nodeInfo, 
         Object.keys(nodeInfo.payload)
         .filter((key) => nodeInfo.payload[key] != null)
         .map((key) => {
-          console.log(nodeInfo);
           return (
             <div key={key}>
               {key}: {JSON.stringify(nodeInfo.payload[key])}
