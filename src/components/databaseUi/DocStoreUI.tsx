@@ -36,55 +36,91 @@ export default class DocStoreUI implements DatabaseUIProvider {
 
   getSidebar: React.FC<Store> = ({ store }) => {
     const [editorStatus, setEditorStatus] = useState({data: "{}", open: false});
+    const [input, setInput] = useState("");
     const [errorStatus, setErrorStatus] = useState({error: false, msg:""});
+    const [activeField, setActiveField] = useState("");
 
     async function submitDocument(e) {
       e.preventDefault();
       try {
         await store.put(JSON.parse(editorStatus.data));
+        setEditorStatus({...editorStatus, open: false});
       } catch (error) {
         setEditorStatus({...editorStatus, open: true});
         setErrorStatus({error: true, msg: error});
       }
     }
 
-    return (<div className={ToolbarStyle.inputFieldContainer}>
-      <form onSubmit={submitDocument}>
+    const oneInputField = (opName, op) => {
+      return () => (<div className={ToolbarStyle.inputFieldContainer}>
+        <form onSubmit={(e) => {e.preventDefault(); op()}}>
+          <div className={ToolbarStyle.inputFieldRow}>
+            <label>Key: </label>
+            <input
+              className={ToolbarStyle.inputField}
+              type="text"
+              onChange={(e) => setInput(e.target.value)}
+            />
+          </div>
+          <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', marginTop: '0.5vh'}}>
+            <input type="submit" value={opName} className={ToolbarStyle.inputFieldSubmit}/>
+          </div>
+        </form>
+      </div>);
+    };
+
+    const addEditorField = (opName, op) => {
+      return () => (<div className={ToolbarStyle.inputFieldContainer}>
+        <form onSubmit= {op}>
           <Popup open={editorStatus.open}
-                 onClose={() => setEditorStatus({...editorStatus, open: false})}
+                 closeOnDocumentClick={false}
                  contentStyle={{backgroundColor:"#0A3464FF"}}>
             <div>
-            <AceEditor
-              mode="json"
-              theme="solarized_dark"
-              fontSize="2vh"
-              onChange={(data) => {setEditorStatus({data: data, open: true}); setErrorStatus({...errorStatus, error:false})}}
-              name="aceEditor"
-              value= {editorStatus.data}
-              width="50vw"
-              height="40vh"
-              editorProps={{ $blockScrolling: true }}
-              defaultValue={"{}"}
-            />
+              <AceEditor
+                mode="json"
+                theme="solarized_dark"
+                fontSize="2vh"
+                onChange={(data) => {setEditorStatus({data: data, open: true}); setErrorStatus({...errorStatus, error:false})}}
+                name="aceEditor"
+                value= {editorStatus.data}
+                width="50vw"
+                height="40vh"
+                editorProps={{ $blockScrolling: true }}
+                defaultValue={"{}"}
+              />
               { errorStatus.error
                 ?
-                  <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', padding:'0.8vh', backgroundColor: "#A15050"}}>
-                    <label>Error! Please check your syntax and if you have included the "_id" field</label>
-                  </div>
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', padding:'0.8vh', backgroundColor: "#A15050"}}>
+                  <label>Error! Please check your syntax and if you have included the "_id" field</label>
+                </div>
                 :
-                  <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', padding:'0.8vh', backgroundColor: "#1C424B"}}>
-                    <label className={ToolbarStyle.saveButton} onClick={()=> setEditorStatus({...editorStatus, open: false})}>Save</label>
-                  </div>
+                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', padding:'0.8vh', backgroundColor: "#1C424B"}}>
+                  <label className={ToolbarStyle.editButton} onClick={()=> setEditorStatus({...editorStatus, open: false})}>Cancel</label>
+                  <input type="submit" value="Save" className={ToolbarStyle.inputFieldSubmit}/>
+                </div>
               }
             </div>
           </Popup>
-        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '0.5vh'}}>
-          <label className={ToolbarStyle.editButton} onClick={()=> setEditorStatus({...editorStatus, open: true})}>EDIT</label>
-          <input type="submit" value="PUT" className={ToolbarStyle.inputFieldSubmit}/>
-        </div>
-      </form>
+          <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '0.5vh'}}>
+            <label className={ToolbarStyle.editButton} onClick={()=> setEditorStatus({...editorStatus, open: true})}>{opName}</label>
+          </div>
+        </form>
+      </div>);
+    };
+
+    const opTypes = {
+      Add: addEditorField("Add", (e) => submitDocument(e)),
+      Del: oneInputField("Del", () => store.del(input))
+    };
+
+    return (<div>
+      <div className={ToolbarStyle.buttonBar}>
+        {Object.keys(opTypes)
+          .map(op => (<button className={ToolbarStyle.addButton} onClick={() => setActiveField(op)}>{op}</button>))}
+      </div>
+      {opTypes[activeField] ? opTypes[activeField]() : null}
     </div>);
-  }
+  };
 
   getDataDisplay: React.FC<any> = ({ index }) => {
     const [viewStatus, setViewStatus] = useState({data: "{}", open: false});
