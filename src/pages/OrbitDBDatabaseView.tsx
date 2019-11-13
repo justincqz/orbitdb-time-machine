@@ -19,6 +19,7 @@ import KeyValueUI from '../components/databaseUi/KeyValueUI';
 import DocStoreUI from "../components/databaseUi/DocStoreUI";
 import OrbitDBDatabaseTypes from "../adapters/OrbitDBDatabaseTypes";
 import CounterStoreUI from "../components/databaseUi/CounterStoreUI";
+import FeedStoreUI from "../components/databaseUi/FeedStoreUI";
 
 /**
  * Implements the shared elements of database views.
@@ -119,6 +120,9 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
         break;
       case OrbitDBDatabaseTypes.CounterStore:
         uiProvider = new CounterStoreUI();
+        break;
+      case OrbitDBDatabaseTypes.FeedStore:
+        uiProvider = new FeedStoreUI();
         break;
       default:
         throw new Error("Unsupported store type");

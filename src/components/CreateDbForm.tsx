@@ -87,6 +87,7 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
       {createToggleButton(OrbitDBDatabaseTypes.KeyValueStore, 'Key Value')}
       {createToggleButton(OrbitDBDatabaseTypes.DocumentStore, 'Document Store')}
       {createToggleButton(OrbitDBDatabaseTypes.CounterStore, 'Counter')}
+      {createToggleButton(OrbitDBDatabaseTypes.FeedStore, 'Feed')}
     </div>;
   
 

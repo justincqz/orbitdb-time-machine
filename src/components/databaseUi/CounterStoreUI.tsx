@@ -19,7 +19,7 @@ export default class CounterStoreUI implements DatabaseUIProvider {
     const incrementField = (opName, op) => {
       return () => (
         <div className={ToolbarStyle.inputFieldContainer}>
-          <form onSubmit={(e) => {e.preventDefault(); op(e)}}>
+          <form onSubmit={(e) => {e.preventDefault(); op()}}>
             <div className={ToolbarStyle.inputFieldRow}>
               <label>Amount: </label>
               <input
