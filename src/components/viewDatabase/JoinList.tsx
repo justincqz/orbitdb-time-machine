@@ -5,8 +5,7 @@ const JoinList: React.FC<{
   joinEvents: string[],
   selectJoin(join: string): void
 }> = ({ joinEvents, selectJoin }) => {
-  return <div className={JoinListStyles.container}>
-    <h2>Time Travel</h2>
+  return <React.Fragment>
     <div onClick={() => selectJoin(null)} className={JoinListStyles.selection}>Present</div>
     { joinEvents.map((join) => (
       <div 
@@ -17,7 +16,7 @@ const JoinList: React.FC<{
         Event number {join}
       </div>
     )) }
-  </div>
+  </React.Fragment>
 }
 
 export default JoinList;

@@ -1,36 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import * as d3Dag from 'd3-dag';
 import * as d3 from 'd3';
-import { D3Data, getNumberOfLeaves, getDepth } from '../model/D3Data';
+import { D3Data, getNumberOfLeaves, getDepth } from '../../model/D3Data';
 import { Color } from 'csstype';
 import graphStyles from './GraphDisplay.module.css';
-import DAGNodeTooltip from './DAGNodeTooltip';
-import Popup from "reactjs-popup";
-import { NodeProvider } from "../providers/NodeProvider";
-import leftAlign from '../utils/NodePlotter';
-import DatabaseStateDisplay from "./DatabaseStateDisplay";
-import { DatabaseProvider } from "../providers/DatabaseProvider";
+import leftAlign from '../../utils/NodePlotter';
+
+export type GraphDisplayNodeMouseEvents = {
+  'click'?: (d3dataID: string, DOMElem: Element) => void,
+  'mouseenter'?: (d3dataID: string, DOMElem: Element) => void,
+  'mouseleave'?: (d3dataID: string, DOMElem: Element) => void,
+};
 
 const GraphDisplay: React.FC<{
-  dbProvider: DatabaseProvider,
-  nodeProvider: NodeProvider,
+  mouseEvents: GraphDisplayNodeMouseEvents,
   inputData: D3Data,
   nodeColour?: Color,
-  lineColour?: Color
-}> = ({ dbProvider, nodeProvider, inputData, nodeColour, lineColour }) => {
+  lineColour?: Color,
+}> = ({
+  mouseEvents = undefined,
+  inputData,
+  nodeColour,
+  lineColour
+}) => {
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
 
-  const [databaseState, showDatabaseState] = useState({
-    data: [],
-    openPopup: false
-  });
+  const colours = ['#555577FF', '#32a891', '#c7942e', '#ff8799', '#ad4949', '#6fd6d4'];
 
-  const [toolTipState, setTooltipState] = useState({
-    nodeInfo: null,
-    toolTipHidden: true,
-    targetRect: null
-  });
   const [viewportOffset, setViewportOffset] = useState(0);
 
   // TODO calculate this dynamically
@@ -40,53 +37,22 @@ const GraphDisplay: React.FC<{
   const viewWidth = 300 * sequentialNodes;
   const viewHeight = heads * 100;
 
-  function handleMouseEnter(d, domElement) {
-    try {
-      nodeProvider.getNodeInfoFromHash(d.id).then((nodeInfo) => {
-        // let text = JSON.stringify(nodeInfo.payload);
-        setTooltipState({
-          ...toolTipState,
-          nodeInfo: nodeInfo,
-          toolTipHidden: false,
-          targetRect: domElement.getBoundingClientRect()
-        });
-      });
-    } catch (e) {
-      // TODO: Error handling.
-      console.log("Something went terribly wrong...");
+  // TODO: Find out types for d.
+  function handleMouseEnter(d, domElement: Element) {
+    if (mouseEvents !== undefined && mouseEvents.mouseenter !== undefined) {
+      mouseEvents.mouseenter(d.id, domElement);
     }
   };
 
-  function handleMouseLeave() {
-    setTooltipState({
-      ...toolTipState,
-      nodeInfo: null,
-      toolTipHidden: true,
-      targetRect: null
-    });
+  function handleMouseLeave(d, domElement: Element) {
+    if (mouseEvents !== undefined && mouseEvents.mouseleave !== undefined) {
+      mouseEvents.mouseleave(d.id, domElement);
+    }
   };
 
-  function handleOnClick(d: any) {
-    try {
-      nodeProvider.getNodeInfoFromHash(d.id).then((nodeEntry) => {
-        dbProvider.constructOperationsLogFromEntries([nodeEntry]).then((operationsLog) => {
-          let reconstructedData = nodeProvider.reconstructData(operationsLog);
-
-          // Populate data to visualise in table.
-          let filteredData = reconstructedData.map((data) => {
-            return {"value" : data.payload.value};
-          });
-
-          showDatabaseState({
-            ...databaseState,
-            data: filteredData,
-            openPopup: true
-          });
-        });
-      });
-    } catch (e) {
-      // TODO: Error handling.
-      console.log("Something went terribly wrong...");
+  function handleOnClick(d, domElement: Element) {
+    if (mouseEvents !== undefined && mouseEvents.click !== undefined) {
+      mouseEvents.click(d.id, domElement);
     }
   };
 
@@ -141,10 +107,10 @@ const GraphDisplay: React.FC<{
     nodes.append('circle')
       .attr('r', 20)
       .attr('id', d => d.id)
-      .attr('fill', nodeColour)
+      .attr('fill', d => colours[parseInt(d.data.payload.identity) % colours.length])
       .on('mouseenter', (d, i, e) => { handleMouseEnter(d, e[i]) })
-      .on('mouseleave', handleMouseLeave)
-      .on('click', (d, i, e) => { handleOnClick(d) });
+      .on('mouseleave', (d, i, e) => { handleMouseLeave(d, e[i]) })
+      .on('click', (d, i, e) => { handleOnClick(d, e[i]) });
     return svgDom;
   }
 
@@ -174,14 +140,6 @@ const GraphDisplay: React.FC<{
 
   return (
     <div className={graphStyles.graphContainer}>
-      <DAGNodeTooltip nodeInfo={toolTipState.nodeInfo} rect={toolTipState.targetRect}/>
-      <Popup open={databaseState.openPopup}
-             onClose={() => databaseState.openPopup = false}
-             position="bottom center">
-        <div>
-        <DatabaseStateDisplay data={databaseState.data}/>
-        </div>
-      </Popup>
       {(inputData.id !== "EMPTY" ?
         (<svg id='graph' width='100%' height='100%' viewBox={`${viewportOffset} 0 1000 300`} onWheel={scrollSvg}></svg>) :
         (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)

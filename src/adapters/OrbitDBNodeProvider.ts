@@ -10,6 +10,7 @@ import KeyValueIndex from 'orbit-db-kvstore/src/KeyValueIndex';
 import FeedIndex from 'orbit-db-feedstore/src/FeedIndex';
 import CounterIndex from 'orbit-db-counterstore/src/CounterIndex';
 import DocumentIndex from 'orbit-db-docstore/src/DocumentIndex';
+import OrbitDBDatabaseTypes from "./OrbitDBDatabaseTypes";
 
 export class OrbitDBNodeProvider implements NodeProvider {
 
@@ -72,12 +73,12 @@ export class OrbitDBNodeProvider implements NodeProvider {
     return edges;
   }
 
-  async getNodeInfo(node: DAGNode): Promise<any> {
-    return this.store.get(node.hash);
+  getNodeInfo(node: DAGNode): Promise<any> {
+    return this.getNodeInfoFromHash(node.hash);
   }
 
-  async getNodeInfoFromHash(nodeHash: String): Promise<any> {
-    return this.store.get(nodeHash);
+  getNodeInfoFromHash(nodeHash: string): Promise<any> {
+    return this.store._oplog.get(nodeHash);
   }
 
   // TODO: Return type based on store type...
@@ -90,23 +91,23 @@ export class OrbitDBNodeProvider implements NodeProvider {
         index = new Index();
         break;
 
-      case 'eventlog':
+      case OrbitDBDatabaseTypes.EventStore:
         index = new EventIndex();
         break;
         
-      case 'docstore':
+      case OrbitDBDatabaseTypes.DocumentStore:
         index = new DocumentIndex();
         break;
 
-      case 'feed':
+      case OrbitDBDatabaseTypes.FeedStore:
         index = new FeedIndex();
         break;
         
-      case 'counter':
+      case OrbitDBDatabaseTypes.CounterStore:
         index = new CounterIndex();
         break;
 
-      case 'keyvalue':
+      case OrbitDBDatabaseTypes.KeyValueStore:
         index = new KeyValueIndex();
         break;
 
@@ -117,7 +118,6 @@ export class OrbitDBNodeProvider implements NodeProvider {
      
     let ipfsLog = operationsLog.getInnerLog();
     index.updateIndex(ipfsLog);
-    let result = index.get();
-    return result;
+    return index;
   }
 }

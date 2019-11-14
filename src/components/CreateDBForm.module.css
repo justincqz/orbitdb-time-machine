@@ -85,8 +85,8 @@
 .textField {
     margin-left: 0.5em;
     padding: 1em 0.5em 1em 0.5em;
-    font-size: 4vh;
-    font-family: 'Unica One', cursive;
+    font-size: 3.5vh;
+    font-family: monospace;
     overflow-x: auto;
     color: aliceblue;
     flex-grow:4;
@@ -120,4 +120,53 @@
   
 .textField::-ms-input-placeholder { /* Microsoft Edge */
     color: #89BEFCff;
+}
+
+.typeChooserContainer {
+    margin: 2vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.typeChooserButton {
+    width: 13vh;
+    height: 5vh;
+    margin-left: 3vh;
+    justify-self: center;
+    align-self: center;
+    color: #eeeeeeaa;
+    border-style: solid;
+    border-radius: 8px;
+    border-width: 0;
+    background-color: #23538Aaa;
+    font-family: monospace;
+    font-size: 2vh;
+    font-weight: 500;
+    cursor: pointer;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
+}
+
+.typeChooserSelectedButton {
+    width: 13vh;
+    height: 5vh;
+    margin-left: 3vh;
+    justify-self: center;
+    align-self: center;
+    color: #eeeeeeff;
+    border-style: solid;
+    border-radius: 8px;
+    border-width: 0;
+    background-color: #23538Aff;
+    font-family: monospace;
+    font-size: 2vh;
+    font-weight: 500;
+    cursor: pointer;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    outline: none;
 }

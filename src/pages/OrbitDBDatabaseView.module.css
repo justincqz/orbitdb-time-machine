@@ -51,6 +51,7 @@
   color: #b8d8feff;
   background-color: #0A3464FF;
   align-items: center;
+  justify-content: space-between;
 }
 
 .loadContainer {

@@ -1,15 +1,19 @@
 import React, { useRef } from 'react';
 import FormStyles from './DAGNodeTooltip.module.css';
 
-const DAGNodeTooltip: React.FC<{nodeInfo: any, rect: ClientRect}> = ({nodeInfo, rect}) => {
-  
+const DAGNodeTooltip: React.FC<{
+  title: string,
+  message: string,
+  rect: ClientRect
+}> = ({title, message, rect}) => {
+
   const toolTipRef = useRef<HTMLDivElement>(null);
-  
+
   // Calculates the position of tooltip and returns a stylesheet describing it.
   const calculatePositionStyle = () => {
 
     let centerX = (rect.right + rect.left) / 2;
-    let centerY = (rect.top + rect.bottom) / 2; 
+    let centerY = (rect.top + rect.bottom) / 2;
 
     return { top: centerY, left: centerX };
   }
@@ -22,12 +26,13 @@ const DAGNodeTooltip: React.FC<{nodeInfo: any, rect: ClientRect}> = ({nodeInfo, 
     <div
       ref={toolTipRef}
       className={FormStyles.container}
-      style={calculatePositionStyle()}>
-      <div>
-        Operation: {nodeInfo.payload.op}
+      style={calculatePositionStyle()}
+    >
+      <div className={FormStyles.nameDiv}>
+        {title}
       </div>
-      <div>
-        Value: {nodeInfo.payload.value}
+      <div className={FormStyles.msgDiv}>
+        {message}
       </div>
     </div>
   );

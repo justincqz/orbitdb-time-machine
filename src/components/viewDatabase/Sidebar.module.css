@@ -1,0 +1,199 @@
+.container {
+  width: 30vw;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  background-color: #1d5495ff;
+  border-right: #1d549577;
+  border-style: solid;
+  border-width: 0;
+  color: #b8d8feff;
+  font-family: 'Unica One', sans-serif;
+}
+
+.header {
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+  margin-top: 3vh;
+  margin-bottom: 2vh;
+  font-size: 3vh;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.info {
+  margin: 1.5vh;
+  font-size: 1.5vh;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.addButton {
+  min-width: 6vh;
+  max-width: 20vh;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 4vh;
+  margin-left: 1vh;
+  margin-right: 1vh;
+  justify-self: center;
+  align-self: center;
+  color: #eee;
+  border-style: solid;
+  border-radius: 8px;
+  border-width: 0;
+  background-color: rgb(54, 118, 197);
+  font-family: monospace;
+  font-size: 1.7vh;
+  font-weight: 500;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+}
+
+.buttonBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background: #b8d8feaa;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+}
+
+.addButton:hover {
+  color: #0A3464FF;
+  background-color: #b8d8feff;
+  border-width: 0;
+}
+
+.selection {
+  padding: 10px;
+  border-radius: 3px;
+  background-color: rgb(34, 98, 177);
+  margin: 10px;
+  color: #b8d8feff;
+  font-family: monospace;
+}
+
+.selection:hover {
+  background-color: #0A3464FF;
+  cursor: pointer;
+}
+
+.inputFieldContainer {
+  background-color: #b8d8fe33;
+  padding: 1vh;
+  border-radius: 0 0 12px 12px;
+  line-height: 3.5vh;
+  font-size: 2vh;
+}
+
+.inputFieldRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.inputBorder {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: #0077FF;
+  transform: translateY(-26px) scale(.75);
+  transform-origin: 0 0;
+  transition: all .15s ease;
+}
+
+.inputField {
+  color: #b8d8feff;
+  margin: 0.5vh;
+  font-family: monospace;
+  font-size: 1.5vh;
+  width: 15vw;
+  border: 0;
+  border-bottom: 2px solid #b8d8fe33;
+  border-radius: 0;
+  transition: all .15s ease;
+}
+
+.inputField:focus {
+  background-color: #ffffff25;
+}
+
+.inputField:hover {
+  background-color: #ffffff25;
+}
+
+.inputFieldSubmit {
+  width: 5.5vh;
+  height: 3.5vh;
+  justify-self: center;
+  align-self: center;
+  color: #eee;
+  border-style: solid;
+  border-radius: 8px;
+  border-width: 0;
+  background-color: #1d5495ff;
+  font-family: monospace;
+  font-size: 1.5vh;
+  font-weight: 500;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+}
+
+.editButton {
+  width: 7vh;
+  height: 3.5vh;
+  justify-self: center;
+  align-self: center;
+  color: #eee;
+  border-style: solid;
+  border-radius: 8px;
+  border-width: 0;
+  background-color: #1d5495ff;
+  font-family: monospace;
+  font-size: 1.5vh;
+  font-weight: 500;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+  text-align:center;
+}
+
+.saveButton {
+  width: 5.5vh;
+  height: 3.5vh;
+  justify-self: center;
+  align-self: center;
+  color: #eee;
+  border-style: solid;
+  border-radius: 8px;
+  border-width: 0;
+  background-color: #0D3540;
+  font-family: monospace;
+  font-size: 1.5vh;
+  font-weight: 500;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+  text-align:center;
+}
+
+.inputFieldSubmit:hover {
+  background-color: #0A3464FF;
+}
