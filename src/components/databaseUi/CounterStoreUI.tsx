@@ -25,6 +25,7 @@ export default class CounterStoreUI implements DatabaseUIProvider {
               <input
                 className={ToolbarStyle.inputField}
                 type="number"
+                min="0"
                 onChange={(e) => setInput(e.target.value)}
               />
             </div>
