@@ -1,5 +1,7 @@
 .container {
   display: flex;
+  /* Fix conflict with StoreDisplay.module.css rule: .container > div */
+  width: auto !important;
   flex-direction: column;
   flex-wrap: wrap;
   position: fixed;

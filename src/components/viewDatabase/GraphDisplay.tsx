@@ -26,16 +26,17 @@ const GraphDisplay: React.FC<{
   nodeColour = nodeColour ? nodeColour : '#555577FF';
   lineColour = lineColour ? lineColour : '#7766BBFF';
 
-  const colours = ['#555577FF', '#32a891', '#c7942e', '#ff8799', '#ad4949', '#6fd6d4'];
-
-  const [viewportOffset, setViewportOffset] = useState(0);
-
-  // TODO calculate this dynamically
   const heads = getNumberOfLeaves(inputData);
   const sequentialNodes = getDepth(inputData);
 
   const viewWidth = 300 * sequentialNodes;
   const viewHeight = heads * 100;
+  const minScroll = -viewWidth / 6;
+  const maxScroll = viewWidth / 4;
+
+  const colours = ['#555577FF', '#32a891', '#c7942e', '#ff8799', '#ad4949', '#6fd6d4'];
+
+  const [viewportOffset, setViewportOffset] = useState(minScroll);
 
   // TODO: Find out types for d.
   function handleMouseEnter(d, domElement: Element) {
@@ -79,7 +80,7 @@ const GraphDisplay: React.FC<{
     // Draw edges to graph
     const line = d3.line()
     .curve(d3.curveMonotoneX)
-    .x(d => d.y)
+    .x(d => d.y / 4)
     .y(d => d.x + viewHeight / 2);
 
     const svgDom = d3.select('#graph');
@@ -101,11 +102,11 @@ const GraphDisplay: React.FC<{
       .data(data.descendants())
       .enter()
       .append('g')
-      .attr('transform', ({x, y}) => `translate(${y}, ${x + viewHeight / 2})`);
+      .attr('transform', ({x, y}) => `translate(${y / 4}, ${x + viewHeight / 2})`);
 
     // Plot node circles
     nodes.append('circle')
-      .attr('r', 20)
+      .attr('r', 13)
       .attr('id', d => d.id)
       .attr('fill', d => colours[parseInt(d.data.payload.identity) % colours.length])
       .on('mouseenter', (d, i, e) => { handleMouseEnter(d, e[i]) })
@@ -121,10 +122,10 @@ const GraphDisplay: React.FC<{
     // if (svgWidth + svgWidth / 2 > viewWidth) {
     //   return;
     // }
-    if (offset < 0) {
-      offset = 0;
-    } else if (offset > viewWidth) {
-      offset = viewWidth
+    if (offset < minScroll) {
+      offset = minScroll;
+    } else if (offset > maxScroll) {
+      offset = maxScroll;
     }
     setViewportOffset(offset);
   }

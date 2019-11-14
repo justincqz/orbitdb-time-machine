@@ -206,7 +206,6 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
         <div className={databaseStyles.addressContainer}>
           Viewing: {`/orbitdb/${hash}/${name}`}
         </div>
-        <div className={databaseStyles.titleContainer}>Timeline</div>
         <OrbitDBStoreDisplay
           operationLogData={
             d3data

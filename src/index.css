@@ -27,3 +27,7 @@ input:focus {
 div > .rt-td {
   text-align: center;
 }
+
+.-btn {
+  color: white !important;
+}
