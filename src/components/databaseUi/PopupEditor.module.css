@@ -1,0 +1,15 @@
+.errorDiv {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding: 0.8vh;
+  background-color: "#A15050";
+}
+
+.buttonBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding: 0.8vh;
+  background-color: "#1C424B";
+}
