@@ -71,11 +71,16 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
               s,
               dbProvider.current
             );
-            loadData();
-            if (!listening) {
-              setListening(true);
-              listenForChanges();
-            }
+
+            dbProvider.current.openDatabase(storageProvider.current.getStorageAddress()).then((storage: Store) => {
+              storageProvider.current.connectToStorage(storage);
+              storageProvider.current.setUser(s._oplog._identity._id);
+              if (!listening) {
+                setListening(true);
+                listenForChanges();
+              }
+              loadData();
+            })
           })
           .catch(e => setError(e.toString()));
       });
