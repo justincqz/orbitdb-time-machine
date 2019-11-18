@@ -37,8 +37,9 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   );
   let uiProvider: DatabaseUIProvider;
 
-  // Limit number of nodes to fetch
-  const LIMIT = 10;
+  // For display nodes limiting.
+  let nodeLimit: MutableRefObject<number> = useRef(10);
+  let limitInputRef = React.createRef<HTMLInputElement>();
 
   const [loading, setLoading] = useState(true);
   const [d3data, setD3data]: [
@@ -92,7 +93,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
       nodeProvider.current.getDatabaseGraph().then(node => {
         addUserIdentities(
           viewJoinEvent(
-            node.toD3Data(LIMIT),
+            node.toD3Data(nodeLimit.current),
             storageProvider.current.getJoinEvent(selectedJoin).root
           ),
           nodeProvider.current
@@ -101,8 +102,8 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
         });
       });
     }
-  // For some reason, ESLint thinks loadData should be a dependency
-  // eslint-disable-next-line
+    // For some reason, ESLint thinks loadData should be a dependency
+    // eslint-disable-next-line
   }, [selectedJoin]);
 
   if (store.current != null) {
@@ -122,6 +123,16 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
       default:
         throw new Error("Unsupported store type");
     }
+  }
+
+  function handleLimitFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const parsed = parseInt(limitInputRef.current.value);
+    if (!isNaN(parsed)) {
+      nodeLimit.current = parsed;
+    }
+
+    loadData(true);
   }
 
   function listenForChanges() {
@@ -159,7 +170,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     try {
       let childNode = await nodeProvider.current.getDatabaseGraph();
       let d3Node = await addUserIdentities(
-        childNode.toD3Data(LIMIT),
+        childNode.toD3Data(nodeLimit.current),
         nodeProvider.current
       );
       setD3data(d3Node);
@@ -205,6 +216,20 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
       <div className={databaseStyles.container}>
         <div className={databaseStyles.addressContainer}>
           Viewing: {`/orbitdb/${hash}/${name}`}
+        </div>
+        <div className={databaseStyles.numNodesContainer}>
+          Display Limit:
+          <form 
+            onSubmit={handleLimitFormSubmit}
+          >
+            <input
+              ref={limitInputRef}
+              type="text"
+              pattern="[0-9]*"
+              title="Please only input numbers."
+              defaultValue={nodeLimit.current}
+            />
+          </form>
         </div>
         <OrbitDBStoreDisplay
           operationLogData={

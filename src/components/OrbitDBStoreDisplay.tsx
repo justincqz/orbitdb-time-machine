@@ -9,12 +9,13 @@ import { NodeProvider } from '../providers/NodeProvider';
 import DatabaseUIProvider from '../providers/DatabaseUIProvider';
 
 /**
- * The component responsible for displaying an OrbitDB EventStore.
- * Here, we take care of EventStore specific operations such as add.
- *
+ * The component responsible for displaying an OrbitDB Store.
+ * Includes generic logic such as tooltip positioning.
+ * 
  * @param operationLogData The operations log graph we need to visualise
- * @param eventStore The store we need to visualise
- * @param dbProvider The underlying database
+ * @param nodeProvider The store we need to visualise
+ * @param dbProvider The underlying OrbitDB database.
+ * @param uiProvider Provides store-specific components to render.
  *
  */
 const OrbitDBStoreDisplay: React.FC<{
@@ -36,8 +37,7 @@ const OrbitDBStoreDisplay: React.FC<{
 
   /**
    * Handler for the onclick event for the rendered nodes in GraphDisplay.
-   * Reconstructs data based on the given entry's hash and displays it through
-   * a Popup.
+   * Reconstructs data based on the given entry's hash.
    *
    * @param entryHash The hash of the entry corresponding to the GraphDisplay node
    * @param DOMElem The DOM element that registered this click event

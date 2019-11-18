@@ -1,3 +1,28 @@
+.numNodesContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.numNodesContainer input {
+  color: #b8d8fe;
+  font-family: monospace;
+  font-size: 2.5vh;
+  margin-left: 2vh;
+  border: 0;
+  border-bottom: 2px solid #b8d8fe33;
+  border-radius: 0;
+  width: 5vw;
+  transition: all .15s ease;
+}
+
+.numNodesContainer input:focus {
+  background-color: #ffffff25;
+}
+
+.numNodesContainer input:hover {
+  background-color: #ffffff25;
+}
+
 .icon {
   color: #0a3464ff;
   margin: 10px;
