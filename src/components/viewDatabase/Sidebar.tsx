@@ -2,6 +2,7 @@ import React from 'react';
 import ToolbarStyle from './Sidebar.module.css';
 import JoinList from './JoinList';
 import DatabaseUIProvider from '../../providers/DatabaseUIProvider';
+import AutoComplete from './Autocomplete'
 import { Store } from "orbit-db-store";
 
 const SideBar: React.FC<{
@@ -17,6 +18,7 @@ const SideBar: React.FC<{
     <uiProvider.getSidebar store={store} />
     <div className={ToolbarStyle.info}>{`Database Type: ${type}`}</div>
     <div>
+      <AutoComplete></AutoComplete>
       <JoinList 
       joinEvents={joinEvents} 
       selectJoin={selectJoin} />
