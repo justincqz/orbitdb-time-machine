@@ -16,7 +16,13 @@ export default function() {
       max = max < layer.length ? layer.length : max;
       for (let i = 0; i < layer.length; i++) {
         if (layer.length < max) {
-          const prevIndex = prevlayer.findIndex(node => node.id === layer[i].data.children[0]);
+          // This layer is not as wide as the maximum so far
+          // So use x-coordinate of the previous, to keep the layer straight
+          console.log(layer[i].data.children[0])
+          console.log(prevlayer);
+          const prevIndex = prevlayer.findIndex(node => node.children.reduce((found, cNode) => {
+            return found || layer[i].id == cNode.id;
+          }, false));
           layer[i].x = widths[max][prevIndex];
         } else {
           layer[i].x = widths[max][i];
