@@ -18,8 +18,6 @@ export default function() {
         if (layer.length < max) {
           // This layer is not as wide as the maximum so far
           // So use x-coordinate of the previous, to keep the layer straight
-          console.log(layer[i].data.children[0])
-          console.log(prevlayer);
           const prevIndex = prevlayer.findIndex(node => node.children.reduce((found, cNode) => {
             return found || layer[i].id === cNode.id;
           }, false));

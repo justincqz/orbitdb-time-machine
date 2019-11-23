@@ -137,7 +137,7 @@ const GraphDisplay: React.FC<{
 
   return (
     <div className={graphStyles.graphContainer}>
-      {(inputData.id !== "EMPTY" ?
+      {(inputData.payload.actualId !== "EMPTY" ?
         (<svg id='graph' width='100%' height='100%' viewBox={`${viewportOffset} 0 1000 300`} onWheel={scrollSvg}></svg>) :
         (<div className={graphStyles.emptyGraph}>No Logs Found!</div>)
       )}

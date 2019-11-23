@@ -109,8 +109,6 @@ export default class DAGNode implements D3DataOutput {
 
     let index = Math.min(head.next.length - 1, limit - 2)
 
-    console.log(allNodes)
-
     return allNodes[head.next[index]];
   }
 

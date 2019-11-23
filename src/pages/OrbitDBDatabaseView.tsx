@@ -103,11 +103,11 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
           return rootNode;
         }, Promise.resolve({id: "ROOT", children: [], payload: {}}))
           .then((d3data) => {
+            // Remove ROOT node if there is only a single root
+            d3data = d3data.children.length === 1 ? d3data.children[0] : d3data;
             setD3data(d3data);
         });
-
       });
-
     }
     // For some reason, ESLint thinks loadData should be a dependency
     // eslint-disable-next-line
@@ -186,6 +186,8 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
         ));
         return rootNode;
       }, Promise.resolve({id: "ROOT", children: [], payload: {}}));
+      // Remove ROOT node if there is only a single root
+      d3data = d3data.children.length === 1 ? d3data.children[0] : d3data;
       setD3data(d3data);
     } catch (e) {
       setError(e.toString());
