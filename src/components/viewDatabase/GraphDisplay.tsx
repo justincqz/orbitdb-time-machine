@@ -31,7 +31,7 @@ const GraphDisplay: React.FC<{
 
   const viewWidth = 300 * sequentialNodes;
   const viewHeight = heads * 100;
-  const minScroll = -viewWidth / 6;
+  const minScroll = -viewWidth / sequentialNodes;
   const maxScroll = viewWidth / 4;
 
   const colours = ['#555577FF', '#32a891', '#c7942e', '#ff8799', '#ad4949', '#6fd6d4'];
@@ -118,10 +118,6 @@ const GraphDisplay: React.FC<{
   function scrollSvg(e) {
     // const svgWidth = document.getElementsByClassName(graphStyles.graphContainer)[0].clientWidth;
     let offset = viewportOffset + e.deltaY
-    // // return if the svg is smaller than the viewport
-    // if (svgWidth + svgWidth / 2 > viewWidth) {
-    //   return;
-    // }
     if (offset < minScroll) {
       offset = minScroll;
     } else if (offset > maxScroll) {

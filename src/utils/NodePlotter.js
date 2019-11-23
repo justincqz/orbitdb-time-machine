@@ -21,7 +21,7 @@ export default function() {
           console.log(layer[i].data.children[0])
           console.log(prevlayer);
           const prevIndex = prevlayer.findIndex(node => node.children.reduce((found, cNode) => {
-            return found || layer[i].id == cNode.id;
+            return found || layer[i].id === cNode.id;
           }, false));
           layer[i].x = widths[max][prevIndex];
         } else {
