@@ -91,11 +91,11 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     if (selectedJoin === null) {
       loadData(true);
     } else {
-      nodeProvider.current.getDatabaseGraph().then(nodes => {
+      nodeProvider.current.getDatabaseGraph(nodeLimit.current).then(nodes => {
         nodes.reduce(async (rootNode, node) => {
           (await rootNode).children.push(await addUserIdentities(
             viewJoinEvent(
-              node.toD3Data(nodeLimit.current),
+              node.toD3Data(),
               storageProvider.current.getJoinEvent(selectedJoin).root
             ),
             nodeProvider.current
@@ -178,10 +178,10 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     }
     setLoading(true);
     try {
-      let childNodes = await nodeProvider.current.getDatabaseGraph();
+      let childNodes = await nodeProvider.current.getDatabaseGraph(nodeLimit.current);
       let d3data = await childNodes.reduce(async (rootNode, node) => {
         (await rootNode).children.push(await addUserIdentities(
-            node.toD3Data(nodeLimit.current),
+            node.toD3Data(),
           nodeProvider.current
         ));
         return rootNode;

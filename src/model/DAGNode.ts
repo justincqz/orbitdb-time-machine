@@ -14,9 +14,7 @@ export default class DAGNode implements D3DataOutput {
     this.nodeList.push(node);
   }
 
-  toD3Data(limit: number): D3Data {
-    // Number of nodes visited
-    let count: number = 0;
+  toD3Data(): D3Data {
     // Queue of nodes to visit in BFS
     let visitQueue: DAGNode[] = [];
     // Queue of D3 nodes to visit in BFS
@@ -34,8 +32,7 @@ export default class DAGNode implements D3DataOutput {
     };
 
     resultMap[this.hash] = root;
-    count++;
-    while (count < limit && visitQueue.length > 0) {
+    while (visitQueue.length > 0) {
       // Remove head of queue
       let visitNode = visitQueue.shift();
 
@@ -61,7 +58,6 @@ export default class DAGNode implements D3DataOutput {
 
         cur.children.push(childD3Node);
       }
-      count++;
     }
 
     return resultMap[this.hash];
@@ -71,13 +67,15 @@ export default class DAGNode implements D3DataOutput {
     return new DAGNode("EMPTY", []);
   }
 
-  private static createStraightDAG(allNodes: any, head: any): DAGNode {
+  private static createStraightDAG(allNodes: any, head: any, limit: number): DAGNode {
     let headNode: DAGNode = new DAGNode(head.hash, []);
 
+    // There is only a single node
     if (head.next && head.next.length === 0) {
       return headNode;
     }
 
+    // Add head node
     if (head.next && head.next.length !== 0) {
       let headParent: DAGNode = allNodes[head.next[0]] !== undefined
         ? allNodes[head.next[0]]
@@ -87,7 +85,9 @@ export default class DAGNode implements D3DataOutput {
       allNodes[head.next[0]] = headParent;
     }
 
-    for (let i: number = 0; i < head.next.length; i++) {
+    // Add remaining nodes, while they exist and fewer than limit -2
+    // This -2 accouts for the 2 head nodes
+    for (let i = 0; i < head.next.length && i < limit - 2; i++) {
       let node: DAGNode = allNodes[head.next[i]] !== undefined
         ? allNodes[head.next[i]]
         : new DAGNode(head.next[i], []);
@@ -107,16 +107,24 @@ export default class DAGNode implements D3DataOutput {
       allNodes[head.next[i]] = node;
     }
 
-    return allNodes[head.next[head.next.length - 1]];
+    let index = Math.min(head.next.length - 1, limit - 2)
+
+    console.log(allNodes)
+
+    return allNodes[head.next[index]];
   }
 
   // TODO: Replace heads type with Entry adapter class.
-  static createDAG(heads: any[]): DAGNode[] {
+  static createDAG(heads: any[], limit?: number): DAGNode[] {
     let allNodes: any = {};
     let detectedInconsistency = false;
 
+    if (limit === null || limit < 0) {
+      limit = Infinity;
+    }
+
     if (heads.length === 1) {
-      return [this.createStraightDAG(allNodes, heads[0])];
+      return [this.createStraightDAG(allNodes, heads[0], limit)];
     }
 
     // Get list of common ancestors
@@ -161,11 +169,11 @@ export default class DAGNode implements D3DataOutput {
     let rootNode: DAGNode = this.emptyDAG();
     if (detectedInconsistency) {
       return heads.map((h) => {
-        return this.createStraightDAG({}, h);
+        return this.createStraightDAG({}, h, limit);
       });
     } else {
       heads.forEach((h) => {
-        rootNode = this.createStraightDAG(allNodes, h);
+        rootNode = this.createStraightDAG(allNodes, h, limit);
       });
     }
 
@@ -174,7 +182,7 @@ export default class DAGNode implements D3DataOutput {
 
   static saveHeadsAsD3Data(heads: any[]): D3Data {
     let DAGheads = this.createDAG(heads);
-    let D3DAG = DAGheads[0].toD3Data(Infinity);
+    let D3DAG = DAGheads[0].toD3Data();
     return getTreeAtSplit(D3DAG);
   }
 }

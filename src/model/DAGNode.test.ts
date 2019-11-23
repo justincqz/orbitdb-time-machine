@@ -1,35 +1,32 @@
-import DAGNode from './DAGNode';
+import DAGNode from "./DAGNode";
 
-const node = new DAGNode("1", [
-  new DAGNode("2", []),
-  new DAGNode("3", [])
-]);
+const node = new DAGNode("1", [new DAGNode("2", []), new DAGNode("3", [])]);
 
-it('outputs correct D3 Data', () => {
-  let d3data = node.toD3Data(Infinity);
+it("outputs correct D3 Data", () => {
+  let d3data = node.toD3Data();
 
   expect(d3data).toEqual(
     expect.objectContaining({
-        id: "1",
-        children: expect.arrayContaining([
-          expect.objectContaining({
-              id: "2",
-              children: expect.arrayContaining([])
-            }
-          ),
-          expect.objectContaining({
-              id: "3",
-              children: expect.arrayContaining([])
-            }
-          )
-        ])
-      }
-    )
-  )
+      id: expect.anything(),
+      children: expect.arrayContaining([
+        expect.objectContaining({
+          id: expect.anything(),
+          payload: expect.objectContaining({
+            actualId: "2"
+          }),
+          children: expect.arrayContaining([])
+        }),
+        expect.objectContaining({
+          id: expect.anything(),
+          payload: expect.objectContaining({
+            actualId: "3"
+          }),
+          children: expect.arrayContaining([])
+        })
+      ]),
+      payload: expect.objectContaining({
+        actualId: "1"
+      })
+    })
+  );
 });
-
-it('correctly limits output size', () => {
-  const limit = 1;
-  let d3data = node.toD3Data(limit);
-  expect(d3data.children.length).toEqual(0);
-})

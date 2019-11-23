@@ -2,7 +2,7 @@ import DAGNode from "../model/DAGNode";
 import OperationsLog from "./OperationsLog";
 
 export interface NodeProvider {
-  getDatabaseGraph(): Promise<Array<DAGNode>>;
+  getDatabaseGraph(limit: number): Promise<Array<DAGNode>>;
 
   listenForDatabaseGraph(cb: () => void): void;
 
