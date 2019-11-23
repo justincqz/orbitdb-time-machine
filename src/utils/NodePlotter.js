@@ -16,7 +16,7 @@ export default function() {
       max = max < layer.length ? layer.length : max;
       for (let i = 0; i < layer.length; i++) {
         if (layer.length < max) {
-          const prevIndex = prevlayer.findIndex(node => node.id === layer[i].data.parentIds[0]);
+          const prevIndex = prevlayer.findIndex(node => node.id === layer[i].data.children[0]);
           layer[i].x = widths[max][prevIndex];
         } else {
           layer[i].x = widths[max][i];

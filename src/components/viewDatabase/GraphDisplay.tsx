@@ -41,19 +41,19 @@ const GraphDisplay: React.FC<{
   // TODO: Find out types for d.
   function handleMouseEnter(d, domElement: Element) {
     if (mouseEvents !== undefined && mouseEvents.mouseenter !== undefined) {
-      mouseEvents.mouseenter(d.id, domElement);
+      mouseEvents.mouseenter(d.data.payload.actualId, domElement);
     }
   };
 
   function handleMouseLeave(d, domElement: Element) {
     if (mouseEvents !== undefined && mouseEvents.mouseleave !== undefined) {
-      mouseEvents.mouseleave(d.id, domElement);
+      mouseEvents.mouseleave(d.data.payload.actualId, domElement);
     }
   };
 
   function handleOnClick(d, domElement: Element) {
     if (mouseEvents !== undefined && mouseEvents.click !== undefined) {
-      mouseEvents.click(d.id, domElement);
+      mouseEvents.click(d.data.payload.actualId, domElement);
     }
   };
 

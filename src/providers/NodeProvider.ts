@@ -2,10 +2,10 @@ import DAGNode from "../model/DAGNode";
 import OperationsLog from "./OperationsLog";
 
 export interface NodeProvider {
-  getDatabaseGraph(): Promise<DAGNode>;
+  getDatabaseGraph(): Promise<Array<DAGNode>>;
 
   listenForDatabaseGraph(cb: () => void): void;
-  
+
   /**
    * @param {() => void} cb The callback to run after intercepting a local write event.
    */

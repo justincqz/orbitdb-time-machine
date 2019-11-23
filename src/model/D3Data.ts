@@ -94,7 +94,7 @@ const addUserIdentities = async (root: D3Data, nodeProvider: NodeProvider) => {
     return root;
   }
   async function addUserId(node: D3Data) {
-    let promise = nodeProvider.getNodeInfoFromHash(node.id);
+    let promise = nodeProvider.getNodeInfoFromHash(node.payload.actualId);
     for (let child of node.children) {
       addUserId(child);
     }

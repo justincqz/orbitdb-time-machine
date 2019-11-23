@@ -91,17 +91,23 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     if (selectedJoin === null) {
       loadData(true);
     } else {
-      nodeProvider.current.getDatabaseGraph().then(node => {
-        addUserIdentities(
-          viewJoinEvent(
-            node.toD3Data(nodeLimit.current),
-            storageProvider.current.getJoinEvent(selectedJoin).root
-          ),
-          nodeProvider.current
-        ).then((data) => {
-          setD3data(data)
+      nodeProvider.current.getDatabaseGraph().then(nodes => {
+        nodes.reduce(async (rootNode, node) => {
+          (await rootNode).children.push(await addUserIdentities(
+            viewJoinEvent(
+              node.toD3Data(nodeLimit.current),
+              storageProvider.current.getJoinEvent(selectedJoin).root
+            ),
+            nodeProvider.current
+          ));
+          return rootNode;
+        }, Promise.resolve({id: "ROOT", children: [], payload: {}}))
+          .then((d3data) => {
+            setD3data(d3data);
         });
+
       });
+
     }
     // For some reason, ESLint thinks loadData should be a dependency
     // eslint-disable-next-line
@@ -172,12 +178,15 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     }
     setLoading(true);
     try {
-      let childNode = await nodeProvider.current.getDatabaseGraph();
-      let d3Node = await addUserIdentities(
-        childNode.toD3Data(nodeLimit.current),
-        nodeProvider.current
-      );
-      setD3data(d3Node);
+      let childNodes = await nodeProvider.current.getDatabaseGraph();
+      let d3data = await childNodes.reduce(async (rootNode, node) => {
+        (await rootNode).children.push(await addUserIdentities(
+            node.toD3Data(nodeLimit.current),
+          nodeProvider.current
+        ));
+        return rootNode;
+      }, Promise.resolve({id: "ROOT", children: [], payload: {}}));
+      setD3data(d3data);
     } catch (e) {
       setError(e.toString());
       throw e;
@@ -223,7 +232,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
         </div>
         <div className={databaseStyles.numNodesContainer}>
           Display Limit:
-          <form 
+          <form
             onSubmit={handleLimitFormSubmit}
           >
             <input

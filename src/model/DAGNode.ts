@@ -26,8 +26,10 @@ export default class DAGNode implements D3DataOutput {
     visitQueue.push(this);
 
     let root: D3Data = {
-      id: this.hash,
-      payload: {},
+      id: this.hash + Math.random(),
+      payload: {
+        "actualId": this.hash
+      },
       children: []
     };
 
@@ -47,9 +49,11 @@ export default class DAGNode implements D3DataOutput {
 
         if (childD3Node === undefined) {
           childD3Node = {
-            id: child.hash,
+            id: this.hash + Math.random(),
             children: [],
-            payload: {}
+            payload: {
+              "actualId": child.hash
+            }
           };
 
           resultMap[child.hash] = childD3Node;
@@ -109,6 +113,7 @@ export default class DAGNode implements D3DataOutput {
   // TODO: Replace heads type with Entry adapter class.
   static createDAG(heads: any[]): DAGNode[] {
     let allNodes: any = {};
+    let detectedInconsistency = false;
 
     if (heads.length === 1) {
       return [this.createStraightDAG(allNodes, heads[0])];
@@ -117,12 +122,27 @@ export default class DAGNode implements D3DataOutput {
     // Get list of common ancestors
     let commonAncestorList: string[] = heads.reduce((ancestors, h2) => {
       let currentIndex = 0;
+      let highestH2Index = 0;
 
-      while (h2.next && !h2.next.includes(ancestors[currentIndex])) {
+      let earliestAncestorIndex = null;
+
+      while (h2.next) {
+        let curH2Index = h2.next.indexOf(ancestors[currentIndex])
+        if (curH2Index < highestH2Index) {
+          // Inconsistency
+          detectedInconsistency = true;
+          break;
+        }
+
+        highestH2Index = curH2Index;
+
+        if (h2.next.includes(ancestors[currentIndex]) && earliestAncestorIndex === null) {
+          earliestAncestorIndex = currentIndex;
+        }
         currentIndex++;
       }
 
-      return ancestors.slice(currentIndex);
+      return ancestors.slice(earliestAncestorIndex);
     }, heads[0].next);
 
     // If list is empty, return list of detached heads
@@ -139,9 +159,15 @@ export default class DAGNode implements D3DataOutput {
     allNodes[commonAncestor.hash] = commonAncestor;
 
     let rootNode: DAGNode = this.emptyDAG();
-    heads.forEach((h) => {
-      rootNode = this.createStraightDAG(allNodes, h);
-    });
+    if (detectedInconsistency) {
+      return heads.map((h) => {
+        return this.createStraightDAG({}, h);
+      });
+    } else {
+      heads.forEach((h) => {
+        rootNode = this.createStraightDAG(allNodes, h);
+      });
+    }
 
     return [rootNode];
   }

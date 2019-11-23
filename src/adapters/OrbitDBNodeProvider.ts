@@ -22,16 +22,16 @@ export class OrbitDBNodeProvider implements NodeProvider {
     this.dbInstance = dbInstance;
   }
 
-  async getDatabaseGraph(): Promise<DAGNode> {
+  async getDatabaseGraph(): Promise<Array<DAGNode>> {
     // Read head of oplog
     let oplog: any = this.store._oplog;
     let heads: Array<any> = oplog.heads;
 
     if (heads.length === 0) {
-      return DAGNode.emptyDAG();
+      return [DAGNode.emptyDAG()];
     }
 
-    return DAGNode.createDAG(heads)[0];
+    return DAGNode.createDAG(heads);
   }
 
   getOperationsLog(): OperationsLog {
@@ -94,7 +94,7 @@ export class OrbitDBNodeProvider implements NodeProvider {
       case OrbitDBDatabaseTypes.EventStore:
         index = new EventIndex();
         break;
-        
+
       case OrbitDBDatabaseTypes.DocumentStore:
         index = new DocumentIndex();
         break;
@@ -102,7 +102,7 @@ export class OrbitDBNodeProvider implements NodeProvider {
       case OrbitDBDatabaseTypes.FeedStore:
         index = new FeedIndex();
         break;
-        
+
       case OrbitDBDatabaseTypes.CounterStore:
         index = new CounterIndex();
         break;
@@ -115,7 +115,7 @@ export class OrbitDBNodeProvider implements NodeProvider {
         console.error("Found unrecognised store type in OrbitDBOperationsLog.");
         return null;
     }
-     
+
     let ipfsLog = operationsLog.getInnerLog();
     index.updateIndex(ipfsLog);
     return index;
