@@ -117,7 +117,7 @@ export default class DAGNode implements D3DataOutput {
     let allNodes: any = {};
     let detectedInconsistency = false;
 
-    if (limit === null || limit < 0) {
+    if (limit === undefined || limit === null || limit < 0) {
       limit = Infinity;
     }
 
