@@ -9,19 +9,19 @@ export default interface JoinStorageProvider {
   getJoinEvent(id: string): JoinEvent;
 
   // Add a join event
-  addJoinEvent(event: JoinEvent);
+  addJoinEvent(event: JoinEvent): void;
 
   // Set current database
-  setDatabase(id: string);
+  setDatabase(id: string): void;
 
   // Set user
-  setUser(id: string);
+  setUser(id: string): void;
 
   // Connect to storage
-  connectToStorage(s: Store);
+  connectToStorage(s: Store): void;
 
   // Get storage address
-  getStorageAddress();
+  getStorageAddress(): string;
 
   // Get user ids of a database
   getUserIds(): string[];

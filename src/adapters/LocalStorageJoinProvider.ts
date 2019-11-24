@@ -4,7 +4,7 @@ import JoinEvent from '../model/JoinEvent';
 export default class LocalStorageJoinProvider implements JoinStorageProvider {
   currentDatabase = null;
 
-  setDatabase(id: string) {
+  setDatabase(id: string): void {
     this.currentDatabase = id;
   }
 
@@ -15,13 +15,14 @@ export default class LocalStorageJoinProvider implements JoinStorageProvider {
     this.currentDatabase = null;
   }
 
-  getStorageAddress() {
+  getStorageAddress(): string {
+    return "LOCAL";
   }
 
-  connectToStorage() {
+  connectToStorage(): void {
   }
 
-  setUser(id: string) {
+  setUser(id: string): void {
   }
 
   getUserIds(): string[] {

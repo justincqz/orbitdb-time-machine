@@ -8,9 +8,8 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
   orbitDBStorage = null;
 
   readonly storageAddress : string = "/orbitdb/zdpuApcbZpiyV3HU5ojrTMuvcBwfdewGQWqQgKU8NfuDUXafW/JoinStorage";
-  // readonly storageAddress : string = "/orbitdb/zdpuApcbZpiyV5HU5ojrTMuvcBwfdewGQWqQgKU8NfuDUXafW/JoinStorage";
 
-  connectToStorage(s : Store) {
+  connectToStorage(s : Store): void {
     this.orbitDBStorage = s;
   }
 
@@ -18,11 +17,11 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
     return this.storageAddress;
   }
 
-  setDatabase(id: string) {
+  setDatabase(id: string): void {
     this.currentDatabase = id;
   }
 
-  setUser(id: string) {
+  setUser(id: string): void {
     this.currentUser = id;
   }
 
@@ -31,7 +30,7 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
     this.currentDatabase = null;
   }
 
-  getDatabaseJoins(databaseMetadataList: any) : any {
+  getDatabaseJoins(databaseMetadataList: any): any {
     if (databaseMetadataList.length === 0) {
       return {"_id": this.currentDatabase};
     } else {
@@ -153,7 +152,6 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
     if (window.localStorage.getItem(this.currentDatabase) !== null) {
       console.log("Uploading from local storage to OrbitDB...");
       let localUserData = window.localStorage.getItem(this.currentDatabase);
-      console.log(localUserData);
 
 
       let databaseMetadataList = this.orbitDBStorage.get(this.currentDatabase);
@@ -164,11 +162,7 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
         currentUserData = [];
       }
 
-      console.log(localUserData);
-      console.log(this.mergeJoins(JSON.parse(localUserData), currentUserData));
       databaseMetadata[this.currentUser] = this.mergeJoins(JSON.parse(localUserData), currentUserData);
-
-      console.log(databaseMetadata);
 
       this.orbitDBStorage.put(databaseMetadata);
     }
@@ -180,8 +174,6 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
     let databaseMetadataList = this.orbitDBStorage.get(this.currentDatabase);
     let databaseMetadata = this.getDatabaseJoins(databaseMetadataList);
 
-    console.log(databaseMetadata);
-    console.log(databaseMetadata[this.currentUser]);
     // This is the first time we are debugging this database - no object exists
     // in orbitDB storage
     if (databaseMetadata[this.currentUser] === undefined) {
@@ -192,7 +184,7 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
 
     this.updateJoins();
 
-    console.log(databaseMetadata);
+    window.localStorage.setItem(this.currentDatabase, JSON.stringify(databaseMetadata[this.currentUser]));
 
     let vals: string[] = [];
     for (let i = 0; i < databaseMetadata[this.currentUser].length; i++) {
