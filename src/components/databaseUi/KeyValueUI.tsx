@@ -68,12 +68,12 @@ export default class KeyValueUI implements DatabaseUIProvider {
     </div>);
   }
 
-  getDataDisplay: React.FC<any> = ({ index }) => {
+  getDataDisplay: React.FC<any> = ({ header, index }) => {
     let filteredData = Object.keys(index._index).map((key) => {
       return { key: key, value: index._index[key] }
     });
 
-    return <DatabaseTableDisplay data={filteredData.reverse()} />
+    return <DatabaseTableDisplay tableHeader={header} data={filteredData.reverse()} />
   }
 
   getTooltipMsg(entry): string {

@@ -56,12 +56,17 @@ export default class CounterStoreUI implements DatabaseUIProvider {
    * 
    * @param index The CounterIndex holding the data to display.
    */
-  getDataDisplay: React.FC<any> = ({ index }) => {
+  getDataDisplay: React.FC<any> = ({ header, index }) => {
     let value = index.get().value;
 
     return (
       <div className={CounterStoreStyles.counter}>
-        <h1>{value}</h1>
+        <div>
+         <p>{header}</p>
+        </div>
+        <div>
+          <h1>{value}</h1>
+        </div>
       </div>
     );
   }

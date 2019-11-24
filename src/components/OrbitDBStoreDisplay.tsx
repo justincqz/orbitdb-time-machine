@@ -32,6 +32,7 @@ const OrbitDBStoreDisplay: React.FC<{
   });
 
   const [databaseState, setDatabaseState] = useState({
+    entryHash: null,
     index: null
   });
 
@@ -49,6 +50,7 @@ const OrbitDBStoreDisplay: React.FC<{
         let reconstructedDataIndex = nodeProvider.reconstructData(operationsLog);
         setDatabaseState({
           ...databaseState,
+          entryHash: entryHash,
           index: reconstructedDataIndex
         });
       });
@@ -123,7 +125,7 @@ const OrbitDBStoreDisplay: React.FC<{
       </div>
       <div className={storeDisplayStyles.table}>
         { databaseState.index && (
-          <uiProvider.getDataDisplay index={databaseState.index} />
+          <uiProvider.getDataDisplay header={databaseState.entryHash} index={databaseState.index} />
         )}
       </div>
     </div>

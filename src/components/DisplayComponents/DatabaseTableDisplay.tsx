@@ -2,10 +2,14 @@ import React from 'react';
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 
-const DatabaseTableDisplay: React.FC<{data: any}> = ({data}) => {
-  let columns = [{Header: "Empty Database", accessor: "empty"}];
+const DatabaseTableDisplay: React.FC<{tableHeader: string, data: any}> = ({tableHeader, data}) => {
+  let columns = [{
+    Header: tableHeader == null ? "Header" : tableHeader,
+    columns: [{Header: "Empty Database", accessor: "empty"}]
+  }];
+
   if (data[0] != null) {
-    columns = Object.keys(data[0]).map((key) => {
+    columns[0].columns = Object.keys(data[0]).map((key) => {
       return {
         Header: key,
         accessor: key
@@ -15,11 +19,11 @@ const DatabaseTableDisplay: React.FC<{data: any}> = ({data}) => {
 
   return (
     <ReactTable
-    className="-striped -highlight"
-    data={data}
-    columns={columns}
-    defaultPageSize={5}
-    pageSizeOptions={[5,10,20]}
+      className="-striped -highlight"
+      data={data}
+      columns={columns}
+      defaultPageSize={5}
+      pageSizeOptions={[5,10,20]}
     />
     );
   };

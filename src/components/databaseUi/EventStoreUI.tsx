@@ -73,37 +73,44 @@ export default class EventStoreUI implements DatabaseUIProvider {
       );
     };
 
+    const addOp = "Add";
+    
     const opTypes = {
-      Add: addEventEditor()
+      [addOp]: {
+        onClickHandler: () => { setEditorStatus({...editorStatus, open: true })},
+        component: addEventEditor()
+      }
     };
-
-    const op = "Add";
 
     return (
       <div>
         <div className={ToolbarStyle.buttonBar}>
-          <button
-            className={ToolbarStyle.addButton}
-            onClick={() => {
-              setEditorStatus({...editorStatus, open: true});
-              setActiveField(op);
-            }}
-            key={op}
-          >
-            {op}
-          </button>
+          {
+            Object.keys(opTypes).map(op => (
+              <button
+               className={ToolbarStyle.addButton}
+               onClick={() => {
+                 opTypes[op].onClickHandler();
+                 setActiveField(op);
+              }}
+              key={op}
+              >
+                {op}
+              </button>)
+            )
+          }
         </div>
-        {opTypes[activeField] ? opTypes[activeField]() : null}
+        {opTypes[activeField] ? opTypes[activeField].component() : null}
       </div>
     );
   }
 
-  getDataDisplay: React.FC<any> = ({ index }) => {
+  getDataDisplay: React.FC<any> = ({ header, index }) => {
     let filteredData = index.get().map((data) => {
       return {"value" : JSON.stringify(data.payload.value)};
     });
 
-    return <DatabaseTableDisplay data={filteredData.reverse()} />
+    return <DatabaseTableDisplay tableHeader={header} data={filteredData.reverse()} />
   }
 
   getTooltipMsg(entry): string {
