@@ -132,7 +132,7 @@ export default class DAGNode implements D3DataOutput {
 
       let earliestAncestorIndex = null;
 
-      while (h2.next) {
+      while (currentIndex < h2.next.length) {
         let curH2Index = h2.next.indexOf(ancestors[currentIndex])
         if (curH2Index < highestH2Index) {
           // Inconsistency
