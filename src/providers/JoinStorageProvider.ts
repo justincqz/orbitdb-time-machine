@@ -22,4 +22,10 @@ export default interface JoinStorageProvider {
 
   // Get storage address
   getStorageAddress();
+
+  // Get user ids of a database
+  getUserIds(): string[];
+
+  // Get joins of a specific user in the join database
+  getUserJoins(id: string): JoinEvent[];
 }

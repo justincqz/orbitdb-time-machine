@@ -5,18 +5,23 @@ import {DatabaseProvider} from '../providers/DatabaseProvider';
 import OrbitDBProvider from '../adapters/OrbitDBProvider';
 import JoinStorageProvider from '../providers/JoinStorageProvider';
 import OrbitDBJoinProvider from "../adapters/OrbitDBJoinProvider";
+import LocalStorageJoinProvider from "../adapters/LocalStorageJoinProvider";
 
 // Injector to mock dependencies
 export interface Injector {
   createNodeProvider(store: any, dbInstance: DatabaseProvider): NodeProvider;
   createDBProvider(): Promise<DatabaseProvider>;
   createJoinStorageProvider(): JoinStorageProvider;
+  createLocalJoinStorageProvider(): JoinStorageProvider;
 }
 
 // This injector is used in the main application
 export class DefaultInjector implements Injector {
   createJoinStorageProvider(): JoinStorageProvider {
     return new OrbitDBJoinProvider();
+  }
+  createLocalJoinStorageProvider(): JoinStorageProvider {
+    return new LocalStorageJoinProvider();
   }
   createDBProvider(): Promise<DatabaseProvider> {
     return OrbitDBProvider.build();

@@ -72,15 +72,26 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
               dbProvider.current
             );
 
-            dbProvider.current.openDatabase(storageProvider.current.getStorageAddress()).then((storage: Store) => {
-              storageProvider.current.connectToStorage(storage);
-              storageProvider.current.setUser(s._oplog._identity._id);
-              if (!listening) {
-                setListening(true);
-                listenForChanges();
-              }
-              loadData();
-            })
+            dbProvider.current.openDatabase(storageProvider.current.getStorageAddress())
+              .then((storage: Store) => {
+                  storageProvider.current.connectToStorage(storage);
+                  storageProvider.current.setUser(s._oplog._identity._id);
+                  if (!listening) {
+                    setListening(true);
+                    listenForChanges();
+                  }
+                  loadData();
+                })
+              .catch(_ => {
+                console.log("Saving in local storage...");
+                storageProvider.current = injector.createLocalJoinStorageProvider();
+                storageProvider.current.setDatabase(`${hash}/${name}`);
+                if (!listening) {
+                  setListening(true);
+                  listenForChanges();
+                }
+                loadData();
+              })
           })
           .catch(e => setError(e.toString()));
       });

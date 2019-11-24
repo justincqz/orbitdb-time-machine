@@ -24,6 +24,14 @@ export default class LocalStorageJoinProvider implements JoinStorageProvider {
   setUser(id: string) {
   }
 
+  getUserIds(): string[] {
+    return [];
+  }
+
+  getUserJoins(id: string): JoinEvent[] {
+    return [];
+  }
+
   getJoins(): string[] {
     console.log("Current database being parsed:")
     console.log(this.currentDatabase)

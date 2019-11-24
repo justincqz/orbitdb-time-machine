@@ -8,6 +8,7 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
   orbitDBStorage = null;
 
   readonly storageAddress : string = "/orbitdb/zdpuApcbZpiyV3HU5ojrTMuvcBwfdewGQWqQgKU8NfuDUXafW/JoinStorage";
+  // readonly storageAddress : string = "/orbitdb/zdpuApcbZpiyV5HU5ojrTMuvcBwfdewGQWqQgKU8NfuDUXafW/JoinStorage";
 
   connectToStorage(s : Store) {
     this.orbitDBStorage = s;
@@ -30,19 +31,154 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
     this.currentDatabase = null;
   }
 
+  getDatabaseJoins(databaseMetadataList: any) : any {
+    if (databaseMetadataList.length === 0) {
+      return {"_id": this.currentDatabase};
+    } else {
+      return databaseMetadataList[0];
+    }
+  }
+
+  getUserIds(): string[] {
+    this.checkInitialization();
+
+    let databaseMetadataList = this.orbitDBStorage.get(this.currentDatabase);
+    let databaseMetadata = this.getDatabaseJoins(databaseMetadataList);
+
+    let userIds = [];
+
+    for (let key in databaseMetadata) {
+      if (databaseMetadata.hasOwnProperty(key) && key !== "_id") {
+        userIds.push(key);
+      }
+    }
+
+    return userIds;
+  }
+
+  getUserJoins(id: string): JoinEvent[] {
+    this.checkInitialization();
+
+    let databaseMetadataList = this.orbitDBStorage.get(this.currentDatabase);
+    let databaseMetadata = this.getDatabaseJoins(databaseMetadataList);
+
+    if (databaseMetadata[id] === undefined) {
+      console.log("intitialising metadata for user");
+      databaseMetadata[id] = [];
+      this.orbitDBStorage.put(databaseMetadata);
+    }
+
+    return databaseMetadata[id].map(join => {
+      return new JoinEvent(join);
+    });
+  }
+
+  mergeChildrenNodes(head1: any, head2: any): any {
+    let mergedNodes = [];
+
+    for (let i = 0; i < head1.children.length; i++) {
+      let childNode1 = head1.children[i];
+      let childNode2;
+      for (let j = 0; j < head2.children.length; j++) {
+        if (childNode1.id === head2.children[j].id) {
+          childNode2 = head2.children[j];
+        }
+      }
+
+      if (childNode2 !== undefined) {
+        mergedNodes.push(
+          this.mergeChildrenNodes(childNode1, childNode2)
+        );
+
+      } else {
+        mergedNodes.push(childNode1);
+      }
+    }
+
+    for (let j = 0; j < head2.children.length; j++) {
+      let found = false;
+      for (let k = 0; k < mergedNodes.length; k++) {
+        if (head2.children[j].id === mergedNodes[k].id) {
+          found = true;
+        }
+      }
+
+      if (!found) {
+        mergedNodes.push(head2.children[j]);
+      }
+    }
+
+    return {
+      id: head1.id,
+      payload: head1.payload,
+      children: mergedNodes
+    };
+  }
+
+  mergeJoins(localJoins: any[], onlineJoins:any[]): any {
+    let mergedJoins = [];
+
+    for (let i = 0; i < localJoins.length; i++) {
+      let found = false;
+
+      for (let j = 0; j < onlineJoins.length; j++) {
+        if (onlineJoins[j].id === localJoins[i].id) {
+          mergedJoins.push(this.mergeChildrenNodes(onlineJoins[j], localJoins[i]));
+          found = true;
+        }
+      }
+
+      if (!found) {
+        mergedJoins.push(localJoins[i]);
+      }
+    }
+
+    for (let j = 0; j < onlineJoins.length; j++) {
+      let found = false;
+      for (let k = 0; k < mergedJoins.length; k++) {
+        if (onlineJoins[j].id === mergedJoins[k].id) {
+          found = true;
+        }
+      }
+
+      if (!found) {
+        mergedJoins.push(onlineJoins[j]);
+      }
+    }
+
+    return mergedJoins;
+  }
+
+  updateJoins() {
+    if (window.localStorage.getItem(this.currentDatabase) !== null) {
+      console.log("Uploading from local storage to OrbitDB...");
+      let localUserData = window.localStorage.getItem(this.currentDatabase);
+      console.log(localUserData);
+
+
+      let databaseMetadataList = this.orbitDBStorage.get(this.currentDatabase);
+      let databaseMetadata = this.getDatabaseJoins(databaseMetadataList);
+
+      let currentUserData = databaseMetadata[this.currentUser];
+      if (currentUserData === undefined) {
+        currentUserData = [];
+      }
+
+      console.log(localUserData);
+      console.log(this.mergeJoins(JSON.parse(localUserData), currentUserData));
+      databaseMetadata[this.currentUser] = this.mergeJoins(JSON.parse(localUserData), currentUserData);
+
+      console.log(databaseMetadata);
+
+      this.orbitDBStorage.put(databaseMetadata);
+    }
+  }
+
   getJoins(): string[] {
     this.checkInitialization();
 
     let databaseMetadataList = this.orbitDBStorage.get(this.currentDatabase);
-    let databaseMetadata;
-
-    console.log(databaseMetadataList);
-
-    if (databaseMetadataList.length === 0) {
-      databaseMetadata = {"_id": this.currentDatabase};
-    } else {
-      databaseMetadata = databaseMetadataList[0];
-    }
+    let databaseMetadata = this.getDatabaseJoins(databaseMetadataList);
 
     console.log(databaseMetadata);
     console.log(databaseMetadata[this.currentUser]);
@@ -53,6 +189,8 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
       databaseMetadata[this.currentUser] = [];
       this.orbitDBStorage.put(databaseMetadata);
     }
+
+    this.updateJoins();
 
     console.log(databaseMetadata);
 
@@ -74,12 +212,10 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
 
     const databaseMetadata = this.orbitDBStorage.get(this.currentDatabase)[0];
     const userMetadata = databaseMetadata[this.currentUser];
-    console.log(databaseMetadata);
 
     userMetadata.push(event.root);
     databaseMetadata[this.currentUser] = userMetadata;
 
-    console.log(userMetadata);
 
     this.orbitDBStorage.put(databaseMetadata);
   }
