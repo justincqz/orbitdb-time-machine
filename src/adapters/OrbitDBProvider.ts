@@ -62,7 +62,7 @@ export default class OrbitDBProvider implements DatabaseProvider {
 
     let timeout = new Promise((_, reject) =>
       setTimeout(() => {
-        reject();
+        reject(new Error(`Timeout awaiting database ${address}`));
       }, 5000)
     );
 
@@ -71,9 +71,8 @@ export default class OrbitDBProvider implements DatabaseProvider {
       sync: true
     });
 
-    const db: Store = await Promise.race([timeout, dbPromise]).catch(() => {
-      throw new Error(`Timeout awaiting database ${address}`);
-    });
+    // If any promise fails via a thrown error, we let it fall through.
+    const db: Store = await Promise.race([timeout, dbPromise]);
 
     await db.load();
     return db;
