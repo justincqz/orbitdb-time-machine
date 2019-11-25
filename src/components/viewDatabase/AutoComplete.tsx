@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import AutoCompleteStyle from './AutoComplete.module.css';
 
 const AutoComplete: React.FC<{
@@ -10,7 +10,7 @@ const AutoComplete: React.FC<{
   const [activeVal, setActiveVal] = useState(0);
 
   const filtered = suggestions ?
-    suggestions.filter(val => val.toLowerCase().indexOf(input.toLowerCase())) : [];
+    suggestions.filter(val => !val.toLowerCase().indexOf(input.toLowerCase())) : [];
 
   const handleInput = (value) => {
     onSubmit(value);
@@ -18,25 +18,30 @@ const AutoComplete: React.FC<{
   }
 
   const handleKeyPress = e => {
-    if (!suggestions || suggestions.length == 0)
-      return;
+    if (!filtered || filtered.length === 0)
+      return false;
 
     // Up Key
-    if (e.keyCode == 38)
-      setActiveVal((suggestions.length + activeVal - 1) % suggestions.length);
+    if (e.keyCode === 38) {
+      e.preventDefault();
+      setActiveVal((filtered.length + activeVal - 1) % filtered.length);
+    }
 
     // Down Key
-    if (e.keyCode == 40)
-      setActiveVal((activeVal + 1) % suggestions.length);
+    if (e.keyCode === 40) {
+      e.preventDefault();
+      setActiveVal((activeVal + 1) % filtered.length);
+    }
 
     // Enter Key
-    if (e.keyCode == 13) {
-      handleInput(suggestions[activeVal])
+    if (e.keyCode === 13) {
+      handleInput(filtered[activeVal]);
+      e.currentTarget.blur();
     }
   }
 
   const suggestionComponent = suggestions && suggestions.length > 0 ?
-    (<ul>
+    (<ul className={AutoCompleteStyle.suggestionList}>
       {filtered.map((val, index) => {
         let className = AutoCompleteStyle.suggestion;
         if (index === activeVal) 
@@ -44,8 +49,8 @@ const AutoComplete: React.FC<{
 
         return (
           <li className={className} 
-            key={val} 
-            onClick={e=>{handleInput(e.currentTarget.accessKey)}}>
+            id={val} 
+            onClick={e=>{handleInput(e.currentTarget.id)}}>
             {val}
           </li>
         );
@@ -54,18 +59,18 @@ const AutoComplete: React.FC<{
     (<li className={AutoCompleteStyle.selected} key="Local">Local User</li>);
 
   return (
-    <Fragment>
+    <div className={AutoCompleteStyle.container}>
       <input
         type="text"
         className={AutoCompleteStyle.input}
         value={input}
-        onChange={e=>{setInput(e.target.value)}}
+        onChange={e=>{setInput(e.target.value); setActiveVal(0)}}
         onFocus={(()=>{toggleSuggestions(true)})}
-        onBlur={()=>{toggleSuggestions(false)}}
-        onKeyPress={handleKeyPress}
+        onBlur={()=>{setTimeout(() => toggleSuggestions(false), 100);}}
+        onKeyDown={handleKeyPress}
       />
       {showSuggestions ? suggestionComponent : null}
-    </Fragment>
+    </div>
   );
 }
 

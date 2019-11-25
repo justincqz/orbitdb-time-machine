@@ -1,0 +1,58 @@
+.suggestionList {
+  margin: 0%;
+  padding: 0%;
+}
+
+.suggestion {
+  list-style-type: none;
+  position: relative;
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  padding: 5px;
+  left: -5px;
+  background-color: #eee;
+  color: rgb(34, 98, 177);
+  font-family: monospace;
+  cursor: pointer;
+}
+
+.selected {
+  list-style-type: none;
+  position: relative;
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  padding: 5px;
+  left: -5px;
+  background-color: rgb(34, 98, 177);
+  color: #eee;
+  font-family: monospace;
+  cursor: pointer;
+}
+
+.container {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 2vh;
+}
+
+.input {
+  position: relative;
+  width: 80%;
+  margin-left: 10%;
+  margin-right: 10%;
+  padding: 5px;
+  left:-5px;
+  color: black;
+  background-color: #eee;
+  box-shadow: 0 0 0 1px #55AAFF;
+  font-family: monospace;
+}
+
+.input:focus {
+  box-shadow: 0 0 3px 2px #55AAFF;
+}
+
