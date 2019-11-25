@@ -39,8 +39,10 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   let uiProvider: DatabaseUIProvider;
 
   // For display nodes limiting.
-  let nodeLimit: MutableRefObject<number> = useRef(10);
-  let limitInputRef = React.createRef<HTMLInputElement>();
+  let [nodeLimit, setNodeLimit]: [
+    number,
+    React.Dispatch<React.SetStateAction<number>>
+  ] = useState(10);
 
   const [loading, setLoading] = useState(true);
   const [d3data, setD3data]: [
@@ -107,7 +109,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     if (selectedJoin === null) {
       loadData(true);
     } else {
-      nodeProvider.current.getDatabaseGraph(nodeLimit.current).then(nodes => {
+      nodeProvider.current.getDatabaseGraph(nodeLimit).then(nodes => {
         nodes.reduce(async (rootNode, node) => {
           (await rootNode).children.push(await addUserIdentities(
             viewJoinEvent(
@@ -153,11 +155,6 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
 
   function handleLimitFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const parsed = parseInt(limitInputRef.current.value);
-    if (!isNaN(parsed)) {
-      nodeLimit.current = parsed;
-    }
-
     loadData(true);
   }
 
@@ -174,6 +171,20 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
       console.log("Local write recorded!");
       loadData(true);
     });
+  }
+
+  function handleLimitInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const parsed = parseInt(e.target.value);
+    if (!isNaN(parsed)) {
+      setNodeLimit(parsed);
+    }
+  }
+
+  // Prevent backspaces to prevent NaN inputs
+  function handleLimitInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e && e.keyCode === 8) {
+        e.preventDefault();
+    }
   }
 
   function recordJoinEvent(newLog: OperationsLog) {
@@ -194,7 +205,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     }
     setLoading(true);
     try {
-      let childNodes = await nodeProvider.current.getDatabaseGraph(nodeLimit.current);
+      let childNodes = await nodeProvider.current.getDatabaseGraph(nodeLimit);
       let d3data = await childNodes.reduce(async (rootNode, node) => {
         (await rootNode).children.push(await addUserIdentities(
             node.toD3Data(),
@@ -254,11 +265,12 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
             onSubmit={handleLimitFormSubmit}
           >
             <input
-              ref={limitInputRef}
               type="text"
               pattern="[0-9]*"
               title="Please only input numbers."
-              defaultValue={nodeLimit.current}
+              onChange={handleLimitInputChange}
+              onKeyDown={handleLimitInputKeyDown}
+              value={nodeLimit}
             />
           </form>
         </div>
