@@ -38,7 +38,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
   );
   let uiProvider: DatabaseUIProvider;
 
-  // For display nodes limiting.
+  // For display nodes limiting. nodeLimit CAN be NaN!
   let [nodeLimit, setNodeLimit]: [
     number,
     React.Dispatch<React.SetStateAction<number>>
@@ -112,7 +112,8 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     if (selectedJoin === null) {
       loadData(true);
     } else {
-      nodeProvider.current.getDatabaseGraph(nodeLimit).then(nodes => {
+      const actualLimit = isNaN(nodeLimit) ? 0 : nodeLimit;
+      nodeProvider.current.getDatabaseGraph(actualLimit).then(nodes => {
         nodes.reduce(async (rootNode, node) => {
           (await rootNode).children.push(await addUserIdentities(
             viewJoinEvent(
@@ -178,16 +179,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
 
   function handleLimitInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const parsed = parseInt(e.target.value);
-    if (!isNaN(parsed)) {
-      setNodeLimit(parsed);
-    }
-  }
-
-  // Prevent backspaces to prevent NaN inputs
-  function handleLimitInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e && e.keyCode === 8) {
-        e.preventDefault();
-    }
+    setNodeLimit(parsed);
   }
 
   function recordJoinEvent(newLog: OperationsLog) {
@@ -208,7 +200,12 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     }
     setLoading(true);
     try {
-      let childNodes = await nodeProvider.current.getDatabaseGraph(nodeLimit);
+      const actualLimit = isNaN(nodeLimit) ? 0 : nodeLimit;
+      let childNodes = await nodeProvider.current.getDatabaseGraph(actualLimit);
+
+      // Set limit input box to actual limit.
+      setNodeLimit(actualLimit);
+
       let d3data = await childNodes.reduce(async (rootNode, node) => {
         (await rootNode).children.push(await addUserIdentities(
             node.toD3Data(),
@@ -275,8 +272,7 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
               pattern="[0-9]*"
               title="Please only input numbers."
               onChange={handleLimitInputChange}
-              onKeyDown={handleLimitInputKeyDown}
-              value={nodeLimit}
+              value={isNaN(nodeLimit) ? "" : nodeLimit}
             />
           </form>
         </div>
