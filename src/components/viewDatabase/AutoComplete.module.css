@@ -6,8 +6,8 @@
 .suggestion {
   list-style-type: none;
   position: relative;
-  width: 80%;
-  margin-left: 10%;
+  width: 85%;
+  margin-left: 5%;
   margin-right: 10%;
   padding: 5px;
   left: -5px;
@@ -15,13 +15,18 @@
   color: rgb(34, 98, 177);
   font-family: monospace;
   cursor: pointer;
+  white-space: pre-wrap;      /* CSS3 */   
+  white-space: -moz-pre-wrap; /* Firefox */    
+  white-space: -pre-wrap;     /* Opera <7 */   
+  white-space: -o-pre-wrap;   /* Opera 7 */    
+  word-wrap: break-word;      /* IE */
 }
 
 .selected {
   list-style-type: none;
   position: relative;
-  width: 80%;
-  margin-left: 10%;
+  width: 85%;
+  margin-left: 5%;
   margin-right: 10%;
   padding: 5px;
   left: -5px;
@@ -29,6 +34,11 @@
   color: #eee;
   font-family: monospace;
   cursor: pointer;
+  white-space: pre-wrap;      /* CSS3 */   
+  white-space: -moz-pre-wrap; /* Firefox */    
+  white-space: -pre-wrap;     /* Opera <7 */   
+  white-space: -o-pre-wrap;   /* Opera 7 */    
+  word-wrap: break-word;      /* IE */
 }
 
 .container {
@@ -41,9 +51,9 @@
 
 .input {
   position: relative;
-  width: 80%;
-  margin-left: 10%;
-  margin-right: 10%;
+  width: 88%;
+  margin-left: 5%;
+  margin-right: 7%;
   padding: 5px;
   left:-5px;
   color: black;
@@ -55,4 +65,3 @@
 .input:focus {
   box-shadow: 0 0 3px 2px #55AAFF;
 }
-

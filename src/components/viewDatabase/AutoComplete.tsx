@@ -49,19 +49,21 @@ const AutoComplete: React.FC<{
 
         return (
           <li className={className} 
-            id={val} 
-            onClick={e=>{handleInput(e.currentTarget.id)}}>
+            id={val}
+            key={val}
+            onClick={e=>{handleInput(e.currentTarget.id)}}
+            onMouseOver={e=>{setActiveVal(filtered.indexOf(e.currentTarget.id))}} >
             {val}
           </li>
         );
       })}
     </ul>) : 
-    (<li className={AutoCompleteStyle.selected} key="Local">Local User</li>);
+    (<li key="Local" className={AutoCompleteStyle.selected}>Local User</li>);
 
   return (
     <div className={AutoCompleteStyle.container}>
       <input
-        type="text"
+        type="search"
         className={AutoCompleteStyle.input}
         value={input}
         onChange={e=>{setInput(e.target.value); setActiveVal(0)}}

@@ -62,7 +62,7 @@ export default class OrbitDBJoinProvider implements JoinStorageProvider {
     let databaseMetadata = this.getDatabaseJoins(databaseMetadataList);
 
     if (databaseMetadata[id] === undefined) {
-      console.log("intitialising metadata for user");
+      console.log("Intitialising metadata for user");
       databaseMetadata[id] = [];
       this.orbitDBStorage.put(databaseMetadata);
     }

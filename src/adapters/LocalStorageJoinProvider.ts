@@ -34,8 +34,6 @@ export default class LocalStorageJoinProvider implements JoinStorageProvider {
   }
 
   getJoins(): string[] {
-    console.log("Current database being parsed:")
-    console.log(this.currentDatabase)
     // You forgot to set the current database
     if (this.currentDatabase === null) {
       throw new Error("Current database has not been initialised")
@@ -43,8 +41,8 @@ export default class LocalStorageJoinProvider implements JoinStorageProvider {
     // This is the first time we are debugging this database - no object exists
     // in local storage
     if (window.localStorage.getItem(this.currentDatabase) === null) {
-      console.log("intitialising local storage...")
-      window.localStorage.setItem(this.currentDatabase, JSON.stringify([]))
+      console.log("Intitialising local storage...");
+      window.localStorage.setItem(this.currentDatabase, JSON.stringify([]));
     }
     let vals: string[] = [];
     for (let i = 0; i < JSON.parse(window.localStorage.getItem(this.currentDatabase)).length; i++) {

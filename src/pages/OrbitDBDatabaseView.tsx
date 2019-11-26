@@ -56,6 +56,8 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
     React.Dispatch<React.SetStateAction<string>>
   ] = useState(null);
 
+  const [user, setUser] = useState("");
+
   useEffect(() => {
     if (storageProvider.current === undefined) {
       storageProvider.current = injector.createJoinStorageProvider();
@@ -84,7 +86,8 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
                   }
                   loadData();
                 })
-              .catch(_ => {
+              .catch(err => {
+                console.log("Error saving to orbitdb storage: ", err);
                 console.log("Saving in local storage...");
                 storageProvider.current = injector.createLocalJoinStorageProvider();
                 storageProvider.current.setDatabase(`${hash}/${name}`);
@@ -251,9 +254,12 @@ const OrbitDBDatabaseView: React.FC = withRouter(({ history }) => {
         joinEvents={storageProvider.current.getJoins()}
         selectJoin={setSelectedJoin}
         type={store.current._type}
+        user={user && user !== "" ? user : store.current._oplog._identity._id}
         store={store.current}
         uiProvider={uiProvider}
         goHome={goHome}
+        users={storageProvider.current.getUserIds()}
+        changePerspective={user => {storageProvider.current.setUser(user); setUser(user);}}
       />
       <div className={databaseStyles.container}>
         <div className={databaseStyles.addressContainer}>

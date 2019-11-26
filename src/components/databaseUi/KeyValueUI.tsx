@@ -62,7 +62,7 @@ export default class KeyValueUI implements DatabaseUIProvider {
     return (<div>
       <div className={ToolbarStyle.buttonBar}>
         {Object.keys(opTypes)
-          .map(op => (<button className={ToolbarStyle.addButton} onClick={() => setActiveField(op)}>{op}</button>))}
+          .map(op => (<button className={ToolbarStyle.addButton} key={op} onClick={() => setActiveField(op)}>{op}</button>))}
       </div>
       {opTypes[activeField] ? opTypes[activeField]() : null}
     </div>);

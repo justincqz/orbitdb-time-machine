@@ -25,9 +25,17 @@
 }
 
 .info {
-  margin: 1.5vh;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+  margin-left: 1.5vh;
+  margin-right: 1.5vh;
   font-size: 1rem;
   font-family: 'Courier New', Courier, monospace;
+  white-space: pre-wrap;      /* CSS3 */   
+  white-space: -moz-pre-wrap; /* Firefox */    
+  white-space: -pre-wrap;     /* Opera <7 */   
+  white-space: -o-pre-wrap;   /* Opera 7 */    
+  word-wrap: break-word;      /* IE */
 }
 
 .addButton {
