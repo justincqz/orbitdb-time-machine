@@ -43,35 +43,38 @@ const AutoComplete: React.FC<{
   const suggestionComponent = suggestions && suggestions.length > 0 ?
     (<ul className={AutoCompleteStyle.suggestionList}>
       {filtered.map((val, index) => {
-        let className = AutoCompleteStyle.suggestion;
-        if (index === activeVal) 
-          className = AutoCompleteStyle.selected;
+        let className = `${AutoCompleteStyle.suggestion}
+            ${index === activeVal ? AutoCompleteStyle.selected : ""}`;
 
         return (
-          <li className={className} 
-            id={val}
+          <li className={className}
             key={val}
-            onClick={e=>{handleInput(e.currentTarget.id)}}
-            onMouseOver={e=>{setActiveVal(filtered.indexOf(e.currentTarget.id))}} >
+            id={val}
+            onClick={e => handleInput(e.currentTarget.id)}>
             {val}
           </li>
         );
       })}
-    </ul>) : 
-    (<li key="Local" className={AutoCompleteStyle.selected}>Local User</li>);
+    </ul>) :
+    (<ul className={AutoCompleteStyle.suggestionList}>
+      <li className={`${AutoCompleteStyle.suggestion}
+      ${AutoCompleteStyle.selected}`} key="Local">Local User</li>
+    </ul>);
 
   return (
     <div className={AutoCompleteStyle.container}>
       <input
-        type="search"
+        type="text"
         className={AutoCompleteStyle.input}
         value={input}
         onChange={e=>{setInput(e.target.value); setActiveVal(0)}}
         onFocus={(()=>{toggleSuggestions(true)})}
-        onBlur={()=>{setTimeout(() => toggleSuggestions(false), 100);}}
+        onBlur={()=>{setTimeout(() => toggleSuggestions(false), 200);}}
         onKeyDown={handleKeyPress}
       />
-      {showSuggestions ? suggestionComponent : null}
+      <div className={AutoCompleteStyle.suggestionListContainer}>
+        {showSuggestions ? suggestionComponent : null}
+      </div>
     </div>
   );
 }

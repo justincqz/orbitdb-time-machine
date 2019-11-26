@@ -5,63 +5,42 @@
 
 .suggestion {
   list-style-type: none;
-  position: relative;
-  width: 85%;
-  margin-left: 5%;
-  margin-right: 10%;
-  padding: 5px;
-  left: -5px;
   background-color: #eee;
   color: rgb(34, 98, 177);
   font-family: monospace;
   cursor: pointer;
-  white-space: pre-wrap;      /* CSS3 */   
-  white-space: -moz-pre-wrap; /* Firefox */    
-  white-space: -pre-wrap;     /* Opera <7 */   
-  white-space: -o-pre-wrap;   /* Opera 7 */    
-  word-wrap: break-word;      /* IE */
+  padding: 4px;
 }
 
 .selected {
-  list-style-type: none;
-  position: relative;
-  width: 85%;
-  margin-left: 5%;
-  margin-right: 10%;
-  padding: 5px;
-  left: -5px;
   background-color: rgb(34, 98, 177);
   color: #eee;
-  font-family: monospace;
-  cursor: pointer;
-  white-space: pre-wrap;      /* CSS3 */   
-  white-space: -moz-pre-wrap; /* Firefox */    
-  white-space: -pre-wrap;     /* Opera <7 */   
-  white-space: -o-pre-wrap;   /* Opera 7 */    
-  word-wrap: break-word;      /* IE */
 }
 
 .container {
   align-items: stretch;
+  position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  margin-bottom: 2vh;
+  margin: 10px 10px 2vh;
 }
 
 .input {
-  position: relative;
-  width: 88%;
-  margin-left: 5%;
-  margin-right: 7%;
-  padding: 5px;
-  left:-5px;
+  padding: 10px;
   color: black;
   background-color: #eee;
-  box-shadow: 0 0 0 1px #55AAFF;
   font-family: monospace;
+  border-radius: 3px;
 }
 
 .input:focus {
-  box-shadow: 0 0 3px 2px #55AAFF;
+  box-shadow: none;
+}
+
+.suggestionListContainer {
+  width: 100%;
+  border-radius: 3px;
+  overflow: hidden;
+  position: absolute;
+  top: 33px;
 }
