@@ -26,7 +26,9 @@ As such, the available operations will be different depending on the database ty
 
 ### 2. Perspective Selector
 
-TODO
+The perspective selector allows you to select from wich node's perspective you are viewing the oplog. Either click in the box and select a user identitiy, or type the user identitiy directly.
+
+Changing the perspective changes the logging data used to the data collected from the selected node.
 
 ### 3. Join Events
 
@@ -38,7 +40,7 @@ Clicking on any of the JOIN events within this bar will change the Operations Lo
 
 ### 4. Display Limit
 
-Allows users to change the maximum amount of nodes to display.
+Allows users to change the maximum amount of nodes to display. Increasing this value may lead to bad performance.
 
 ### 5. Operations Log View
 
@@ -58,9 +60,33 @@ Depending on the database type, you may encounter different display formats. For
 
 # Usage - API
 
-TODO
+NOTE: The logger only works for browser-based applications, as it makes use of the browser's localstorage.
+
+Install the logger package:
+
+```bash
+npm i --save orbit-db-time-machine-logger
+```
+In you application:
+
+```javascript
+import Logger from 'orbit-db-time-machine-logger'
+
+// ... Code to set up your OrbitDB instance ...
+// This code will create an OrbitDB store
+
+var logger = new Logger(store)
+logger.start()
+```
 
 # Setting up Locally
+
+To set up the debugger locally, clone the repository and change to the debugger folder:
+
+```bash
+git clone https://github.com/justincqz/orbit-db-time-machine.git
+cd debugger
+```
 
 Install the necessary dependencies:
 
