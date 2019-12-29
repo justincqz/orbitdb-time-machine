@@ -5,7 +5,7 @@ const DAGNodeTooltip: React.FC<{
   title: string,
   message: string,
   rect: ClientRect
-}> = ({title, message, rect}) => {
+}> = ({title="Title", message="Message", rect}) => {
 
   const toolTipRef = useRef<HTMLDivElement>(null);
 

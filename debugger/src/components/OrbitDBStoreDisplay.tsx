@@ -57,6 +57,7 @@ const OrbitDBStoreDisplay: React.FC<{
     } catch (e) {
       // TODO: Error handling.
       console.log("Something went terribly wrong...");
+      console.error(e);
     }
   }
 
@@ -94,6 +95,7 @@ const OrbitDBStoreDisplay: React.FC<{
     } catch (e) {
       // TODO: Error handling.
       console.log("Something went terribly wrong...");
+      console.error(e);
     }
   }
 
