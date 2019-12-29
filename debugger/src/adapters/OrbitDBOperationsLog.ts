@@ -12,21 +12,6 @@ export class OrbitDBOperationsLog implements OperationsLog {
     this.dbInstance = dbInstance;
   }
 
-  findDifferences(otherLog: OperationsLog): Object {
-    return Log.difference(this.oplog, otherLog);
-  }
-
-  toSnapshotJSON(): string {
-    return this.oplog.toSnapshot();
-  }
-
-  getHeads(): Array<string> {
-
-    let heads = this.oplog.heads;
-
-    return heads;
-  }
-
   getInnerLog(): any {
     return this.oplog;
   }

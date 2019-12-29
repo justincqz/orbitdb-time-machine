@@ -1,6 +1,6 @@
 import OrbitDB from "orbit-db";
-import OrbitDBFactory from "./OrbitDBFactory";
-import OrbitDBDatabaseTypes from "./OrbitDBDatabaseTypes";
+import OrbitDBFactory from "../OrbitDBFactory";
+import OrbitDBDatabaseTypes from "../OrbitDBDatabaseTypes";
 
 const dbTestName = "TestDatabase";
 

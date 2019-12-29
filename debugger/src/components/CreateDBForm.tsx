@@ -7,7 +7,12 @@ import CreateFormStyles from './CreateDBForm.module.css';
 import { IoMdHand } from "react-icons/io";
 import OrbitDBDatabaseTypes from "../adapters/OrbitDBDatabaseTypes";
 
-const CreateDbForm: React.FC = withRouter(({ history }) => {
+export const accessControlTestId = "accessControl";
+export const formInputTestId = "formInputField";
+export const formTestId = "form";
+
+
+const CreateDBForm: React.FC = withRouter(({ history }) => {
   const [name, setName] = useState("");
   const [isPublic, setPublic] = useState(true);
   const injector = useDependencyInjector();
@@ -69,7 +74,11 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
   }
 
   const toggleAccessControl = () => 
-    <div className={CreateFormStyles.createCheckboxContainer} onClick={togglePublic}>
+    <div 
+      className={CreateFormStyles.createCheckboxContainer}
+      onClick={togglePublic}
+      data-testid={accessControlTestId}
+    >
       Public
       <input className={CreateFormStyles.optionSelect}
         type="checkbox"
@@ -102,11 +111,16 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
     <div>
       <div className={CreateFormStyles.createTextContainer}>
         { error !== '' && <div>An error occured: {error}</div>}
-        <form onSubmit={submitForm} className={CreateFormStyles.formContainer}>
+        <form 
+          onSubmit={submitForm}
+          className={CreateFormStyles.formContainer}
+          data-testid={formTestId}
+        >
           <input className={CreateFormStyles.textField}
             type="text"
             value={name}
             onChange={e => setName(e.target.value)}
+            data-testid={formInputTestId}
             placeholder={"Database Name"}
           />
           <button type="submit" value="create" className={CreateFormStyles.submitButton} >
@@ -120,4 +134,4 @@ const CreateDbForm: React.FC = withRouter(({ history }) => {
   );
 });
 
-export default CreateDbForm;
+export default CreateDBForm;

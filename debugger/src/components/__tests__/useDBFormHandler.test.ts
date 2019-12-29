@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { createMemoryHistory } from "history";
-import useDBFormHandler from './useDBFormHandler';
+import useDBFormHandler from '../useDBFormHandler';
 import { act } from '@testing-library/react-hooks';
 
 test('canSetValue', () => {

@@ -1,6 +1,6 @@
 import React from 'react';
-import LocalDBForm from './LocalDBForm';
-import { errorBoxTestId, formInputTestId, formTestId, openFormTestId } from './LocalDBForm';
+import LocalDBForm from '../LocalDBForm';
+import { errorBoxTestId, formInputTestId, formTestId, openFormTestId } from '../LocalDBForm';
 import { createMemoryHistory } from "history";
 import { Router } from "react-router";
 import {render, fireEvent, getByTestId} from '@testing-library/react';
