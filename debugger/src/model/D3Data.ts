@@ -1,5 +1,5 @@
 import { NodeProvider } from "../providers/NodeProvider";
-import D3DataOutput, { D3Data as OtherD3Data, getTreeAtSplit }  from 'orbit-db-time-machine-logger';
+import D3DataOutput, { D3Data, getTreeAtSplit }  from 'orbit-db-time-machine-logger';
 
 /** Returns the node with a hash */
 const findNode = function(hash: string, root: D3Data): D3Data {
@@ -108,5 +108,4 @@ export {
   addUserIdentities
 };
 
-export type D3Data = OtherD3Data;
 export default D3DataOutput;

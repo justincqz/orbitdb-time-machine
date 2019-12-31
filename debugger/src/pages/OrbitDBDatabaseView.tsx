@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef, MutableRefObject } from "react";
 import { useParams } from "react-router-dom";
 import { useDependencyInjector } from "../state/dependencyInjector";
-import { D3Data, viewJoinEvent, addUserIdentities } from "../model/D3Data";
+import { viewJoinEvent, addUserIdentities } from "../model/D3Data";
+import { D3Data }  from 'orbit-db-time-machine-logger';
 import { NodeProvider } from "../providers/NodeProvider";
 import { DatabaseProvider } from "../providers/DatabaseProvider";
 import { Store } from "orbit-db-store";
