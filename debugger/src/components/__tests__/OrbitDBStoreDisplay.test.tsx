@@ -1,5 +1,5 @@
 import OrbitDBStoreDisplay from '../OrbitDBStoreDisplay';
-import { D3Data } from '../../model/D3Data';
+import { D3Data }  from 'orbit-db-time-machine-logger';
 import { NodeProvider } from '../../providers/NodeProvider';
 import DatabaseUIProvider from '../../providers/DatabaseUIProvider';
 import { DatabaseProvider } from '../../providers/DatabaseProvider';
