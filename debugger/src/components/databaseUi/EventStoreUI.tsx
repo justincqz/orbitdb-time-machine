@@ -8,6 +8,9 @@ import Popup from "reactjs-popup";
 import "ace-builds/src-noconflict/mode-jsx";
 import PopupEditorStyles from './PopupEditor.module.css';
 
+export const submitButtonTestId = "submitButtonTestId";
+export const openEditorTestId = "openEditorTestId";
+
 export default class EventStoreUI implements DatabaseUIProvider {
   getSidebar: React.FC<Store> = ({ store }) => {
     const [editorStatus, setEditorStatus] = useState({data: "", open: false});
@@ -65,7 +68,9 @@ export default class EventStoreUI implements DatabaseUIProvider {
               :
               <div className={PopupEditorStyles.buttonBar}>
                 <button className={ToolbarStyle.editButton} onClick={handleEditorCancel}>Cancel</button>
-                <button className={ToolbarStyle.editButton} onClick={handleEditorSubmit}>Submit</button>
+                <button 
+                  data-testid={submitButtonTestId}
+                  className={ToolbarStyle.editButton} onClick={handleEditorSubmit}>Submit</button>
               </div>
             }
           </div>
@@ -88,12 +93,13 @@ export default class EventStoreUI implements DatabaseUIProvider {
           {
             Object.keys(opTypes).map(op => (
               <button
-               className={ToolbarStyle.addButton}
-               onClick={() => {
-                 opTypes[op].onClickHandler();
-                 setActiveField(op);
-              }}
-              key={op}
+                data-testid={op}
+                className={ToolbarStyle.addButton}
+                onClick={() => {
+                  opTypes[op].onClickHandler();
+                  setActiveField(op);
+                }}
+                key={op}
               >
                 {op}
               </button>)

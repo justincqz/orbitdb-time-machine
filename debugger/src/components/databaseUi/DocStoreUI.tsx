@@ -7,6 +7,9 @@ import Popup from "reactjs-popup";
 import "ace-builds/src-noconflict/mode-jsx";
 import ReactTable from "react-table";
 
+export const formTestId = "formTestId";
+export const openEditorTestId = "openEditorTestId";
+
 const languages = [
   "javascript",
   "json"
@@ -41,11 +44,12 @@ export default class DocStoreUI implements DatabaseUIProvider {
     const [activeField, setActiveField] = useState("");
 
     async function submitDocument(e) {
-      e.preventDefault();
+      if (e) e.preventDefault();
       try {
         await store.put(JSON.parse(editorStatus.data));
         setEditorStatus({...editorStatus, open: false});
       } catch (error) {
+        console.error(error);
         setEditorStatus({...editorStatus, open: true});
         setErrorStatus({error: true, msg: error});
       }
@@ -71,7 +75,10 @@ export default class DocStoreUI implements DatabaseUIProvider {
 
     const addEditorField = (opName, op) => {
       return () => (<div className={ToolbarStyle.inputFieldContainer}>
-        <form onSubmit= {op}>
+        <form 
+          onSubmit= {op}
+          data-testid={formTestId}
+        >
           <Popup open={editorStatus.open}
                  closeOnDocumentClick={false}
                  contentStyle={{backgroundColor:"#0A3464FF"}}>
@@ -80,7 +87,8 @@ export default class DocStoreUI implements DatabaseUIProvider {
                 mode="json"
                 theme="solarized_dark"
                 fontSize="2vh"
-                onChange={(data) => {setEditorStatus({data: data, open: true}); setErrorStatus({...errorStatus, error:false})}}
+                onChange={(data) => {
+                  setEditorStatus({data: data, open: true}); setErrorStatus({...errorStatus, error:false})}}
                 name="aceEditor"
                 value= {editorStatus.data}
                 width="50vw"
@@ -102,7 +110,13 @@ export default class DocStoreUI implements DatabaseUIProvider {
             </div>
           </Popup>
           <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly', marginTop: '0.5vh'}}>
-            <label className={ToolbarStyle.editButton} onClick={()=> setEditorStatus({...editorStatus, open: true})}>{opName}</label>
+            <label 
+              data-testid={openEditorTestId}
+              className={ToolbarStyle.editButton}
+              onClick={()=> setEditorStatus({...editorStatus, open: true})}
+            >
+              {opName}
+            </label>
           </div>
         </form>
       </div>);
@@ -116,7 +130,7 @@ export default class DocStoreUI implements DatabaseUIProvider {
     return (<div>
       <div className={ToolbarStyle.buttonBar}>
         {Object.keys(opTypes)
-          .map(op => (<button className={ToolbarStyle.addButton} onClick={() => setActiveField(op)}>{op}</button>))}
+          .map(op => (<button data-testid={op} className={ToolbarStyle.addButton} onClick={() => setActiveField(op)}>{op}</button>))}
       </div>
       {opTypes[activeField] ? opTypes[activeField]() : null}
     </div>);

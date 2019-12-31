@@ -4,6 +4,9 @@ import ToolbarStyle from '../viewDatabase/Sidebar.module.css';
 import { Store } from "orbit-db-store";
 import CounterStoreStyles from './CounterStoreUI.module.css';
 
+export const incrementFieldTestId = "incrementTestId";
+export const formTestId = "formTestId";
+
 export default class CounterStoreUI implements DatabaseUIProvider {
 
   getSidebar: React.FC<Store> = ({ store }) => {
@@ -19,11 +22,17 @@ export default class CounterStoreUI implements DatabaseUIProvider {
     const incrementField = (opName, op) => {
       return () => (
         <div className={ToolbarStyle.inputFieldContainer}>
-          <form onSubmit={(e) => {e.preventDefault(); op()}}>
+          <form 
+            onSubmit={(e) => {
+              if (e) e.preventDefault(); op()
+            }}
+            data-testid={formTestId}
+          >
             <div className={ToolbarStyle.inputFieldRow}>
               <label>Amount: </label>
               <input
                 className={ToolbarStyle.inputField}
+                data-testid={incrementFieldTestId}
                 type="number"
                 min="0"
                 onChange={(e) => setInput(e.target.value)}
@@ -44,8 +53,18 @@ export default class CounterStoreUI implements DatabaseUIProvider {
     return (
       <div>
         <div className={ToolbarStyle.buttonBar}>
-          {Object.keys(opTypes)
-            .map(op => (<button className={ToolbarStyle.addButton} onClick={() => setActiveField(op)}>{op}</button>))}
+          {
+            Object.keys(opTypes)
+              .map(op => (
+                <button 
+                  data-testid={op}
+                  className={ToolbarStyle.addButton}
+                  onClick={() => setActiveField(op)}
+                >
+                  {op}
+                </button>
+             ))
+          }
         </div>
         {opTypes[activeField] ? opTypes[activeField]() : null}
       </div>
