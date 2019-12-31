@@ -4,6 +4,8 @@ import CreateStyles from './Create.module.css';
 import { MdHome } from 'react-icons/md';
 import { withRouter } from 'react-router-dom';
 
+export const homeButtonTestId = "homeButtonTestId";
+
 const Create: React.FC = withRouter(({ history }) => {
 
   const goHome = () => {
@@ -12,7 +14,11 @@ const Create: React.FC = withRouter(({ history }) => {
 
   return (
     <div className={CreateStyles.container}>
-      <div className={CreateStyles.icon} onClick={goHome}>
+      <div 
+        data-testid={homeButtonTestId}
+        className={CreateStyles.icon}
+        onClick={goHome}
+      >
         <MdHome size={'8vh'} />
       </div>
       <div className={CreateStyles.titleContainer}>
