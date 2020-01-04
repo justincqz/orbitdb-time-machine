@@ -1,6 +1,6 @@
 {
   "name": "orbit-db-time-machine-logger",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Logger package for use with the orbitdb time machine",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -21,5 +21,9 @@
     "jest": "^24.9.0",
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justincqz/orbit-db-time-machine.git"
   }
 }
