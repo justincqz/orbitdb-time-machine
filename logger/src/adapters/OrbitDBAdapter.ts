@@ -79,6 +79,6 @@ export default class OrbitDBAdapter implements DatabaseProvider {
   }
 
   async close(): Promise<void> {
-    //this.ipfs.stop();
+    // this.ipfs.stop();
   }
 }
